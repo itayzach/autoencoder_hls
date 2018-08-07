@@ -26,45 +26,34 @@
 #include "firmware/autoencoder.h"
 #include "nnet_helpers.h"
 
-int main(int argc, char **argv) {
-
-	//hls-fpga-machine-learning insert data
+int print_and_check_results(const char* enc_dec_str, result_t* result, result_t* expected) {
 	int err_cnt = 0;
-	input_t  data_in[M]  = { 1.0, 2.0, 13.0, 4.0 };
-	result_t expected[M] = { 2.0, 3.0, 14.0, 5.0 };
-
-	result_t result[M];
-	for (int i = 0; i < M; i++) {
-		result[i] = 0;
-	}
-
-	// TX
-	unsigned short size_in, size_out;
-	encoder(data_in, result, size_in, size_out);
-
-	// Noise
-
-	// RX
-
-
-	// print results
 	const char separator    = ' ';
 	const int fieldWidth    = 10;
-	std::cout << "-------------------------------------" << std::endl;
+	int size = (strcmp(enc_dec_str, "ENCODER") == 0) ? n :
+			   (strcmp(enc_dec_str, "DECODER") == 0) ? M : -1;
+	std::cout << "*************************************" << std::endl;
+	std::cout << "************** " << enc_dec_str << " **************" << std::endl;
+	std::cout << "*************************************" << std::endl;
 	std::cout << std::setw(fieldWidth) << "result";
 	std::cout << std::setw(fieldWidth) << "expected";
 	std::cout << std::setw(fieldWidth) << "diff [%]";
 	std::cout << std::endl;
 	std::cout << "-------------------------------------" << std::endl;
 
-	for (int i = 0; i < M; i++) {
-		float diff = 100.0 * ((float) result[i] - (float) expected[i]) / (float) expected[i];
+	for (int i = 0; i < size; i++) {
+		float diff = 0.0;
+		if (expected[i] == 0.0) { // diving by 0 is bad
+			diff = (float) result[i];
+		} else {
+			diff = 100.0 * ((float) result[i] - (float) expected[i]) / (float) expected[i];
+		}
 		std::cout << std::setw(fieldWidth) << result[i];
 		std::cout << std::setw(fieldWidth) << expected[i];
 		std::cout << std::setw(fieldWidth) << diff;
 		std::cout << std::endl;
 
-		if (diff > 0.5) {
+		if (abs(diff) > 0.5) {
 			err_cnt++;
 		}
 	}
@@ -73,4 +62,39 @@ int main(int argc, char **argv) {
 	std::cout << "-------------------------------------" << std::endl;
 
 	return err_cnt;
+}
+
+int main(int argc, char **argv) {
+
+	//hls-fpga-machine-learning insert data
+	input_t  enc_data_in[M]  = { 1.0, 12.8764, -13.0, 4.0 };
+//	result_t expected[M] = { 2.0, 13.8764, 0.0, 5.0 };
+	result_t enc_expected[n] = { 14.8764, 6.0 };
+
+	result_t enc_result[M];
+	for (int i = 0; i < M; i++) {
+		enc_result[i] = 0;
+	}
+
+	// ========================================================================
+	// TX
+	// ========================================================================
+	unsigned short enc_size_in, enc_size_out;
+	encoder(enc_data_in, enc_result, enc_size_in, enc_size_out);
+
+	// print results
+	int enc_err_cnt = print_and_check_results("ENCODER", enc_result, enc_expected);
+
+	// ========================================================================
+	// Noise
+	// ========================================================================
+
+	// ========================================================================
+	// RX
+	// ========================================================================
+
+
+
+
+	return enc_err_cnt;
 }
