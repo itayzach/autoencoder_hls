@@ -30,12 +30,12 @@
 // Prototype of top level function for C-synthesis
 void encoder(
 	  input_t data[M],
-	  result_t res[n],
+	  result_t res[n_channel],
 	  unsigned short &const_size_in,
 	  unsigned short &const_size_out);
 
 void decoder(
-	  input_t data[n],
+	  input_t data[n_channel],
 	  result_t res[M],
 	  unsigned short &const_size_in,
 	  unsigned short &const_size_out);

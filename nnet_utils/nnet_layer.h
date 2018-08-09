@@ -45,7 +45,7 @@ struct layer_config
     // partitioning arrays cyclically to go with roll factors?
 };
 
- template<class data_T, class res_T, typename CONFIG_T>
+template<class data_T, class res_T, typename CONFIG_T>
 void compute_layer(
     data_T    data[CONFIG_T::n_in],
     res_T     res[CONFIG_T::n_out],
@@ -123,6 +123,7 @@ void compute_layer(
         res[ires] = (res_T) (acc[ires]);
     }    
 }
+
 
 }
 

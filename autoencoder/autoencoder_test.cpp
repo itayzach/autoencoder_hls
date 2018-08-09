@@ -26,15 +26,16 @@
 #include "firmware/autoencoder.h"
 #include "nnet_helpers.h"
 
-int print_and_check_results(const char* enc_dec_str, result_t* result, result_t* expected) {
+int print_and_check_results(const char* enc_dec_str, result_t* result, result_t* expected, const float allowed_precent_diff) {
     int err_cnt = 0;
     const char separator    = ' ';
     const int fieldWidth    = 10;
-    int size = (strcmp(enc_dec_str, "ENCODER") == 0) ? n :
+    int size = (strcmp(enc_dec_str, "ENCODER") == 0) ? n_channel :
                (strcmp(enc_dec_str, "DECODER") == 0) ? M : -1;
     assert(size > 0);
     std::cout << "*************************************" << std::endl;
-    std::cout << "************** " << enc_dec_str << " **************" << std::endl;
+    std::cout << "* " << enc_dec_str << std::endl;
+    std::cout << "* allowed diff [%] : " << allowed_precent_diff << std::endl;
     std::cout << "*************************************" << std::endl;
     std::cout << std::setw(fieldWidth) << "result";
     std::cout << std::setw(fieldWidth) << "expected";
@@ -52,11 +53,13 @@ int print_and_check_results(const char* enc_dec_str, result_t* result, result_t*
         std::cout << std::setw(fieldWidth) << result[i];
         std::cout << std::setw(fieldWidth) << expected[i];
         std::cout << std::setw(fieldWidth) << diff;
+        if (abs(diff) > allowed_precent_diff) {
+			err_cnt++;
+			std::cout << " << ERROR";
+		}
         std::cout << std::endl;
 
-        if (abs(diff) > 0.001) {
-            err_cnt++;
-        }
+
     }
     std::cout << "-------------------------------------" << std::endl;
     std::cout << "total of " << err_cnt << " errors" << std::endl;
@@ -70,9 +73,14 @@ int main(int argc, char **argv) {
 	// ========================================================================
 	// TX
 	// ========================================================================
-    input_t  enc_data_in[M]  = { 1.0, 12.8764, -13.0, 4.0 };
-    // result_t expected[M] = { 2.0, 13.8764, 0.0, 5.0 };
-    result_t enc_expected[n] = { 14.8764, 6.0 };
+     input_t  enc_data_in[M]  = { 1.0, 12.0, 13.0, 4.0 };
+    // result_t expected[M] = { 2.0, 13.0, 14.0, 5.0 };
+    // result_t enc_expected[n_channel] = { 14.0, 6.0 };
+     result_t enc_expected[n_channel] = { 13.0, 5.0 };
+    //TX[0] val : 3
+    //TX[0] i,q : [1.0562046 0.9404423]
+//    input_t  enc_data_in[M]  = { 0.0, 0.0, 1.0, 0.0 };
+//    result_t enc_expected[n_channel] = { 1.0562046, 0.9404423 };
 
     result_t enc_result[M];
     for (int i = 0; i < M; i++) {
@@ -83,7 +91,8 @@ int main(int argc, char **argv) {
     encoder(enc_data_in, enc_result, enc_size_in, enc_size_out);
 
     // print and check results
-    int enc_err_cnt = print_and_check_results("ENCODER", enc_result, enc_expected);
+    const float enc_allowed_precent_diff = 0.1;
+    int enc_err_cnt = print_and_check_results("ENCODER", enc_result, enc_expected, enc_allowed_precent_diff);
 
     // ========================================================================
     // Noise
@@ -92,19 +101,21 @@ int main(int argc, char **argv) {
     // ========================================================================
     // RX
     // ========================================================================
-    input_t  dec_data_in[n]  = { 14.8764, 6.0 };
-	result_t dec_expected[M] = { 1.0, 12.8764, -13.0, 4.0 };
+    input_t  dec_data_in[n_channel]  = { 5.0, 6.0 };
+//	result_t dec_expected[M] = { 6.0, 3.0, 4.0, 4.0 }; // without softmax
+	result_t dec_expected[M] = {0.7573132, 0.0377044, 0.1024912, 0.1024912}; // withsoftmax
 
 	result_t dec_result[M];
 	for (int i = 0; i < M; i++) {
-		enc_result[i] = 0;
+		dec_result[i] = 0;
 	}
 
     unsigned short dec_size_in, dec_size_out;
     decoder(dec_data_in, dec_result, dec_size_in, dec_size_out);
 
     // print and check results
-	int dec_err_cnt = print_and_check_results("DECODER", dec_result, dec_expected);
+    const float dec_allowed_precent_diff = 2.0;
+	int dec_err_cnt = print_and_check_results("DECODER", dec_result, dec_expected, dec_allowed_precent_diff);
 
     return enc_err_cnt + dec_err_cnt;
 }
