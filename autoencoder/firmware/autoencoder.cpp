@@ -26,21 +26,18 @@
 #include "nnet_activation.h"
 
 //hls-fpga-machine-learning insert weights
-#include "weights/enc_w1.h"
-#include "weights/enc_b1.h"
-#include "weights/enc_w2.h"
-#include "weights/enc_b2.h"
-#include "weights/enc_bn3.h"
+#include "weights/enc_weights.h"
 
-#include "weights/dec_w1.h"
-#include "weights/dec_b1.h"
-#include "weights/dec_w2.h"
-#include "weights/dec_b2.h"
+#include "weights/dec_weights.h"
+
+//#include "sqrt_cordic/cordic_defines.h"
+#include <hls_math.h>
+
 // ========================================================================
 // encoder
 // ========================================================================
 void encoder(
-  input_t data[M],
+  input_t data[M_in],
   result_t res[n_channel],
   unsigned short &const_size_in,
   unsigned short &const_size_out)
@@ -53,30 +50,39 @@ void encoder(
 
 	#pragma HLS PIPELINE
 
-    const_size_in   = M;
-    const_size_out  = n_channel;
+    const_size_in   = M_in;
+    const_size_out  = M_in;
 
     // ****************************************
     // NETWORK INSTANTIATION
     // ****************************************
     // Dense
-	result_t logits1[M];
+	result_t logits1[M_in];
 	#pragma HLS ARRAY_PARTITION variable=logits1 complete dim=0
 	nnet::compute_layer<input_t, result_t, enc_config1>(data, logits1, enc_w1, enc_b1);
 
-	// ReLU
-	input_t layer1_relu_out[M];
-	#pragma HLS ARRAY_PARTITION variable=layer1_relu_out complete dim=0
-	nnet::relu<input_t, input_t, enc_relu_config1>(logits1, layer1_relu_out);
+ 	// ReLU
+ 	input_t layer1_relu_out[M_in];
+ 	#pragma HLS ARRAY_PARTITION variable=layer1_relu_out complete dim=0
+ 	nnet::relu<input_t, input_t, enc_relu_config1>(logits1, layer1_relu_out);
 
 	// Dense
 	result_t logits2[n_channel];
 	#pragma HLS ARRAY_PARTITION variable=logits2 complete dim=0
-	nnet::compute_layer<input_t, result_t, enc_config2>(layer1_relu_out, logits2, enc_w2, enc_b2);
+	nnet::compute_layer<input_t, result_t, enc_config2>(layer1_relu_out, res, enc_w2, enc_b2);
 
-	// BatchNorm
-	nnet::batch_norm_layer<input_t, result_t, enc_bn_config3>(logits2, res, enc_mean, enc_inv_sigma, enc_gamma, enc_beta);
+//	// BatchNorm
+//	nnet::batch_norm_layer<input_t, result_t, enc_bn_config3>(logits2, res, enc_mean, enc_inv_sigma, enc_gamma, enc_beta);
 
+	// Normalize
+	//sqrt(logits2[0]*logits2[0] + logits2[1]*logits2[1]);
+	//dinp_t in1 = 3;
+	//dinp_t in2 = 3;
+	//dout_t out;
+	//out = cordic_sqrt(in1, in2);
+	//out = process_magnitude_cordic(in1, in2);
+	ap_ufixed<14,4> in = 300;
+	ap_ufixed<14,4> var_fx = hls::sqrt(in);
 
 }
 
@@ -85,7 +91,7 @@ void encoder(
 // ========================================================================
 void decoder(
   input_t data[n_channel],
-  result_t res[M],
+  result_t res[M_in],
   unsigned short &const_size_in,
   unsigned short &const_size_out)
 {
@@ -98,7 +104,7 @@ void decoder(
 	#pragma HLS PIPELINE
 
     const_size_in   = n_channel;
-    const_size_out  = M;
+    const_size_out  = M_in;
 
     // ****************************************
     // NETWORK INSTANTIATION
@@ -114,12 +120,28 @@ void decoder(
 	nnet::relu<input_t, input_t, dec_relu_config1>(logits1, layer1_relu_out);
 
 	// Dense
-	result_t logits2[M];
+	result_t logits2[M_in];
 	#pragma HLS ARRAY_PARTITION variable=logits2 complete dim=0
 	nnet::compute_layer<input_t, result_t, dec_config2>(layer1_relu_out, logits2, dec_w2, dec_b2);
 
-
 	// Softmax
-	 nnet::softmax<result_t, result_t, dec_softmax_config2>(logits2, res);
+	result_t logits3[M_in];
+	nnet::softmax<result_t, result_t, dec_softmax_config2>(logits2, logits3);
+
+	// Argmax
+	result_t max_val = logits3[0];
+	result_t max_idx = 0;
+	argmax: for(int ii = 1; ii < const_size_out; ii++) {
+		if (logits3[ii] > max_val) {
+			max_idx = ii;
+			max_val = logits3[ii];
+		}
+	}
+
+	reset_res: for(int ii = 0; ii < const_size_out; ii++) {
+		res[ii] = 0.0;
+	}
+
+	res[max_idx] = 1.0;
 
 }

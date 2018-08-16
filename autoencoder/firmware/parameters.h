@@ -10,8 +10,8 @@
 #include "nnet_common.h"
 #include "nnet_batch_norm.h"
 
-#define M 4
-#define k 2 // log2(M)
+#define M_in 4
+//#define k 2 // log2(M_in)
 #define n_channel 2
 
 //hls-fpga-machine-learning insert numbers
@@ -30,8 +30,8 @@ typedef ap_fixed<32,8> result_t;
 // Encoder parameters
 // ========================================================================
 struct enc_config1 : nnet::layer_config {
-    static const unsigned n_in = M;
-    static const unsigned n_out = M;
+    static const unsigned n_in = M_in;
+    static const unsigned n_out = M_in;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = 1;
     static const unsigned n_zeros = 0;
@@ -42,13 +42,13 @@ struct enc_config1 : nnet::layer_config {
 };
 
 struct enc_relu_config1 : nnet::activ_config {
-    static const unsigned n_in = M;
+    static const unsigned n_in = M_in;
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
 };
 
 struct enc_config2 : nnet::layer_config {
-    static const unsigned n_in = M;
+    static const unsigned n_in = M_in;
     static const unsigned n_out = n_channel;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = 1;
@@ -74,7 +74,7 @@ struct enc_bn_config3 : nnet::bn_layer_config {
 // ========================================================================
 struct dec_config1 : nnet::layer_config {
     static const unsigned n_in = n_channel;
-    static const unsigned n_out = n_channel;
+    static const unsigned n_out = M_in;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = 1;
     static const unsigned n_zeros = 0;
@@ -85,14 +85,14 @@ struct dec_config1 : nnet::layer_config {
 };
 
 struct dec_relu_config1 : nnet::activ_config {
-    static const unsigned n_in = n_channel;
+    static const unsigned n_in = M_in;
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
 };
 
 struct dec_config2 : nnet::layer_config {
-    static const unsigned n_in = n_channel;
-    static const unsigned n_out = M;
+    static const unsigned n_in = M_in;
+    static const unsigned n_out = M_in;
     static const unsigned io_type = nnet::io_parallel;
     static const unsigned reuse_factor = 1;
     static const unsigned n_zeros = 0;
@@ -104,7 +104,7 @@ struct dec_config2 : nnet::layer_config {
 
 
 struct dec_softmax_config2 : nnet::activ_config {
-    static const unsigned n_in = M;
+    static const unsigned n_in = M_in;
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
 };
