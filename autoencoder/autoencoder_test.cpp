@@ -31,7 +31,7 @@ int print_and_check_results(const char* enc_dec_str, result_t* result, result_t*
     const char separator = ' ';
     const int fieldWidth = 15;
     int size = (strcmp(enc_dec_str, "ENCODER") == 0)     ? n_channel :
-    		   (strcmp(enc_dec_str, "ENCODER_DBG") == 0) ? n_channel :
+               (strcmp(enc_dec_str, "ENCODER_DBG") == 0) ? n_channel :
                (strcmp(enc_dec_str, "DECODER") == 0)     ? M_in : -1;
     assert(size > 0);
     std::cout << "*************************************" << std::endl;
@@ -55,9 +55,9 @@ int print_and_check_results(const char* enc_dec_str, result_t* result, result_t*
         std::cout << std::setw(fieldWidth) << expected[i];
         std::cout << std::setw(fieldWidth) << diff;
         if (abs(diff) > allowed_precent_diff) {
-			err_cnt++;
-			std::cout << " << ERROR";
-		}
+            err_cnt++;
+            std::cout << " << ERROR";
+        }
         std::cout << std::endl;
 
 
@@ -71,11 +71,11 @@ int print_and_check_results(const char* enc_dec_str, result_t* result, result_t*
 
 int main(int argc, char **argv) {
 
-	// ========================================================================
-	// TX
-	// ========================================================================
+    // ========================================================================
+    // TX
+    // ========================================================================
     // for the following input: TX[0] val : {0.0, 0.0, 0.0, 1.0} = 3
-	// expected w/o normalization  : [3.9336898 3.453742]
+    // expected w/o normalization  : [3.9336898 3.453742]
     // expected with normalization : [1.0562046 0.9404423]
     input_t  enc_data_in[M_in]  = {0.0, 0.0, 0.0, 1.0};
     result_t enc_expected[n_channel] = {1.0557002,  0.94100845};
@@ -100,22 +100,22 @@ int main(int argc, char **argv) {
     // RX
     // ========================================================================
     //input_t dec_data_in[n_channel] = {1.0557002,  0.94100845};
-	//result_t dec_expected[M_in] = {0.7573132, 0.0377044, 0.1024912, 0.1024912}; // withsoftmax
+    //result_t dec_expected[M_in] = {0.7573132, 0.0377044, 0.1024912, 0.1024912}; // withsoftmax
     //result_t dec_expected[M_in] = {0.0,         3.0197535,  0.32067692, 0.7918129 }; // first layer+relu
     //result_t dec_expected[M_in] = {7.7156507e-04, 5.8024080e-04, 2.0423336e-03, 9.9660587e-01};
     result_t dec_expected[M_in] = {0.0, 0.0, 0.0, 1.0};
 
-	result_t dec_result[M_in];
-	for (int i = 0; i < M_in; i++) {
-		dec_result[i] = 0;
-	}
+    result_t dec_result[M_in];
+    for (int i = 0; i < M_in; i++) {
+        dec_result[i] = 0;
+    }
 
     unsigned short dec_size_in, dec_size_out;
     decoder(enc_result, dec_result, dec_size_in, dec_size_out);
 
     // print and check results
     const float dec_allowed_precent_diff = 0.0;
-	int dec_err_cnt = print_and_check_results("DECODER", dec_result, dec_expected, dec_allowed_precent_diff);
+    int dec_err_cnt = print_and_check_results("DECODER", dec_result, dec_expected, dec_allowed_precent_diff);
 
     return enc_err_cnt + dec_err_cnt;
 }
