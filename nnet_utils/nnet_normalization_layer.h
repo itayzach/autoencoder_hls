@@ -58,10 +58,8 @@ void normalization_layer(
         #pragma HLS PIPELINE II=CONFIG_T::reuse_factor
 
         // #pragma HLS ARRAY_PARTITION variable=weights complete // remove this line for now, it breaks compression sometimes
-        #pragma HLS ARRAY_PARTITION variable=mean complete
-        #pragma HLS ARRAY_PARTITION variable=inv_sigma complete
-        #pragma HLS ARRAY_PARTITION variable=gamma complete
-		#pragma HLS ARRAY_PARTITION variable=beta complete
+        #pragma HLS ARRAY_PARTITION variable=data_square complete
+        #pragma HLS ARRAY_PARTITION variable=div_res complete
 
 
     } else if (CONFIG_T::io_type == io_serial){
