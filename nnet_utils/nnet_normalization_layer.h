@@ -17,23 +17,19 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#ifndef NNET_BATCH_NORM_LAYER_H_
-#define NNET_BATCH_NORM_LAYER_H_
+#ifndef NNET_NORMALIZATION_LAYER_H_
+#define NNET_NORMALIZATION_LAYER_H_
 
 #include "nnet_common.h"
 #include "hls_stream.h"
-#include <math.h>
-
+//#include <math.h>
+#include <hls_math.h>
 namespace nnet {
 
-struct bn_layer_config
+struct norm_layer_config
 {
-    // Internal data type definitions
-	typedef float mean_t;
-	typedef float inv_sigma_t;
-	typedef float gamma_t;
-	typedef float beta_t;
-    typedef float bn_t;
+	// Internal data type definitions
+	typedef float norm_t;
 
     // Layer Sizes
     static const unsigned n = 10;
@@ -45,23 +41,15 @@ struct bn_layer_config
 };
 
 template<class data_T, class res_T, typename CONFIG_T>
-void batch_norm_layer(
+void normalization_layer(
     data_T    data[CONFIG_T::n],
-    res_T     res[CONFIG_T::n],
-    typename CONFIG_T::mean_t mean[CONFIG_T::n],
-	typename CONFIG_T::inv_sigma_t inv_sigma[CONFIG_T::n],
-	typename CONFIG_T::gamma_t gamma[CONFIG_T::n],
-	typename CONFIG_T::beta_t beta[CONFIG_T::n])
+    res_T     res[CONFIG_T::n])
 {
-	typename CONFIG_T::bn_t mean_sub[CONFIG_T::n];
-	typename CONFIG_T::bn_t mult_inv_sigma[CONFIG_T::n];
-	typename CONFIG_T::bn_t mult_gamma[CONFIG_T::n];
-	typename CONFIG_T::bn_t add_beta[CONFIG_T::n];
-    //typename CONFIG_T::accum_t mult[CONFIG_T::n][CONFIG_T::n];
-    //typename CONFIG_T::accum_t acc[CONFIG_T::n];
-
-    // Use a function_instantiate in case it helps to explicitly optimize unchanging weights/biases
-    #pragma HLS function_instantiate variable=mean,inv_sigma,gamma,beta
+	typename CONFIG_T::norm_t data_square[CONFIG_T::n];
+	typename CONFIG_T::norm_t squares_sum;
+	typename CONFIG_T::norm_t sqrt_res;
+	const typename CONFIG_T::norm_t sqrt2 = 1.41421;
+	typename CONFIG_T::norm_t div_res[CONFIG_T::n];
 
     if (CONFIG_T::io_type == io_parallel){
         // For parallel inputs:
@@ -80,40 +68,32 @@ void batch_norm_layer(
         #pragma HLS DATAFLOW
     }
 
-    // Subtract mean
-    SubMean: for(int ii = 0; ii < CONFIG_T::n; ii++) {
+    // Square inputs
+    Square: for(int ii = 0; ii < CONFIG_T::n; ii++) {
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL
         }
-        mean_sub[ii] = data[ii] - mean[ii];
-
+        data_square[ii] = data[ii] * data[ii];
     }
 
-    // Multiply by 1/sigma
-	MultInvSigma: for(int ii = 0; ii < CONFIG_T::n; ii++) {
+    // Sum of squares
+    squares_sum = 0;
+	SquaresSum: for(int ii = 0; ii < CONFIG_T::n; ii++) {
 		if (CONFIG_T::io_type == io_serial){
 			#pragma HLS UNROLL
 		}
-		mult_inv_sigma[ii] = mean_sub[ii] * inv_sigma[ii];
-
+		squares_sum += data_square[ii];
 	}
 
-	// Multiply by gamma
-	MultGamma: for(int ii = 0; ii < CONFIG_T::n; ii++) {
+	// Square root
+	sqrt_res = hls::sqrt(squares_sum);
+
+	// Divide by square root
+	Divide: for(int ii = 0; ii < CONFIG_T::n; ii++) {
 		if (CONFIG_T::io_type == io_serial){
 			#pragma HLS UNROLL
 		}
-		mult_gamma[ii] = mult_inv_sigma[ii] * gamma[ii];
-
-	}
-
-	// Add beta
-	AddBeta: for(int ii = 0; ii < CONFIG_T::n; ii++) {
-		if (CONFIG_T::io_type == io_serial){
-			#pragma HLS UNROLL
-		}
-		add_beta[ii] = mult_gamma[ii] * beta[ii];
-
+		div_res[ii] = sqrt2 * (data[ii] / sqrt_res);
 	}
 
     // Cast to "res_t" type
@@ -121,7 +101,7 @@ void batch_norm_layer(
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL
         }
-        res[ires] = (res_T) (add_beta[ires]);
+        res[ires] = (res_T) (div_res[ires]);
     }    
 }
 
