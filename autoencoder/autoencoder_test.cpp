@@ -78,9 +78,9 @@ int main(int argc, char **argv) {
 	// expected w/o normalization  : [3.9336898 3.453742]
     // expected with normalization : [1.0562046 0.9404423]
     input_t  enc_data_in[M_in]  = {0.0, 0.0, 0.0, 1.0};
-    result_t enc_expected[n_channel] = {3.9336898, 3.453742};
+    result_t enc_expected[n_channel] = {1.0557002,  0.94100845};
 
-    result_t enc_result[M_in];
+    result_t enc_result[n_channel];
     for (int i = 0; i < M_in; i++) {
         enc_result[i] = 0;
     }
@@ -89,8 +89,8 @@ int main(int argc, char **argv) {
     encoder(enc_data_in, enc_result, enc_size_in, enc_size_out);
 
     // print and check results
-    const float enc_allowed_precent_diff = 0.1;
-    int enc_err_cnt = print_and_check_results("ENCODER_DBG", enc_result, enc_expected, enc_allowed_precent_diff);
+    const float enc_allowed_precent_diff = 0.01;
+    int enc_err_cnt = print_and_check_results("ENCODER", enc_result, enc_expected, enc_allowed_precent_diff);
 
     // ========================================================================
     // Noise
@@ -99,9 +99,7 @@ int main(int argc, char **argv) {
     // ========================================================================
     // RX
     // ========================================================================
-    // input_t  dec_data_in[n_channel]  = { 5.0, 6.0 };
-	// result_t dec_expected[M_in] = { 6.0, 3.0, 4.0, 4.0 }; // without softmax
-    input_t dec_data_in[n_channel]  = { 0.8473452, -0.8654846 };
+    //input_t dec_data_in[n_channel] = {1.0557002,  0.94100845};
 	//result_t dec_expected[M_in] = {0.7573132, 0.0377044, 0.1024912, 0.1024912}; // withsoftmax
     //result_t dec_expected[M_in] = {0.0,         3.0197535,  0.32067692, 0.7918129 }; // first layer+relu
     //result_t dec_expected[M_in] = {7.7156507e-04, 5.8024080e-04, 2.0423336e-03, 9.9660587e-01};
@@ -113,7 +111,7 @@ int main(int argc, char **argv) {
 	}
 
     unsigned short dec_size_in, dec_size_out;
-    decoder(dec_data_in, dec_result, dec_size_in, dec_size_out);
+    decoder(enc_result, dec_result, dec_size_in, dec_size_out);
 
     // print and check results
     const float dec_allowed_precent_diff = 0.0;
