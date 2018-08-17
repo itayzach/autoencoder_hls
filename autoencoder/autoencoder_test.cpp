@@ -21,28 +21,57 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <hls_dsp.h>
 
 #include "firmware/parameters.h"
 #include "firmware/autoencoder.h"
 #include "nnet_helpers.h"
+#include "firmware/weights/expected.h"
+
+#define SEED 5
+#define NUM_SIMULATIONS 1
+
+float randn(float mu, float sigma) {
+	float U1, U2, W, mult;
+	static float X1, X2;
+	static int call = 0;
+	if (call == 1) {
+		call = !call;
+		return (mu + sigma * (float) X2);
+	}
+
+	do {
+		U1 = -1 + ((float) rand() / RAND_MAX) * 2;
+		U2 = -1 + ((float) rand() / RAND_MAX) * 2;
+		W = pow(U1, 2) + pow(U2, 2);
+	} while (W >= 1 || W == 0);
+
+	mult = sqrt((-2 * log(W)) / W);
+	X1 = U1 * mult;
+	X2 = U2 * mult;
+
+	call = !call;
+
+	return (mu + sigma * (float) X1);
+}
 
 int print_and_check_results(const char* enc_dec_str, result_t* result, result_t* expected, const float allowed_precent_diff) {
     int err_cnt = 0;
     const char separator = ' ';
     const int fieldWidth = 15;
-    int size = (strcmp(enc_dec_str, "ENCODER") == 0)     ? n_channel :
-               (strcmp(enc_dec_str, "ENCODER_DBG") == 0) ? n_channel :
-               (strcmp(enc_dec_str, "DECODER") == 0)     ? M_in : -1;
+    int size = (strcmp(enc_dec_str, "ENCODER") == 0) ? n_channel :
+               (strcmp(enc_dec_str, "NOISE")   == 0) ? n_channel :
+               (strcmp(enc_dec_str, "DECODER") == 0) ? M_in : -1;
     assert(size > 0);
-    std::cout << "*************************************" << std::endl;
+    std::cout << "**************************************************************************" << std::endl;
     std::cout << "* " << enc_dec_str << std::endl;
-    std::cout << "* allowed diff [%] : " << allowed_precent_diff << std::endl;
-    std::cout << "*************************************" << std::endl;
+    std::cout << "* allowed diff : " << allowed_precent_diff << " %" << std::endl;
+    std::cout << "**************************************************************************" << std::endl;
     std::cout << std::setw(fieldWidth) << "result";
     std::cout << std::setw(fieldWidth) << "expected";
-    std::cout << std::setw(fieldWidth) << "diff [%]";
+    std::cout << std::setw(fieldWidth) << "diff";
     std::cout << std::endl;
-    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "--------------------------------------------------------------------------" << std::endl;
 
     for (int i = 0; i < size; i++) {
         float diff = 0.0;
@@ -53,7 +82,7 @@ int print_and_check_results(const char* enc_dec_str, result_t* result, result_t*
         }
         std::cout << std::setw(fieldWidth) << result[i];
         std::cout << std::setw(fieldWidth) << expected[i];
-        std::cout << std::setw(fieldWidth) << diff;
+        std::cout << std::setw(fieldWidth) << diff << " %";
         if (abs(diff) > allowed_precent_diff) {
             err_cnt++;
             std::cout << " << ERROR";
@@ -62,9 +91,10 @@ int print_and_check_results(const char* enc_dec_str, result_t* result, result_t*
 
 
     }
-    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "--------------------------------------------------------------------------" << std::endl;
     std::cout << "total of " << err_cnt << " errors" << std::endl;
-    std::cout << "-------------------------------------" << std::endl;
+    std::cout << "--------------------------------------------------------------------------" << std::endl;
+    std::cout << std::endl << std::endl;
 
     return err_cnt;
 }
@@ -72,50 +102,100 @@ int print_and_check_results(const char* enc_dec_str, result_t* result, result_t*
 int main(int argc, char **argv) {
 
     // ========================================================================
-    // TX
+    // TX setup
     // ========================================================================
+	unsigned short enc_size_in, enc_size_out;
     // for the following input: TX[0] val : {0.0, 0.0, 0.0, 1.0} = 3
     // expected w/o normalization  : [3.9336898 3.453742]
     // expected with normalization : [1.0562046 0.9404423]
     input_t  enc_data_in[M_in]  = {0.0, 0.0, 0.0, 1.0};
-    result_t enc_expected[n_channel] = {1.0557002,  0.94100845};
+    //result_t enc_expected[n_channel] = {1.0557002,  0.94100845};
 
-    result_t enc_result[n_channel];
+    result_t enc_data_out[n_channel];
     for (int i = 0; i < M_in; i++) {
-        enc_result[i] = 0;
+        enc_data_out[i] = 0;
     }
 
-    unsigned short enc_size_in, enc_size_out;
-    encoder(enc_data_in, enc_result, enc_size_in, enc_size_out);
+    // ========================================================================
+    // Noise setup
+    // ========================================================================
+    float EbNo_dB = 7; // [dB]
+	float EbNo = pow(10.0, EbNo_dB/10.0);
+	float R = log2(M_in) / n_channel;
+	float noise_std = sqrt(1/(2*R*EbNo));
 
-    // print and check results
-    const float enc_allowed_precent_diff = 0.01;
-    int enc_err_cnt = print_and_check_results("ENCODER", enc_result, enc_expected, enc_allowed_precent_diff);
+    ap_uint<8> lfsr_seed = SEED;
+	static hls::awgn<8> my_awgn(lfsr_seed);
+	//ap_int<8> noise[100];
+	ap_ufixed<32,8> snr = 7.0;
+	std::cout << "snr = " << snr << std::endl;
+	for (int i = 0; i < 100; i++) {
+		//my_awgn(snr, noise[i]);
+		//std::cout << "noise[" << i << "] = " << noise[i] << std::endl;
+	}
 
     // ========================================================================
-    // Noise
+    // RX setup
     // ========================================================================
-
-    // ========================================================================
-    // RX
-    // ========================================================================
-    //input_t dec_data_in[n_channel] = {1.0557002,  0.94100845};
+	unsigned short dec_size_in, dec_size_out;
+	input_t dec_data_in[n_channel];
+	//input_t dec_data_in[n_channel] = {1.0557002,  0.94100845};
     //result_t dec_expected[M_in] = {0.7573132, 0.0377044, 0.1024912, 0.1024912}; // withsoftmax
     //result_t dec_expected[M_in] = {0.0,         3.0197535,  0.32067692, 0.7918129 }; // first layer+relu
     //result_t dec_expected[M_in] = {7.7156507e-04, 5.8024080e-04, 2.0423336e-03, 9.9660587e-01};
-    result_t dec_expected[M_in] = {0.0, 0.0, 0.0, 1.0};
-
-    result_t dec_result[M_in];
+    //result_t dec_expected[M_in] = {0.0, 0.0, 0.0, 1.0};
+    result_t dec_data_out[M_in];
     for (int i = 0; i < M_in; i++) {
-        dec_result[i] = 0;
+        dec_data_out[i] = 0;
     }
 
-    unsigned short dec_size_in, dec_size_out;
-    decoder(enc_result, dec_result, dec_size_in, dec_size_out);
+    // ========================================================================
+	// Run simulation
+	// ========================================================================
+    int total_err_cnt = 0;
+    for (int simIdx = 0; simIdx < NUM_SIMULATIONS; simIdx++) {
+    	// Reset enc data in
+    	for (int i = 0; i < M_in; i++) {
+    		enc_data_in[i] = 0;
+    	}
 
-    // print and check results
-    const float dec_allowed_precent_diff = 0.0;
-    int dec_err_cnt = print_and_check_results("DECODER", dec_result, dec_expected, dec_allowed_precent_diff);
+    	// Generate random noise
+    	input_t noise = noise_std * randn(0.0, 1.0);
 
-    return enc_err_cnt + dec_err_cnt;
+    	for (int sigIdx = 0; sigIdx < M_in; sigIdx++) {
+    		// TX
+    		if (sigIdx > 0) enc_data_in[sigIdx-1] = 0;
+    		enc_data_in[sigIdx] = 1;
+			encoder(enc_data_in, enc_data_out, enc_size_in, enc_size_out);
+
+			// AWGN
+			for (int i = 0; i < n_channel; i++) {
+				dec_data_in[i] = enc_data_out[i] + noise;
+			}
+			// RX
+			decoder(dec_data_in, dec_data_out, dec_size_in, dec_size_out);
+
+			const float enc_allowed_precent_diff = 0.001;
+			int enc_err_cnt = print_and_check_results("ENCODER", enc_data_out, &enc_expected[n_channel * sigIdx], enc_allowed_precent_diff);
+			const float noise_allowed_precent_diff = 50;
+			int noise_err_cnt = print_and_check_results("NOISE", dec_data_in, enc_data_out, noise_allowed_precent_diff);
+			const float dec_allowed_precent_diff = 0.0;
+			int dec_err_cnt = print_and_check_results("DECODER", dec_data_out, &dec_expected[M_in * sigIdx], dec_allowed_precent_diff);
+			total_err_cnt = enc_err_cnt + noise_err_cnt + dec_err_cnt;
+    	}
+    }
+    //encoder_decoder(enc_data_in, enc_data_out, enc_size_in, enc_size_out,
+    //                dec_data_in, dec_data_out, dec_size_in, dec_size_out);
+
+    // ========================================================================
+    // Print and check results
+    // ========================================================================
+//	const float enc_allowed_precent_diff = 0.001;
+//	int enc_err_cnt = print_and_check_results("ENCODER", enc_data_out, enc_expected, enc_allowed_precent_diff);
+//	const float noise_allowed_precent_diff = 50;
+//	int noise_err_cnt = print_and_check_results("NOISE", dec_data_in, enc_data_out, noise_allowed_precent_diff);
+//    const float dec_allowed_precent_diff = 0.0;
+//    int dec_err_cnt = print_and_check_results("DECODER", dec_data_out, dec_expected, dec_allowed_precent_diff);
+
+    return total_err_cnt;
 }

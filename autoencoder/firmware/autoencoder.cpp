@@ -16,22 +16,23 @@
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
-#include <iostream>
 
+// standard and hls libraries
+#include <iostream>
+#include <hls_dsp.h>
+
+// local libraries
 #include "parameters.h"
 #include "autoencoder.h"
 
+// nnet libraries
 #include "nnet_layer.h"
-//#include "nnet_conv.h"
 #include "nnet_activation.h"
 #include "nnet_normalization_layer.h"
 
-//hls-fpga-machine-learning insert weights
+// weights
 #include "weights/enc_weights.h"
-
 #include "weights/dec_weights.h"
-
-//#include "sqrt_cordic/cordic_defines.h"
 
 
 // ========================================================================
