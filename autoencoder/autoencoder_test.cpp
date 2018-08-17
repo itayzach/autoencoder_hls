@@ -31,6 +31,10 @@
 #define SEED 5
 #define NUM_SIMULATIONS 1
 
+const char separator = ' ';
+const int fieldWidth = 15;
+
+
 float randn(float mu, float sigma) {
 	float U1, U2, W, mult;
 	static float X1, X2;
@@ -55,17 +59,40 @@ float randn(float mu, float sigma) {
 	return (mu + sigma * (float) X1);
 }
 
-int print_and_check_results(const char* enc_dec_str, result_t* result, result_t* expected, const float allowed_precent_diff) {
+int single_print_and_check_results(result_t* result, result_t* expected, int size, const float allowed_precent_diff) {
+	int err_cnt = 0;
+	for (int i = 0; i < size; i++) {
+	        float diff = 0.0;
+	        if (expected[i] == 0.0) { // diving by 0 is bad
+	            diff = (float) result[i];
+	        } else {
+	            diff = 100.0 * ((float) result[i] - (float) expected[i]) / (float) expected[i];
+	        }
+	        std::cout << std::setw(fieldWidth) << result[i];
+	        std::cout << std::setw(fieldWidth) << expected[i];
+	        std::cout << std::setw(fieldWidth) << diff << "%";
+	        if (abs(diff) > allowed_precent_diff) {
+	            err_cnt++;
+	            std::cout << " << ERROR";
+	        }
+	        std::cout << std::endl;
+	    }
+	return err_cnt;
+}
+
+int print_and_check_results(
+		int simIdx, float EbNo_dB, float noise_std,
+		result_t* enc_data_out_rec, result_t* enc_expected, const float enc_allowed_precent_diff,
+		result_t* dec_data_in_rec,  result_t* noise,        const float noise_allowed_precent_diff,
+		result_t* dec_data_out_rec, result_t* dec_expected, const float dec_allowed_precent_diff) {
     int err_cnt = 0;
-    const char separator = ' ';
-    const int fieldWidth = 15;
-    int size = (strcmp(enc_dec_str, "ENCODER") == 0) ? n_channel :
-               (strcmp(enc_dec_str, "NOISE")   == 0) ? n_channel :
-               (strcmp(enc_dec_str, "DECODER") == 0) ? M_in : -1;
-    assert(size > 0);
+
     std::cout << "**************************************************************************" << std::endl;
-    std::cout << "* " << enc_dec_str << std::endl;
-    std::cout << "* allowed diff : " << allowed_precent_diff << " %" << std::endl;
+    std::cout << "* Simulation #"        << simIdx << std::endl;
+    std::cout << "* Eb/No            : " << EbNo_dB << "[dB]" << std::endl;
+    std::cout << "* noise std        : " << noise_std << std::endl;
+    std::cout << "* allowed enc diff : " << enc_allowed_precent_diff << " %" << std::endl;
+    std::cout << "* allowed dec diff : " << dec_allowed_precent_diff << " %" << std::endl;
     std::cout << "**************************************************************************" << std::endl;
     std::cout << std::setw(fieldWidth) << "result";
     std::cout << std::setw(fieldWidth) << "expected";
@@ -73,23 +100,19 @@ int print_and_check_results(const char* enc_dec_str, result_t* result, result_t*
     std::cout << std::endl;
     std::cout << "--------------------------------------------------------------------------" << std::endl;
 
-    for (int i = 0; i < size; i++) {
-        float diff = 0.0;
-        if (expected[i] == 0.0) { // diving by 0 is bad
-            diff = (float) result[i];
-        } else {
-            diff = 100.0 * ((float) result[i] - (float) expected[i]) / (float) expected[i];
-        }
-        std::cout << std::setw(fieldWidth) << result[i];
-        std::cout << std::setw(fieldWidth) << expected[i];
-        std::cout << std::setw(fieldWidth) << diff << " %";
-        if (abs(diff) > allowed_precent_diff) {
-            err_cnt++;
-            std::cout << " << ERROR";
-        }
-        std::cout << std::endl;
-
-
+    for (int sigIdx = 0; sigIdx < M_in; sigIdx++) {
+    	std::cout << "Signal:" << std::endl;
+		err_cnt += single_print_and_check_results(&dec_expected[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, 0.0);
+		std::cout << "--------------------------------------------------------------------------" << std::endl;
+		std::cout << "TX (encoder):" << std::endl;
+		err_cnt += single_print_and_check_results(&enc_data_out_rec[sigIdx*n_channel], &enc_expected[sigIdx*n_channel], n_channel, enc_allowed_precent_diff);
+		std::cout << "--------------------------------------------------------------------------" << std::endl;
+		std::cout << "AWGN:" << std::endl;
+		err_cnt += single_print_and_check_results(&dec_data_in_rec[sigIdx*n_channel], &noise[sigIdx*n_channel], n_channel, noise_allowed_precent_diff);
+		std::cout << "--------------------------------------------------------------------------" << std::endl;
+		std::cout << "RX (decoder):" << std::endl;
+		err_cnt += single_print_and_check_results(&dec_data_out_rec[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, dec_allowed_precent_diff);
+		std::cout << "==========================================================================" << std::endl;
     }
     std::cout << "--------------------------------------------------------------------------" << std::endl;
     std::cout << "total of " << err_cnt << " errors" << std::endl;
@@ -119,11 +142,7 @@ int main(int argc, char **argv) {
     // ========================================================================
     // Noise setup
     // ========================================================================
-    float EbNo_dB = 7; // [dB]
-	float EbNo = pow(10.0, EbNo_dB/10.0);
 	float R = log2(M_in) / n_channel;
-	float noise_std = sqrt(1/(2*R*EbNo));
-
     ap_uint<8> lfsr_seed = SEED;
 	static hls::awgn<8> my_awgn(lfsr_seed);
 	//ap_int<8> noise[100];
@@ -150,6 +169,13 @@ int main(int argc, char **argv) {
     }
 
     // ========================================================================
+    // Simulation setup
+    // ========================================================================
+    const float enc_allowed_precent_diff = 0.001;
+	const float noise_allowed_precent_diff = 50;
+	const float dec_allowed_precent_diff = 0.0;
+
+    // ========================================================================
 	// Run simulation
 	// ========================================================================
     int total_err_cnt = 0;
@@ -160,8 +186,17 @@ int main(int argc, char **argv) {
     	}
 
     	// Generate random noise
+        float EbNo_dB = 7; // [dB]
+    	float EbNo = pow(10.0, EbNo_dB/10.0);
+    	float noise_std = sqrt(1/(2*R*EbNo));
     	input_t noise = noise_std * randn(0.0, 1.0);
 
+    	// Record arrays
+    	result_t enc_data_out_rec[n_channel*M_in];
+    	result_t dec_data_in_rec[n_channel*M_in];
+    	result_t dec_data_out_rec[M_in*M_in];
+
+    	// Run for each possible signal
     	for (int sigIdx = 0; sigIdx < M_in; sigIdx++) {
     		// TX
     		if (sigIdx > 0) enc_data_in[sigIdx-1] = 0;
@@ -175,27 +210,25 @@ int main(int argc, char **argv) {
 			// RX
 			decoder(dec_data_in, dec_data_out, dec_size_in, dec_size_out);
 
-			const float enc_allowed_precent_diff = 0.001;
-			int enc_err_cnt = print_and_check_results("ENCODER", enc_data_out, &enc_expected[n_channel * sigIdx], enc_allowed_precent_diff);
-			const float noise_allowed_precent_diff = 50;
-			int noise_err_cnt = print_and_check_results("NOISE", dec_data_in, enc_data_out, noise_allowed_precent_diff);
-			const float dec_allowed_precent_diff = 0.0;
-			int dec_err_cnt = print_and_check_results("DECODER", dec_data_out, &dec_expected[M_in * sigIdx], dec_allowed_precent_diff);
-			total_err_cnt = enc_err_cnt + noise_err_cnt + dec_err_cnt;
+			// Add to record arrays
+			for (int i = 0; i < n_channel; i ++) {
+				enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
+				dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
+			}
+
+			for (int i = 0; i < M_in; i++) {
+				dec_data_out_rec[sigIdx*M_in + i] = dec_data_out[i];
+			}
     	}
+    	// Print and check results
+		total_err_cnt = print_and_check_results(
+			simIdx, EbNo_dB, noise_std,
+			enc_data_out_rec, enc_expected,     enc_allowed_precent_diff,
+			dec_data_in_rec,  enc_data_out_rec, noise_allowed_precent_diff,
+			dec_data_out_rec, dec_expected,     dec_allowed_precent_diff);
     }
     //encoder_decoder(enc_data_in, enc_data_out, enc_size_in, enc_size_out,
     //                dec_data_in, dec_data_out, dec_size_in, dec_size_out);
-
-    // ========================================================================
-    // Print and check results
-    // ========================================================================
-//	const float enc_allowed_precent_diff = 0.001;
-//	int enc_err_cnt = print_and_check_results("ENCODER", enc_data_out, enc_expected, enc_allowed_precent_diff);
-//	const float noise_allowed_precent_diff = 50;
-//	int noise_err_cnt = print_and_check_results("NOISE", dec_data_in, enc_data_out, noise_allowed_precent_diff);
-//    const float dec_allowed_precent_diff = 0.0;
-//    int dec_err_cnt = print_and_check_results("DECODER", dec_data_out, dec_expected, dec_allowed_precent_diff);
 
     return total_err_cnt;
 }
