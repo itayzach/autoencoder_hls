@@ -30,6 +30,7 @@
 
 #define SEED 5
 #define NUM_SIMULATIONS 1
+#define NUM_SIGNALS 10
 
 const char separator = ' ';
 const int fieldWidth = 15;
@@ -80,7 +81,32 @@ int single_print_and_check_results(result_t* result, result_t* expected, int siz
 	return err_cnt;
 }
 
-int print_and_check_results(
+int txrx_data_print_and_check_results(
+		int simIdx, float EbNo_dB, float noise_std,
+		unsigned int* tx_data_rec, unsigned int* rx_data_rec) {
+    int err_cnt = 0;
+	std::cout << "**************************************************************************" << std::endl;
+	std::cout << "* Simulation #"        << simIdx << std::endl;
+	std::cout << "* Eb/No            : " << EbNo_dB << "[dB]" << std::endl;
+    std::cout << "* noise std        : " << noise_std << std::endl;
+	std::cout << "**************************************************************************" << std::endl;
+	std::cout << std::setw(fieldWidth) << "result";
+	std::cout << std::setw(fieldWidth) << "expected";
+	std::cout << std::endl;
+	std::cout << "--------------------------------------------------------------------------" << std::endl;
+    for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
+    	std::cout << std::setw(fieldWidth) << tx_data_rec[sigIdx];
+		std::cout << std::setw(fieldWidth) << rx_data_rec[sigIdx];
+		if (tx_data_rec[sigIdx] != rx_data_rec[sigIdx]) {
+			err_cnt++;
+			std::cout << " << ERROR";
+		}
+		std::cout << std::endl;
+    }
+    return err_cnt;
+}
+
+int elaborated_print_and_check_results(
 		int simIdx, float EbNo_dB, float noise_std,
 		result_t* enc_data_out_rec, result_t* enc_expected, const float enc_allowed_precent_diff,
 		result_t* dec_data_in_rec,  result_t* noise,        const float noise_allowed_precent_diff,
@@ -100,7 +126,7 @@ int print_and_check_results(
     std::cout << std::endl;
     std::cout << "--------------------------------------------------------------------------" << std::endl;
 
-    for (int sigIdx = 0; sigIdx < M_in; sigIdx++) {
+    for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
     	std::cout << "Signal:" << std::endl;
 		err_cnt += single_print_and_check_results(&dec_expected[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, 0.0);
 		std::cout << "--------------------------------------------------------------------------" << std::endl;
@@ -147,7 +173,6 @@ int main(int argc, char **argv) {
 	static hls::awgn<8> my_awgn(lfsr_seed);
 	//ap_int<8> noise[100];
 	ap_ufixed<32,8> snr = 7.0;
-	std::cout << "snr = " << snr << std::endl;
 	for (int i = 0; i < 100; i++) {
 		//my_awgn(snr, noise[i]);
 		//std::cout << "noise[" << i << "] = " << noise[i] << std::endl;
@@ -179,31 +204,40 @@ int main(int argc, char **argv) {
 	// Run simulation
 	// ========================================================================
     int total_err_cnt = 0;
-    for (int simIdx = 0; simIdx < NUM_SIMULATIONS; simIdx++) {
-    	// Reset enc data in
-    	for (int i = 0; i < M_in; i++) {
-    		enc_data_in[i] = 0;
-    	}
+    float EbNo_dB_array[NUM_SIMULATIONS];
 
+    for (int simIdx = 0; simIdx < NUM_SIMULATIONS; simIdx++) {
     	// Generate random noise
-        float EbNo_dB = 7; // [dB]
+        float EbNo_dB = 3; //-4.0 + 0.5*simIdx; // [dB]
+        EbNo_dB_array[simIdx] = EbNo_dB;
     	float EbNo = pow(10.0, EbNo_dB/10.0);
     	float noise_std = sqrt(1/(2*R*EbNo));
-    	input_t noise = noise_std * randn(0.0, 1.0);
 
     	// Record arrays
-    	result_t enc_data_out_rec[n_channel*M_in];
-    	result_t dec_data_in_rec[n_channel*M_in];
-    	result_t dec_data_out_rec[M_in*M_in];
+    	unsigned int tx_data_rec[NUM_SIGNALS];
+    	result_t enc_data_out_rec[n_channel*NUM_SIGNALS];
+    	result_t enc_expected_rec[n_channel*NUM_SIGNALS];
+    	result_t dec_data_in_rec[n_channel*NUM_SIGNALS];
+    	result_t dec_data_out_rec[M_in*NUM_SIGNALS];
+    	result_t dec_expected_rec[M_in*NUM_SIGNALS];
+    	unsigned int rx_data_rec[NUM_SIGNALS] = {0};
+    	unsigned int tx_data;
 
     	// Run for each possible signal
-    	for (int sigIdx = 0; sigIdx < M_in; sigIdx++) {
+    	for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
+    		// Reset enc data in
+			for (int i = 0; i < M_in; i++) {
+				enc_data_in[i] = 0;
+			}
+    		// Generate random data
+    		tx_data = rand () % M_in;
+    		enc_data_in[tx_data] = 1;
+
     		// TX
-    		if (sigIdx > 0) enc_data_in[sigIdx-1] = 0;
-    		enc_data_in[sigIdx] = 1;
 			encoder(enc_data_in, enc_data_out, enc_size_in, enc_size_out);
 
 			// AWGN
+			input_t noise = noise_std * randn(0.0, 1.0);
 			for (int i = 0; i < n_channel; i++) {
 				dec_data_in[i] = enc_data_out[i] + noise;
 			}
@@ -211,21 +245,26 @@ int main(int argc, char **argv) {
 			decoder(dec_data_in, dec_data_out, dec_size_in, dec_size_out);
 
 			// Add to record arrays
+			tx_data_rec[sigIdx] = tx_data;
+
 			for (int i = 0; i < n_channel; i ++) {
 				enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
 				dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
+				enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
 			}
-
 			for (int i = 0; i < M_in; i++) {
 				dec_data_out_rec[sigIdx*M_in + i] = dec_data_out[i];
+				dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
+				rx_data_rec[sigIdx] += (unsigned int)dec_data_out[i] * i;
 			}
     	}
     	// Print and check results
-		total_err_cnt = print_and_check_results(
-			simIdx, EbNo_dB, noise_std,
-			enc_data_out_rec, enc_expected,     enc_allowed_precent_diff,
-			dec_data_in_rec,  enc_data_out_rec, noise_allowed_precent_diff,
-			dec_data_out_rec, dec_expected,     dec_allowed_precent_diff);
+    	total_err_cnt = txrx_data_print_and_check_results(simIdx, EbNo_dB, noise_std, tx_data_rec, rx_data_rec);
+//		total_err_cnt = elaborated_print_and_check_results(
+//			simIdx, EbNo_dB, noise_std,
+//			enc_data_out_rec, enc_expected_rec, enc_allowed_precent_diff,
+//			dec_data_in_rec,  enc_data_out_rec, noise_allowed_precent_diff,
+//			dec_data_out_rec, dec_expected_rec, dec_allowed_precent_diff);
     }
     //encoder_decoder(enc_data_in, enc_data_out, enc_size_in, enc_size_out,
     //                dec_data_in, dec_data_out, dec_size_in, dec_size_out);
