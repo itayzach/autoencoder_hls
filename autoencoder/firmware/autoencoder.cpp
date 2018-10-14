@@ -20,6 +20,7 @@
 // standard and hls libraries
 #include <iostream>
 #include <hls_dsp.h>
+#include "ap_axi_sdata.h"
 
 // local libraries
 #include "parameters.h"
@@ -40,20 +41,18 @@
 // ========================================================================
 void encoder(
     input_t data[M_in],
-    result_t res[n_channel],
-    unsigned short &const_size_in,
-    unsigned short &const_size_out)
+    result_t res[n_channel])
 {
 
     //hls-fpga-machine-learning insert IO
     #pragma HLS ARRAY_RESHAPE variable=data complete dim=0
     #pragma HLS ARRAY_RESHAPE variable=res complete dim=0
-    #pragma HLS INTERFACE ap_vld port=data,res
+    //#pragma HLS INTERFACE axis port=data,res
 
-    #pragma HLS PIPELINE
+    #pragma HLS PIPELINE II=100
 
-    const_size_in   = M_in;
-    const_size_out  = n_channel;
+	unsigned short const const_size_in   = M_in;
+	unsigned short const const_size_out  = n_channel;
 
     // ****************************************
     // NETWORK INSTANTIATION
@@ -83,20 +82,18 @@ void encoder(
 // ========================================================================
 void decoder(
     input_t data[n_channel],
-    result_t res[M_in],
-    unsigned short &const_size_in,
-    unsigned short &const_size_out)
+    result_t res[M_in])
 {
 
     //hls-fpga-machine-learning insert IO
     #pragma HLS ARRAY_RESHAPE variable=data complete dim=0
     #pragma HLS ARRAY_RESHAPE variable=res complete dim=0
-    #pragma HLS INTERFACE ap_vld port=data,res
+    //#pragma HLS INTERFACE axis port=data,res
 
-    #pragma HLS PIPELINE
+    #pragma HLS PIPELINE II=100
 
-    const_size_in   = n_channel;
-    const_size_out  = M_in;
+    unsigned short const const_size_in   = n_channel;
+    unsigned short const const_size_out  = M_in;
 
     // ****************************************
     // NETWORK INSTANTIATION
@@ -131,10 +128,15 @@ void decoder(
     }
 
     reset_res: for(int ii = 0; ii < const_size_out; ii++) {
-        res[ii] = 0.0;
+    	if (ii == max_idx) {
+    		res[max_idx] = 1.0;
+    	} else {
+    		res[ii] = 0.0;
+    	}
+
     }
 
-    res[max_idx] = 1.0;
+
 
 }
 
@@ -144,14 +146,30 @@ void decoder(
 // ========================================================================
 void encoder_decoder(
   input_t enc_data_in[M_in],
-  result_t enc_data_out[n_channel],
-  unsigned short &enc_size_in,
-  unsigned short &enc_size_out,
-  input_t dec_data_in[n_channel],
-  result_t dec_data_out[M_in],
-  unsigned short &dec_size_in,
-  unsigned short &dec_size_out)
+  //result_t enc_data_out[n_channel],
+  //input_t dec_data_in[n_channel],
+  result_t dec_data_out[M_in])
 {
-    encoder(enc_data_in, enc_data_out, enc_size_in, enc_size_out);
-    decoder(dec_data_in, dec_data_out, dec_size_in, dec_size_out);
+#pragma HLS INTERFACE axis register both depth=4 latency=2 port=enc_data_in
+#pragma HLS INTERFACE axis register both depth=4 latency=2 port=dec_data_out
+#pragma HLS INTERFACE ap_ctrl_none port=return
+//#pragma HLS ARRAY_RESHAPE variable=enc_data_in complete dim=0
+//#pragma HLS ARRAY_RESHAPE variable=enc_data_out complete dim=0
+//#pragma HLS ARRAY_RESHAPE variable=dec_data_in complete dim=0
+//#pragma HLS ARRAY_RESHAPE variable=dec_data_out complete dim=0
+
+#pragma HLS PIPELINE II=100
+
+#pragma HLS RESOURCE variable=enc_data_out core=FIFO latency=2
+#pragma HLS RESOURCE variable=dec_data_in core=FIFO latency=2
+	result_t enc_data_out[n_channel];
+	input_t dec_data_in[n_channel];
+
+    encoder(enc_data_in, enc_data_out);
+
+    for (int i = 0; i < n_channel; i++) {
+    	dec_data_in[i] = enc_data_out[i];
+    }
+
+    decoder(dec_data_in, dec_data_out);
 }

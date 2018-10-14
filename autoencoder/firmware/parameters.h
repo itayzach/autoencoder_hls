@@ -60,6 +60,7 @@ struct enc_config2 : nnet::layer_config {
 struct enc_norm_config3 : nnet::norm_layer_config {
     static const unsigned n = n_channel;
     static const unsigned io_type = nnet::io_parallel;
+    static const unsigned reuse_factor = 10;
     typedef norm_default_t norm_t;
 };
 

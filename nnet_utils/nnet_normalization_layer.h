@@ -50,6 +50,7 @@ void normalization_layer(
 	typename CONFIG_T::norm_t sqrt_res;
 	const typename CONFIG_T::norm_t sqrt2 = 1.41421;
 	typename CONFIG_T::norm_t div_res[CONFIG_T::n];
+	typename CONFIG_T::norm_t div_scaled[CONFIG_T::n];
 
     if (CONFIG_T::io_type == io_parallel){
         // For parallel inputs:
@@ -71,6 +72,7 @@ void normalization_layer(
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL
         }
+		#pragma HLS RESOURCE variable=data_square latency=2
         data_square[ii] = data[ii] * data[ii];
     }
 
@@ -91,7 +93,10 @@ void normalization_layer(
 		if (CONFIG_T::io_type == io_serial){
 			#pragma HLS UNROLL
 		}
-		div_res[ii] = sqrt2 * (data[ii] / sqrt_res);
+		#pragma HLS RESOURCE variable=div_res latency=2
+		#pragma HLS RESOURCE variable=div_scaled latency=2
+		div_res[ii] = (data[ii] / sqrt_res);
+		div_scaled[ii] = sqrt2 * div_res[ii];
 	}
 
     // Cast to "res_t" type
