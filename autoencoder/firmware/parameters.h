@@ -24,6 +24,16 @@ typedef ap_fixed<32,8> norm_default_t;
 typedef ap_fixed<32,8> input_t;
 typedef ap_fixed<32,8> result_t;
 
+typedef struct {
+	input_t data;
+	bool last;
+} axis_input_t;
+
+typedef struct {
+	result_t data;
+	bool last;
+} axis_result_t;
+
 // ========================================================================
 // Encoder parameters
 // ========================================================================
