@@ -66,7 +66,7 @@ architecture behav of compute_layer_0_0_0_2 is
     signal p_Val2_1_fu_73_p1 : STD_LOGIC_VECTOR (31 downto 0);
     signal p_Val2_0_2_fu_74_p1 : STD_LOGIC_VECTOR (31 downto 0);
     signal p_Val2_s_fu_75_p1 : STD_LOGIC_VECTOR (31 downto 0);
-    signal tmp_223_fu_389_p1 : STD_LOGIC_VECTOR (31 downto 0);
+    signal tmp_215_fu_389_p1 : STD_LOGIC_VECTOR (31 downto 0);
     signal p_Val2_s_fu_75_p2 : STD_LOGIC_VECTOR (55 downto 0);
     signal p_Val2_0_1_fu_72_p2 : STD_LOGIC_VECTOR (55 downto 0);
     signal p_Val2_0_2_fu_74_p2 : STD_LOGIC_VECTOR (55 downto 0);
@@ -107,7 +107,7 @@ begin
     end process;
         OP1_V_1_cast_fu_451_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(tmp_93_fu_441_p4),56));
 
-        OP1_V_cast_fu_393_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(tmp_223_fu_389_p1),56));
+        OP1_V_cast_fu_393_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(tmp_215_fu_389_p1),56));
 
         ap_block_pp0_stage0 <= not((ap_const_boolean_1 = ap_const_boolean_1));
         ap_block_pp0_stage0_11001 <= not((ap_const_boolean_1 = ap_const_boolean_1));
@@ -141,6 +141,6 @@ begin
     tmp2_fu_509_p2 <= std_logic_vector(unsigned(ap_const_lv32_1617724) + unsigned(tmp_168_1_1_reg_588));
     tmp3_fu_519_p2 <= std_logic_vector(signed(ap_const_lv32_FFBEBFA9) + signed(tmp_168_1_2_reg_593));
     tmp4_fu_529_p2 <= std_logic_vector(unsigned(ap_const_lv32_165AA24) + unsigned(tmp_168_1_3_reg_598));
-    tmp_223_fu_389_p1 <= data_V_read(32 - 1 downto 0);
+    tmp_215_fu_389_p1 <= data_V_read(32 - 1 downto 0);
     tmp_93_fu_441_p4 <= data_V_read(63 downto 32);
 end behav;

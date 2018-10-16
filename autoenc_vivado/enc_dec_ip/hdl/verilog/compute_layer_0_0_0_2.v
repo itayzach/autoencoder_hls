@@ -50,7 +50,7 @@ wire  signed [31:0] p_Val2_0_1_fu_72_p1;
 wire  signed [31:0] p_Val2_1_fu_73_p1;
 wire  signed [31:0] p_Val2_0_2_fu_74_p1;
 wire  signed [31:0] p_Val2_s_fu_75_p1;
-wire   [31:0] tmp_223_fu_389_p1;
+wire   [31:0] tmp_215_fu_389_p1;
 wire   [55:0] p_Val2_s_fu_75_p2;
 wire   [55:0] p_Val2_0_1_fu_72_p2;
 wire   [55:0] p_Val2_0_2_fu_74_p2;
@@ -84,7 +84,7 @@ end
 
 assign OP1_V_1_cast_fu_451_p1 = $signed(tmp_93_fu_441_p4);
 
-assign OP1_V_cast_fu_393_p1 = $signed(tmp_223_fu_389_p1);
+assign OP1_V_cast_fu_393_p1 = $signed(tmp_215_fu_389_p1);
 
 assign ap_block_pp0_stage0 = ~(1'b1 == 1'b1);
 
@@ -150,7 +150,7 @@ assign tmp3_fu_519_p2 = ($signed(32'd4290690985) + $signed(tmp_168_1_2_reg_593))
 
 assign tmp4_fu_529_p2 = (32'd23439908 + tmp_168_1_3_reg_598);
 
-assign tmp_223_fu_389_p1 = data_V_read[31:0];
+assign tmp_215_fu_389_p1 = data_V_read[31:0];
 
 assign tmp_93_fu_441_p4 = {{data_V_read[63:32]}};
 

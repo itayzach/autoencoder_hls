@@ -175,8 +175,7 @@ int main(int argc, char **argv) {
     //input_t  enc_data_in[M_in]  = {0.0, 0.0, 0.0, 1.0};
     //result_t enc_expected[n_channel] = {1.0557002,  0.94100845};
 
-	input_t  enc_data_in[M_in];
-//	ap_axis<32,2,5,6>  enc_data_in[M_in];
+	hls::stream<axis_input_t>  enc_data_in;
     result_t enc_data_out[n_channel];
     for (int i = 0; i < M_in; i++) {
         enc_data_out[i] = 0;
@@ -206,11 +205,10 @@ int main(int argc, char **argv) {
     //result_t dec_expected[M_in] = {0.0, 0.0, 0.0, 1.0};
 
 	input_t dec_data_in[n_channel];
-//	ap_axis<32,2,5,6> dec_data_out[M_in];
-	result_t dec_data_out[M_in];
-    for (int i = 0; i < M_in; i++) {
-        dec_data_out[i] = 0;
-    }
+	hls::stream<axis_result_t> dec_data_out;
+//    for (int i = 0; i < M_in; i++) {
+//        dec_data_out[i].data = 0;
+//    }
 
     // ========================================================================
     // Simulation setup
@@ -249,22 +247,28 @@ int main(int argc, char **argv) {
 
 		// Run for each possible signal
 		for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
-			// Reset enc data in
-			for (int i = 0; i < M_in; i++) {
-//				enc_data_in[i].data = 0;
-//				enc_data_in[i].keep = 1;
-//				enc_data_in[i].strb = 1;
-//				enc_data_in[i].user = 1;
-//				enc_data_in[i].id = 0;
-//				enc_data_in[i].dest = 1;
-//				enc_data_in[i].last = 0;
-				enc_data_in[i] = 0;
-			}
 			// Generate random data
 			tx_data = sigIdx % M_in;
 //			tx_data = rand () % M_in;
-//			enc_data_in[tx_data].data = 1;
-			enc_data_in[tx_data] = 1;
+			// Reset enc data in
+			for (int i = 0; i < M_in; i++) {
+				axis_input_t enc_data_in_tmp;
+
+				if (i == tx_data) {
+					enc_data_in_tmp.data = 1;
+				} else {
+					enc_data_in_tmp.data = 0;
+				}
+				enc_data_in_tmp.keep = 15;
+				enc_data_in_tmp.strb = 1;
+				enc_data_in_tmp.user = 1;
+				enc_data_in_tmp.last = (i == M_in - 1);
+				enc_data_in_tmp.id   = 0;
+				enc_data_in_tmp.dest = 1;
+
+				enc_data_in << enc_data_in_tmp;
+			}
+
 			if (LOOPBACK_MODE == 0) {
 				// TX
 				//encoder(enc_data_in, enc_data_out);
@@ -280,19 +284,16 @@ int main(int argc, char **argv) {
 				// Add to record arrays
 				tx_data_rec[sigIdx] = tx_data;
 
-				for (int i = 0; i < n_channel; i ++) {
-					enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
-					dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
-					enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
-				}
-				for (int i = 0; i < M_in; i++) {
-//					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out[i].data;
+//				for (int i = 0; i < n_channel; i ++) {
+//					enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
+//					dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
+//					enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
+//				}
+//				for (int i = 0; i < M_in; i++) {
+//					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out.read();
 //					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
-//					rx_data_rec[sigIdx] += (unsigned int)dec_data_out[i].data * i;
-					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out[i];
-					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
-					rx_data_rec[sigIdx] += (unsigned int)dec_data_out[i] * i;
-				}
+//					rx_data_rec[sigIdx] += (unsigned int)dec_data_out_rec[sigIdx*M_in + i] * i;
+//				}
 
 			} else {
 				encoder_decoder(enc_data_in,
@@ -307,11 +308,11 @@ int main(int argc, char **argv) {
 					enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
 				}
 				for (int i = 0; i < M_in; i++) {
-//					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out[i].data;
-					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out[i];
+					axis_result_t dec_data_out_tmp;
+					dec_data_out_tmp = dec_data_out.read();
+					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out_tmp.data;
 					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
-//					rx_data_rec[sigIdx] += (unsigned int)dec_data_out[i].data * i;
-					rx_data_rec[sigIdx] += (unsigned int)dec_data_out[i] * i;
+					rx_data_rec[sigIdx] += (unsigned int)dec_data_out_rec[sigIdx*M_in + i] * i;
 				}
 			}
 

@@ -144,47 +144,14 @@ void decoder(
 // ========================================================================
 // encoder_decoder
 // ========================================================================
-void encoder_decoder(
-  input_t enc_data_in[M_in],
-  //result_t enc_data_out[n_channel],
-  //input_t dec_data_in[n_channel],
-  result_t dec_data_out[M_in])
-{
-#pragma HLS INTERFACE axis register both depth=4 latency=2 port=enc_data_in
-#pragma HLS INTERFACE axis register both depth=4 latency=2 port=dec_data_out
-#pragma HLS INTERFACE ap_ctrl_none port=return
-//#pragma HLS ARRAY_RESHAPE variable=enc_data_in complete dim=0
-//#pragma HLS ARRAY_RESHAPE variable=enc_data_out complete dim=0
-//#pragma HLS ARRAY_RESHAPE variable=dec_data_in complete dim=0
-//#pragma HLS ARRAY_RESHAPE variable=dec_data_out complete dim=0
-
-#pragma HLS PIPELINE II=100
-
-#pragma HLS RESOURCE variable=enc_data_out core=FIFO latency=2
-#pragma HLS RESOURCE variable=dec_data_in core=FIFO latency=2
-	result_t enc_data_out[n_channel];
-	input_t dec_data_in[n_channel];
-
-    encoder(enc_data_in, enc_data_out);
-
-    for (int i = 0; i < n_channel; i++) {
-    	dec_data_in[i] = enc_data_out[i];
-    }
-
-    decoder(dec_data_in, dec_data_out);
-}
-
 //void encoder_decoder(
-//  ap_axis<32,2,5,6> enc_data_in[M_in],
+//  input_t enc_data_in[M_in],
 //  //result_t enc_data_out[n_channel],
 //  //input_t dec_data_in[n_channel],
-//  ap_axis<32,2,5,6> dec_data_out[M_in])
+//  result_t dec_data_out[M_in])
 //{
-//#pragma HLS INTERFACE axis port=enc_data_in
-//#pragma HLS INTERFACE axis port=dec_data_out
-////#pragma HLS INTERFACE axis register both depth=4 latency=2 port=enc_data_in
-////#pragma HLS INTERFACE axis register both depth=4 latency=2 port=dec_data_out
-//
+//#pragma HLS INTERFACE axis register both depth=4 latency=2 port=enc_data_in
+//#pragma HLS INTERFACE axis register both depth=4 latency=2 port=dec_data_out
 //#pragma HLS INTERFACE ap_ctrl_none port=return
 ////#pragma HLS ARRAY_RESHAPE variable=enc_data_in complete dim=0
 ////#pragma HLS ARRAY_RESHAPE variable=enc_data_out complete dim=0
@@ -195,32 +162,69 @@ void encoder_decoder(
 //
 //#pragma HLS RESOURCE variable=enc_data_out core=FIFO latency=2
 //#pragma HLS RESOURCE variable=dec_data_in core=FIFO latency=2
-//	input_t enc_data_in_reg [M_in];
-//	result_t dec_data_out_reg[M_in];
-//
-//	for(int i = 0; i < M_in; i++){
-//		enc_data_in_reg[i] = enc_data_in[i].data;
-//	}
-//
 //	result_t enc_data_out[n_channel];
 //	input_t dec_data_in[n_channel];
 //
-//    encoder(enc_data_in_reg, enc_data_out);
+//    encoder(enc_data_in, enc_data_out);
 //
 //    for (int i = 0; i < n_channel; i++) {
 //    	dec_data_in[i] = enc_data_out[i];
 //    }
 //
-//    decoder(dec_data_in, dec_data_out_reg);
-//
-//    for(int i = 0; i < M_in; i++) {
-//    	dec_data_out[i].data = dec_data_out_reg[i];
-//		dec_data_out[i].keep = enc_data_in[i].keep;
-//		dec_data_out[i].strb = enc_data_in[i].strb;
-//		dec_data_out[i].user = enc_data_in[i].user;
-//		dec_data_out[i].last = enc_data_in[i].last;
-//		dec_data_out[i].id   = enc_data_in[i].id;
-//		dec_data_out[i].dest = enc_data_in[i].dest;
-//	  }
-//
+//    decoder(dec_data_in, dec_data_out);
 //}
+
+void encoder_decoder(
+  hls::stream<axis_input_t> &enc_data_in,
+  //result_t enc_data_out[n_channel],
+  //input_t dec_data_in[n_channel],
+  hls::stream<axis_result_t> &dec_data_out)
+{
+//#pragma HLS INTERFACE axis port=enc_data_in
+//#pragma HLS INTERFACE axis port=dec_data_out
+#pragma HLS INTERFACE axis register both latency=2 port=enc_data_in
+#pragma HLS INTERFACE axis register both latency=2 port=dec_data_out
+
+#pragma HLS INTERFACE ap_ctrl_none port=return
+//#pragma HLS ARRAY_RESHAPE variable=enc_data_in complete dim=0
+//#pragma HLS ARRAY_RESHAPE variable=enc_data_out complete dim=0
+//#pragma HLS ARRAY_RESHAPE variable=dec_data_in complete dim=0
+//#pragma HLS ARRAY_RESHAPE variable=dec_data_out complete dim=0
+
+#pragma HLS PIPELINE II=100
+
+#pragma HLS RESOURCE variable=enc_data_out core=FIFO latency=2
+#pragma HLS RESOURCE variable=dec_data_in core=FIFO latency=2
+	axis_input_t enc_data_in_tmp[M_in];
+	axis_result_t dec_data_out_tmp;
+	input_t enc_data_in_reg[M_in];
+	result_t dec_data_out_reg[M_in];
+
+	for(int i = 0; i < M_in; i++){
+		enc_data_in_tmp[i] = enc_data_in.read();
+		enc_data_in_reg[i] = enc_data_in_tmp[i].data;
+	}
+
+	result_t enc_data_out[n_channel];
+	input_t dec_data_in[n_channel];
+
+    encoder(enc_data_in_reg, enc_data_out);
+
+    for (int i = 0; i < n_channel; i++) {
+    	dec_data_in[i] = enc_data_out[i];
+    }
+
+    decoder(dec_data_in, dec_data_out_reg);
+
+    for(int i = 0; i < M_in; i++) {
+    	dec_data_out_tmp.data = dec_data_out_reg[i];
+    	dec_data_out_tmp.keep = enc_data_in_tmp[i].keep;
+		dec_data_out_tmp.strb = enc_data_in_tmp[i].strb;
+		dec_data_out_tmp.user = enc_data_in_tmp[i].user;
+		dec_data_out_tmp.last = enc_data_in_tmp[i].last;
+		dec_data_out_tmp.id   = enc_data_in_tmp[i].id;
+		dec_data_out_tmp.dest = enc_data_in_tmp[i].dest;
+    	dec_data_out.write(dec_data_out_tmp);
+    }
+
+}
