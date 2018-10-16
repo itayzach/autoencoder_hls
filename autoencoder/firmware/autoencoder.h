@@ -37,9 +37,14 @@ void decoder(
     result_t res[M_in]);
 
 void encoder_decoder(
-    input_t enc_data_in[M_in],
+	input_t enc_data_in[M_in],
     //result_t enc_data_out[n_channel],
     //input_t dec_data_in[n_channel],
-    result_t dec_data_out[M_in]);
+	 result_t dec_data_out[M_in]);
 
+//void encoder_decoder(
+//	 ap_axis<32,2,5,6> enc_data_in[M_in],
+//    //result_t enc_data_out[n_channel],
+//    //input_t dec_data_in[n_channel],
+//	 ap_axis<32,2,5,6> dec_data_out[M_in]);
 #endif

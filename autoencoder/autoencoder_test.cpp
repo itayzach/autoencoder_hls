@@ -25,6 +25,8 @@
 #include <random>
 #include <cmath>
 
+#include "ap_axi_sdata.h"
+
 #include "firmware/parameters.h"
 #include "firmware/autoencoder.h"
 #include "nnet_helpers.h"
@@ -32,7 +34,7 @@
 
 #define SEED 5
 #define NUM_SIMULATIONS 1
-#define NUM_SIGNALS 5
+#define NUM_SIGNALS 4
 #define LOOPBACK_MODE 1
 
 const char separator = ' ';
@@ -173,7 +175,8 @@ int main(int argc, char **argv) {
     //input_t  enc_data_in[M_in]  = {0.0, 0.0, 0.0, 1.0};
     //result_t enc_expected[n_channel] = {1.0557002,  0.94100845};
 
-    input_t  enc_data_in[M_in];
+	input_t  enc_data_in[M_in];
+//	ap_axis<32,2,5,6>  enc_data_in[M_in];
     result_t enc_data_out[n_channel];
     for (int i = 0; i < M_in; i++) {
         enc_data_out[i] = 0;
@@ -203,7 +206,8 @@ int main(int argc, char **argv) {
     //result_t dec_expected[M_in] = {0.0, 0.0, 0.0, 1.0};
 
 	input_t dec_data_in[n_channel];
-    result_t dec_data_out[M_in];
+//	ap_axis<32,2,5,6> dec_data_out[M_in];
+	result_t dec_data_out[M_in];
     for (int i = 0; i < M_in; i++) {
         dec_data_out[i] = 0;
     }
@@ -247,15 +251,23 @@ int main(int argc, char **argv) {
 		for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
 			// Reset enc data in
 			for (int i = 0; i < M_in; i++) {
+//				enc_data_in[i].data = 0;
+//				enc_data_in[i].keep = 1;
+//				enc_data_in[i].strb = 1;
+//				enc_data_in[i].user = 1;
+//				enc_data_in[i].id = 0;
+//				enc_data_in[i].dest = 1;
+//				enc_data_in[i].last = 0;
 				enc_data_in[i] = 0;
 			}
 			// Generate random data
-			tx_data = rand () % M_in;
+			tx_data = sigIdx % M_in;
+//			tx_data = rand () % M_in;
+//			enc_data_in[tx_data].data = 1;
 			enc_data_in[tx_data] = 1;
-
 			if (LOOPBACK_MODE == 0) {
 				// TX
-				encoder(enc_data_in, enc_data_out);
+				//encoder(enc_data_in, enc_data_out);
 
 				// AWGN
 				for (int i = 0; i < n_channel; i++) {
@@ -263,24 +275,46 @@ int main(int argc, char **argv) {
 					dec_data_in[i] = enc_data_out[i] + noise;
 				}
 				// RX
-				decoder(dec_data_in, dec_data_out);
+				//decoder(dec_data_in, dec_data_out);
+
+				// Add to record arrays
+				tx_data_rec[sigIdx] = tx_data;
+
+				for (int i = 0; i < n_channel; i ++) {
+					enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
+					dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
+					enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
+				}
+				for (int i = 0; i < M_in; i++) {
+//					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out[i].data;
+//					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
+//					rx_data_rec[sigIdx] += (unsigned int)dec_data_out[i].data * i;
+					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out[i];
+					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
+					rx_data_rec[sigIdx] += (unsigned int)dec_data_out[i] * i;
+				}
+
 			} else {
 				encoder_decoder(enc_data_in,
 								dec_data_out);
-			}
-			// Add to record arrays
-			tx_data_rec[sigIdx] = tx_data;
 
-			for (int i = 0; i < n_channel; i ++) {
-				enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
-				dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
-				enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
+				// Add to record arrays
+				tx_data_rec[sigIdx] = tx_data;
+
+				for (int i = 0; i < n_channel; i ++) {
+					enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
+					dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
+					enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
+				}
+				for (int i = 0; i < M_in; i++) {
+//					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out[i].data;
+					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out[i];
+					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
+//					rx_data_rec[sigIdx] += (unsigned int)dec_data_out[i].data * i;
+					rx_data_rec[sigIdx] += (unsigned int)dec_data_out[i] * i;
+				}
 			}
-			for (int i = 0; i < M_in; i++) {
-				dec_data_out_rec[sigIdx*M_in + i] = dec_data_out[i];
-				dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
-				rx_data_rec[sigIdx] += (unsigned int)dec_data_out[i] * i;
-			}
+
 		}
 		// Print and check results
 		err_cnt_array[simIdx] = txrx_data_print_and_check_results(simIdx, EbNo_dB, noise_std, tx_data_rec, rx_data_rec);
