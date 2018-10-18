@@ -25,23 +25,15 @@ typedef ap_fixed<32,8> input_t;
 typedef ap_fixed<32,8> result_t;
 
 typedef struct {
-	input_t data;
+	input_t           data;
 	ap_uint<(32+7)/8> keep;
-	ap_uint<(32+7)/8> strb;
-	ap_uint<1>        user;
 	ap_uint<1>        last;
-	ap_uint<1>        id;
-	ap_uint<1>        dest;
 } axis_input_t;
 
 typedef struct {
-	result_t data;
+	result_t          data;
 	ap_uint<(32+7)/8> keep;
-	ap_uint<(32+7)/8> strb;
-	ap_uint<1>        user;
 	ap_uint<1>        last;
-	ap_uint<1>        id;
-	ap_uint<1>        dest;
 } axis_result_t;
 
 // ========================================================================

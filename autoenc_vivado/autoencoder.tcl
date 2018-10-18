@@ -220,12 +220,12 @@ proc create_hier_cell_enc_dec { parentCell nameHier } {
   # Create interface connections
   connect_bd_intf_net -intf_net axi_dma_0_M_AXI_MM2S [get_bd_intf_pins M_AXI_MM2S] [get_bd_intf_pins enc_dec_dma/M_AXI_MM2S]
   connect_bd_intf_net -intf_net axi_dma_0_M_AXI_S2MM [get_bd_intf_pins M_AXI_S2MM] [get_bd_intf_pins enc_dec_dma/M_AXI_S2MM]
-  connect_bd_intf_net -intf_net enc_dec_dma_M_AXIS_MM2S [get_bd_intf_pins enc_dec_dma/M_AXIS_MM2S] [get_bd_intf_pins encoder_decoder_0/enc_data_in]
+  connect_bd_intf_net -intf_net enc_dec_dma_M_AXIS_MM2S [get_bd_intf_pins enc_dec_dma/M_AXIS_MM2S] [get_bd_intf_pins encoder_decoder_0/axis_enc_data_in]
   connect_bd_intf_net -intf_net [get_bd_intf_nets enc_dec_dma_M_AXIS_MM2S] [get_bd_intf_pins M_AXIS_MM2S] [get_bd_intf_pins enc_dec_dma/M_AXIS_MM2S]
   set_property -dict [ list \
 HDL_ATTRIBUTE.DEBUG {true} \
  ] [get_bd_intf_nets enc_dec_dma_M_AXIS_MM2S]
-  connect_bd_intf_net -intf_net encoder_decoder_0_dec_data_out_V [get_bd_intf_pins enc_dec_dma/S_AXIS_S2MM] [get_bd_intf_pins encoder_decoder_0/dec_data_out]
+  connect_bd_intf_net -intf_net encoder_decoder_0_dec_data_out_V [get_bd_intf_pins enc_dec_dma/S_AXIS_S2MM] [get_bd_intf_pins encoder_decoder_0/axis_dec_data_out]
   connect_bd_intf_net -intf_net [get_bd_intf_nets encoder_decoder_0_dec_data_out_V] [get_bd_intf_pins S_AXIS_S2MM] [get_bd_intf_pins enc_dec_dma/S_AXIS_S2MM]
   set_property -dict [ list \
 HDL_ATTRIBUTE.DEBUG {true} \

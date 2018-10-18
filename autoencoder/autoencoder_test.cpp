@@ -260,11 +260,7 @@ int main(int argc, char **argv) {
 					enc_data_in_tmp.data = 0;
 				}
 				enc_data_in_tmp.keep = 15;
-				enc_data_in_tmp.strb = 1;
-				enc_data_in_tmp.user = 1;
 				enc_data_in_tmp.last = (i == M_in - 1);
-				enc_data_in_tmp.id   = 0;
-				enc_data_in_tmp.dest = 1;
 
 				enc_data_in << enc_data_in_tmp;
 			}
@@ -296,6 +292,7 @@ int main(int argc, char **argv) {
 //				}
 
 			} else {
+				int bypass = 0;
 				encoder_decoder(enc_data_in,
 								dec_data_out);
 

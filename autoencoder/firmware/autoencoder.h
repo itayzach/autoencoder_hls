@@ -55,8 +55,14 @@ void decoder(
 //  hls::stream<result_t> &dec_data_out);
 
 void encoder_decoder(
-  hls::stream<axis_input_t> &enc_data_in,
-  //result_t enc_data_out[n_channel],
-  //input_t dec_data_in[n_channel],
-  hls::stream<axis_result_t> &dec_data_out);
+		hls::stream<axis_input_t> &axis_enc_data_in,
+		hls::stream<axis_result_t> &axis_dec_data_out);//,
+//		int bypass);
+
+//void encoder_decoder(
+//  axis_input_t enc_data_in[M_in],
+//  //result_t enc_data_out[n_channel],
+//  //input_t dec_data_in[n_channel],
+//  axis_result_t dec_data_out[M_in]);
+
 #endif

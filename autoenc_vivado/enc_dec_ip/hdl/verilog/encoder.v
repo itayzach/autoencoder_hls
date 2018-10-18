@@ -15,8 +15,7 @@ module encoder (
         ap_idle,
         ap_ready,
         data_V_read,
-        ap_return,
-        ap_ce
+        ap_return
 );
 
 parameter    ap_ST_fsm_state1 = 90'd1;
@@ -118,7 +117,6 @@ output   ap_idle;
 output   ap_ready;
 input  [127:0] data_V_read;
 output  [63:0] ap_return;
-input   ap_ce;
 
 reg ap_done;
 reg ap_idle;
@@ -143,94 +141,7 @@ wire    grp_normalization_layer_fu_28_ap_start;
 wire    grp_normalization_layer_fu_28_ap_done;
 wire    grp_normalization_layer_fu_28_ap_idle;
 wire    grp_normalization_layer_fu_28_ap_ready;
-reg    grp_normalization_layer_fu_28_ap_ce;
 wire   [63:0] grp_normalization_layer_fu_28_ap_return;
-wire    ap_CS_fsm_state6;
-wire    ap_CS_fsm_state7;
-wire    ap_CS_fsm_state8;
-wire    ap_CS_fsm_state9;
-wire    ap_CS_fsm_state10;
-wire    ap_CS_fsm_state11;
-wire    ap_CS_fsm_state12;
-wire    ap_CS_fsm_state13;
-wire    ap_CS_fsm_state14;
-wire    ap_CS_fsm_state15;
-wire    ap_CS_fsm_state16;
-wire    ap_CS_fsm_state17;
-wire    ap_CS_fsm_state18;
-wire    ap_CS_fsm_state19;
-wire    ap_CS_fsm_state20;
-wire    ap_CS_fsm_state21;
-wire    ap_CS_fsm_state22;
-wire    ap_CS_fsm_state23;
-wire    ap_CS_fsm_state24;
-wire    ap_CS_fsm_state25;
-wire    ap_CS_fsm_state26;
-wire    ap_CS_fsm_state27;
-wire    ap_CS_fsm_state28;
-wire    ap_CS_fsm_state29;
-wire    ap_CS_fsm_state30;
-wire    ap_CS_fsm_state31;
-wire    ap_CS_fsm_state32;
-wire    ap_CS_fsm_state33;
-wire    ap_CS_fsm_state34;
-wire    ap_CS_fsm_state35;
-wire    ap_CS_fsm_state36;
-wire    ap_CS_fsm_state37;
-wire    ap_CS_fsm_state38;
-wire    ap_CS_fsm_state39;
-wire    ap_CS_fsm_state40;
-wire    ap_CS_fsm_state41;
-wire    ap_CS_fsm_state42;
-wire    ap_CS_fsm_state43;
-wire    ap_CS_fsm_state44;
-wire    ap_CS_fsm_state45;
-wire    ap_CS_fsm_state46;
-wire    ap_CS_fsm_state47;
-wire    ap_CS_fsm_state48;
-wire    ap_CS_fsm_state49;
-wire    ap_CS_fsm_state50;
-wire    ap_CS_fsm_state51;
-wire    ap_CS_fsm_state52;
-wire    ap_CS_fsm_state53;
-wire    ap_CS_fsm_state54;
-wire    ap_CS_fsm_state55;
-wire    ap_CS_fsm_state56;
-wire    ap_CS_fsm_state57;
-wire    ap_CS_fsm_state58;
-wire    ap_CS_fsm_state59;
-wire    ap_CS_fsm_state60;
-wire    ap_CS_fsm_state61;
-wire    ap_CS_fsm_state62;
-wire    ap_CS_fsm_state63;
-wire    ap_CS_fsm_state64;
-wire    ap_CS_fsm_state65;
-wire    ap_CS_fsm_state66;
-wire    ap_CS_fsm_state67;
-wire    ap_CS_fsm_state68;
-wire    ap_CS_fsm_state69;
-wire    ap_CS_fsm_state70;
-wire    ap_CS_fsm_state71;
-wire    ap_CS_fsm_state72;
-wire    ap_CS_fsm_state73;
-wire    ap_CS_fsm_state74;
-wire    ap_CS_fsm_state75;
-wire    ap_CS_fsm_state76;
-wire    ap_CS_fsm_state77;
-wire    ap_CS_fsm_state78;
-wire    ap_CS_fsm_state79;
-wire    ap_CS_fsm_state80;
-wire    ap_CS_fsm_state81;
-wire    ap_CS_fsm_state82;
-wire    ap_CS_fsm_state83;
-wire    ap_CS_fsm_state84;
-wire    ap_CS_fsm_state85;
-wire    ap_CS_fsm_state86;
-wire    ap_CS_fsm_state87;
-wire    ap_CS_fsm_state88;
-wire    ap_CS_fsm_state89;
-wire    ap_CS_fsm_state90;
-wire    ap_CS_fsm_state4;
 wire   [31:0] grp_compute_layer_0_0_0_s_fu_34_ap_return_0;
 wire   [31:0] grp_compute_layer_0_0_0_s_fu_34_ap_return_1;
 wire   [31:0] grp_compute_layer_0_0_0_s_fu_34_ap_return_2;
@@ -239,6 +150,7 @@ reg    grp_compute_layer_0_0_0_s_fu_34_ap_ce;
 wire   [31:0] grp_compute_layer_0_0_0_fu_40_ap_return_0;
 wire   [31:0] grp_compute_layer_0_0_0_fu_40_ap_return_1;
 reg    grp_compute_layer_0_0_0_fu_40_ap_ce;
+wire    ap_CS_fsm_state4;
 wire    call_ret1_relu_fu_48_ap_ready;
 wire   [31:0] call_ret1_relu_fu_48_ap_return_0;
 wire   [31:0] call_ret1_relu_fu_48_ap_return_1;
@@ -247,6 +159,8 @@ wire   [31:0] call_ret1_relu_fu_48_ap_return_3;
 reg    grp_normalization_layer_fu_28_ap_start_reg;
 reg   [89:0] ap_NS_fsm;
 wire    ap_NS_fsm_state6;
+wire    ap_CS_fsm_state6;
+wire    ap_CS_fsm_state90;
 
 // power-on initialization
 initial begin
@@ -261,7 +175,6 @@ normalization_layer grp_normalization_layer_fu_28(
     .ap_done(grp_normalization_layer_fu_28_ap_done),
     .ap_idle(grp_normalization_layer_fu_28_ap_idle),
     .ap_ready(grp_normalization_layer_fu_28_ap_ready),
-    .ap_ce(grp_normalization_layer_fu_28_ap_ce),
     .data_0_V_read(logits2_0_V_reg_136),
     .data_1_V_read(logits2_1_V_reg_141),
     .ap_return(grp_normalization_layer_fu_28_ap_return)
@@ -323,7 +236,7 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if (((1'b1 == ap_CS_fsm_state3) & (1'b1 == ap_ce))) begin
+    if ((1'b1 == ap_CS_fsm_state3)) begin
         layer1_relu_out_0_V_reg_116 <= call_ret1_relu_fu_48_ap_return_0;
         layer1_relu_out_1_V_reg_121 <= call_ret1_relu_fu_48_ap_return_1;
         layer1_relu_out_2_V_reg_126 <= call_ret1_relu_fu_48_ap_return_2;
@@ -332,7 +245,7 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if (((1'b1 == ap_CS_fsm_state2) & (1'b1 == ap_ce))) begin
+    if ((1'b1 == ap_CS_fsm_state2)) begin
         logits1_0_V_reg_96 <= grp_compute_layer_0_0_0_s_fu_34_ap_return_0;
         logits1_1_V_reg_101 <= grp_compute_layer_0_0_0_s_fu_34_ap_return_1;
         logits1_2_V_reg_106 <= grp_compute_layer_0_0_0_s_fu_34_ap_return_2;
@@ -341,14 +254,14 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if (((1'b1 == ap_CS_fsm_state5) & (1'b1 == ap_ce))) begin
+    if ((1'b1 == ap_CS_fsm_state5)) begin
         logits2_0_V_reg_136 <= grp_compute_layer_0_0_0_fu_40_ap_return_0;
         logits2_1_V_reg_141 <= grp_compute_layer_0_0_0_fu_40_ap_return_1;
     end
 end
 
 always @ (*) begin
-    if ((((ap_start == 1'b0) & (1'b1 == ap_CS_fsm_state1)) | ((1'b1 == ap_CS_fsm_state90) & (1'b1 == ap_ce)))) begin
+    if (((1'b1 == ap_CS_fsm_state90) | ((ap_start == 1'b0) & (1'b1 == ap_CS_fsm_state1)))) begin
         ap_done = 1'b1;
     end else begin
         ap_done = 1'b0;
@@ -364,7 +277,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state90) & (1'b1 == ap_ce))) begin
+    if ((1'b1 == ap_CS_fsm_state90)) begin
         ap_ready = 1'b1;
     end else begin
         ap_ready = 1'b0;
@@ -372,7 +285,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_ce) & ((1'b1 == ap_CS_fsm_state4) | (1'b1 == ap_CS_fsm_state5)))) begin
+    if (((1'b1 == ap_CS_fsm_state4) | (1'b1 == ap_CS_fsm_state5))) begin
         grp_compute_layer_0_0_0_fu_40_ap_ce = 1'b1;
     end else begin
         grp_compute_layer_0_0_0_fu_40_ap_ce = 1'b0;
@@ -380,7 +293,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_ce) & ((1'b1 == ap_CS_fsm_state2) | ((ap_start == 1'b1) & (1'b1 == ap_CS_fsm_state1))))) begin
+    if (((1'b1 == ap_CS_fsm_state2) | ((ap_start == 1'b1) & (1'b1 == ap_CS_fsm_state1)))) begin
         grp_compute_layer_0_0_0_s_fu_34_ap_ce = 1'b1;
     end else begin
         grp_compute_layer_0_0_0_s_fu_34_ap_ce = 1'b0;
@@ -388,644 +301,280 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state4) | (1'b1 == ap_CS_fsm_state5) | (1'b1 == ap_CS_fsm_state3) | (1'b1 == ap_CS_fsm_state2) | (1'b1 == ap_CS_fsm_state1) | (1'b0 == ap_ce))) begin
-        grp_normalization_layer_fu_28_ap_ce = 1'b0;
-    end else begin
-        grp_normalization_layer_fu_28_ap_ce = 1'b1;
-    end
-end
-
-always @ (*) begin
     case (ap_CS_fsm)
         ap_ST_fsm_state1 : begin
-            if (((ap_start == 1'b1) & (1'b1 == ap_CS_fsm_state1) & (1'b1 == ap_ce))) begin
+            if (((ap_start == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
                 ap_NS_fsm = ap_ST_fsm_state2;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state1;
             end
         end
         ap_ST_fsm_state2 : begin
-            if (((1'b1 == ap_CS_fsm_state2) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state3;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state2;
-            end
+            ap_NS_fsm = ap_ST_fsm_state3;
         end
         ap_ST_fsm_state3 : begin
-            if (((1'b1 == ap_CS_fsm_state3) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state4;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state3;
-            end
+            ap_NS_fsm = ap_ST_fsm_state4;
         end
         ap_ST_fsm_state4 : begin
-            if (((1'b1 == ap_CS_fsm_state4) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state5;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state4;
-            end
+            ap_NS_fsm = ap_ST_fsm_state5;
         end
         ap_ST_fsm_state5 : begin
-            if (((1'b1 == ap_CS_fsm_state5) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state6;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state5;
-            end
+            ap_NS_fsm = ap_ST_fsm_state6;
         end
         ap_ST_fsm_state6 : begin
-            if (((1'b1 == ap_CS_fsm_state6) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state7;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state6;
-            end
+            ap_NS_fsm = ap_ST_fsm_state7;
         end
         ap_ST_fsm_state7 : begin
-            if (((1'b1 == ap_CS_fsm_state7) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state8;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state7;
-            end
+            ap_NS_fsm = ap_ST_fsm_state8;
         end
         ap_ST_fsm_state8 : begin
-            if (((1'b1 == ap_CS_fsm_state8) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state9;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state8;
-            end
+            ap_NS_fsm = ap_ST_fsm_state9;
         end
         ap_ST_fsm_state9 : begin
-            if (((1'b1 == ap_CS_fsm_state9) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state10;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state9;
-            end
+            ap_NS_fsm = ap_ST_fsm_state10;
         end
         ap_ST_fsm_state10 : begin
-            if (((1'b1 == ap_CS_fsm_state10) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state11;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state10;
-            end
+            ap_NS_fsm = ap_ST_fsm_state11;
         end
         ap_ST_fsm_state11 : begin
-            if (((1'b1 == ap_CS_fsm_state11) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state12;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state11;
-            end
+            ap_NS_fsm = ap_ST_fsm_state12;
         end
         ap_ST_fsm_state12 : begin
-            if (((1'b1 == ap_CS_fsm_state12) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state13;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state12;
-            end
+            ap_NS_fsm = ap_ST_fsm_state13;
         end
         ap_ST_fsm_state13 : begin
-            if (((1'b1 == ap_CS_fsm_state13) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state14;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state13;
-            end
+            ap_NS_fsm = ap_ST_fsm_state14;
         end
         ap_ST_fsm_state14 : begin
-            if (((1'b1 == ap_CS_fsm_state14) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state15;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state14;
-            end
+            ap_NS_fsm = ap_ST_fsm_state15;
         end
         ap_ST_fsm_state15 : begin
-            if (((1'b1 == ap_CS_fsm_state15) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state16;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state15;
-            end
+            ap_NS_fsm = ap_ST_fsm_state16;
         end
         ap_ST_fsm_state16 : begin
-            if (((1'b1 == ap_CS_fsm_state16) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state17;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state16;
-            end
+            ap_NS_fsm = ap_ST_fsm_state17;
         end
         ap_ST_fsm_state17 : begin
-            if (((1'b1 == ap_CS_fsm_state17) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state18;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state17;
-            end
+            ap_NS_fsm = ap_ST_fsm_state18;
         end
         ap_ST_fsm_state18 : begin
-            if (((1'b1 == ap_CS_fsm_state18) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state19;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state18;
-            end
+            ap_NS_fsm = ap_ST_fsm_state19;
         end
         ap_ST_fsm_state19 : begin
-            if (((1'b1 == ap_CS_fsm_state19) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state20;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state19;
-            end
+            ap_NS_fsm = ap_ST_fsm_state20;
         end
         ap_ST_fsm_state20 : begin
-            if (((1'b1 == ap_CS_fsm_state20) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state21;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state20;
-            end
+            ap_NS_fsm = ap_ST_fsm_state21;
         end
         ap_ST_fsm_state21 : begin
-            if (((1'b1 == ap_CS_fsm_state21) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state22;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state21;
-            end
+            ap_NS_fsm = ap_ST_fsm_state22;
         end
         ap_ST_fsm_state22 : begin
-            if (((1'b1 == ap_CS_fsm_state22) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state23;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state22;
-            end
+            ap_NS_fsm = ap_ST_fsm_state23;
         end
         ap_ST_fsm_state23 : begin
-            if (((1'b1 == ap_CS_fsm_state23) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state24;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state23;
-            end
+            ap_NS_fsm = ap_ST_fsm_state24;
         end
         ap_ST_fsm_state24 : begin
-            if (((1'b1 == ap_CS_fsm_state24) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state25;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state24;
-            end
+            ap_NS_fsm = ap_ST_fsm_state25;
         end
         ap_ST_fsm_state25 : begin
-            if (((1'b1 == ap_CS_fsm_state25) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state26;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state25;
-            end
+            ap_NS_fsm = ap_ST_fsm_state26;
         end
         ap_ST_fsm_state26 : begin
-            if (((1'b1 == ap_CS_fsm_state26) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state27;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state26;
-            end
+            ap_NS_fsm = ap_ST_fsm_state27;
         end
         ap_ST_fsm_state27 : begin
-            if (((1'b1 == ap_CS_fsm_state27) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state28;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state27;
-            end
+            ap_NS_fsm = ap_ST_fsm_state28;
         end
         ap_ST_fsm_state28 : begin
-            if (((1'b1 == ap_CS_fsm_state28) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state29;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state28;
-            end
+            ap_NS_fsm = ap_ST_fsm_state29;
         end
         ap_ST_fsm_state29 : begin
-            if (((1'b1 == ap_CS_fsm_state29) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state30;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state29;
-            end
+            ap_NS_fsm = ap_ST_fsm_state30;
         end
         ap_ST_fsm_state30 : begin
-            if (((1'b1 == ap_CS_fsm_state30) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state31;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state30;
-            end
+            ap_NS_fsm = ap_ST_fsm_state31;
         end
         ap_ST_fsm_state31 : begin
-            if (((1'b1 == ap_CS_fsm_state31) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state32;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state31;
-            end
+            ap_NS_fsm = ap_ST_fsm_state32;
         end
         ap_ST_fsm_state32 : begin
-            if (((1'b1 == ap_CS_fsm_state32) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state33;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state32;
-            end
+            ap_NS_fsm = ap_ST_fsm_state33;
         end
         ap_ST_fsm_state33 : begin
-            if (((1'b1 == ap_CS_fsm_state33) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state34;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state33;
-            end
+            ap_NS_fsm = ap_ST_fsm_state34;
         end
         ap_ST_fsm_state34 : begin
-            if (((1'b1 == ap_CS_fsm_state34) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state35;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state34;
-            end
+            ap_NS_fsm = ap_ST_fsm_state35;
         end
         ap_ST_fsm_state35 : begin
-            if (((1'b1 == ap_CS_fsm_state35) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state36;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state35;
-            end
+            ap_NS_fsm = ap_ST_fsm_state36;
         end
         ap_ST_fsm_state36 : begin
-            if (((1'b1 == ap_CS_fsm_state36) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state37;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state36;
-            end
+            ap_NS_fsm = ap_ST_fsm_state37;
         end
         ap_ST_fsm_state37 : begin
-            if (((1'b1 == ap_CS_fsm_state37) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state38;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state37;
-            end
+            ap_NS_fsm = ap_ST_fsm_state38;
         end
         ap_ST_fsm_state38 : begin
-            if (((1'b1 == ap_CS_fsm_state38) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state39;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state38;
-            end
+            ap_NS_fsm = ap_ST_fsm_state39;
         end
         ap_ST_fsm_state39 : begin
-            if (((1'b1 == ap_CS_fsm_state39) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state40;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state39;
-            end
+            ap_NS_fsm = ap_ST_fsm_state40;
         end
         ap_ST_fsm_state40 : begin
-            if (((1'b1 == ap_CS_fsm_state40) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state41;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state40;
-            end
+            ap_NS_fsm = ap_ST_fsm_state41;
         end
         ap_ST_fsm_state41 : begin
-            if (((1'b1 == ap_CS_fsm_state41) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state42;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state41;
-            end
+            ap_NS_fsm = ap_ST_fsm_state42;
         end
         ap_ST_fsm_state42 : begin
-            if (((1'b1 == ap_CS_fsm_state42) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state43;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state42;
-            end
+            ap_NS_fsm = ap_ST_fsm_state43;
         end
         ap_ST_fsm_state43 : begin
-            if (((1'b1 == ap_CS_fsm_state43) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state44;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state43;
-            end
+            ap_NS_fsm = ap_ST_fsm_state44;
         end
         ap_ST_fsm_state44 : begin
-            if (((1'b1 == ap_CS_fsm_state44) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state45;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state44;
-            end
+            ap_NS_fsm = ap_ST_fsm_state45;
         end
         ap_ST_fsm_state45 : begin
-            if (((1'b1 == ap_CS_fsm_state45) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state46;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state45;
-            end
+            ap_NS_fsm = ap_ST_fsm_state46;
         end
         ap_ST_fsm_state46 : begin
-            if (((1'b1 == ap_CS_fsm_state46) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state47;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state46;
-            end
+            ap_NS_fsm = ap_ST_fsm_state47;
         end
         ap_ST_fsm_state47 : begin
-            if (((1'b1 == ap_CS_fsm_state47) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state48;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state47;
-            end
+            ap_NS_fsm = ap_ST_fsm_state48;
         end
         ap_ST_fsm_state48 : begin
-            if (((1'b1 == ap_CS_fsm_state48) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state49;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state48;
-            end
+            ap_NS_fsm = ap_ST_fsm_state49;
         end
         ap_ST_fsm_state49 : begin
-            if (((1'b1 == ap_CS_fsm_state49) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state50;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state49;
-            end
+            ap_NS_fsm = ap_ST_fsm_state50;
         end
         ap_ST_fsm_state50 : begin
-            if (((1'b1 == ap_CS_fsm_state50) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state51;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state50;
-            end
+            ap_NS_fsm = ap_ST_fsm_state51;
         end
         ap_ST_fsm_state51 : begin
-            if (((1'b1 == ap_CS_fsm_state51) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state52;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state51;
-            end
+            ap_NS_fsm = ap_ST_fsm_state52;
         end
         ap_ST_fsm_state52 : begin
-            if (((1'b1 == ap_CS_fsm_state52) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state53;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state52;
-            end
+            ap_NS_fsm = ap_ST_fsm_state53;
         end
         ap_ST_fsm_state53 : begin
-            if (((1'b1 == ap_CS_fsm_state53) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state54;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state53;
-            end
+            ap_NS_fsm = ap_ST_fsm_state54;
         end
         ap_ST_fsm_state54 : begin
-            if (((1'b1 == ap_CS_fsm_state54) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state55;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state54;
-            end
+            ap_NS_fsm = ap_ST_fsm_state55;
         end
         ap_ST_fsm_state55 : begin
-            if (((1'b1 == ap_CS_fsm_state55) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state56;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state55;
-            end
+            ap_NS_fsm = ap_ST_fsm_state56;
         end
         ap_ST_fsm_state56 : begin
-            if (((1'b1 == ap_CS_fsm_state56) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state57;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state56;
-            end
+            ap_NS_fsm = ap_ST_fsm_state57;
         end
         ap_ST_fsm_state57 : begin
-            if (((1'b1 == ap_CS_fsm_state57) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state58;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state57;
-            end
+            ap_NS_fsm = ap_ST_fsm_state58;
         end
         ap_ST_fsm_state58 : begin
-            if (((1'b1 == ap_CS_fsm_state58) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state59;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state58;
-            end
+            ap_NS_fsm = ap_ST_fsm_state59;
         end
         ap_ST_fsm_state59 : begin
-            if (((1'b1 == ap_CS_fsm_state59) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state60;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state59;
-            end
+            ap_NS_fsm = ap_ST_fsm_state60;
         end
         ap_ST_fsm_state60 : begin
-            if (((1'b1 == ap_CS_fsm_state60) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state61;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state60;
-            end
+            ap_NS_fsm = ap_ST_fsm_state61;
         end
         ap_ST_fsm_state61 : begin
-            if (((1'b1 == ap_CS_fsm_state61) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state62;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state61;
-            end
+            ap_NS_fsm = ap_ST_fsm_state62;
         end
         ap_ST_fsm_state62 : begin
-            if (((1'b1 == ap_CS_fsm_state62) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state63;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state62;
-            end
+            ap_NS_fsm = ap_ST_fsm_state63;
         end
         ap_ST_fsm_state63 : begin
-            if (((1'b1 == ap_CS_fsm_state63) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state64;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state63;
-            end
+            ap_NS_fsm = ap_ST_fsm_state64;
         end
         ap_ST_fsm_state64 : begin
-            if (((1'b1 == ap_CS_fsm_state64) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state65;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state64;
-            end
+            ap_NS_fsm = ap_ST_fsm_state65;
         end
         ap_ST_fsm_state65 : begin
-            if (((1'b1 == ap_CS_fsm_state65) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state66;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state65;
-            end
+            ap_NS_fsm = ap_ST_fsm_state66;
         end
         ap_ST_fsm_state66 : begin
-            if (((1'b1 == ap_CS_fsm_state66) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state67;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state66;
-            end
+            ap_NS_fsm = ap_ST_fsm_state67;
         end
         ap_ST_fsm_state67 : begin
-            if (((1'b1 == ap_CS_fsm_state67) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state68;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state67;
-            end
+            ap_NS_fsm = ap_ST_fsm_state68;
         end
         ap_ST_fsm_state68 : begin
-            if (((1'b1 == ap_CS_fsm_state68) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state69;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state68;
-            end
+            ap_NS_fsm = ap_ST_fsm_state69;
         end
         ap_ST_fsm_state69 : begin
-            if (((1'b1 == ap_CS_fsm_state69) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state70;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state69;
-            end
+            ap_NS_fsm = ap_ST_fsm_state70;
         end
         ap_ST_fsm_state70 : begin
-            if (((1'b1 == ap_CS_fsm_state70) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state71;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state70;
-            end
+            ap_NS_fsm = ap_ST_fsm_state71;
         end
         ap_ST_fsm_state71 : begin
-            if (((1'b1 == ap_CS_fsm_state71) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state72;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state71;
-            end
+            ap_NS_fsm = ap_ST_fsm_state72;
         end
         ap_ST_fsm_state72 : begin
-            if (((1'b1 == ap_CS_fsm_state72) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state73;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state72;
-            end
+            ap_NS_fsm = ap_ST_fsm_state73;
         end
         ap_ST_fsm_state73 : begin
-            if (((1'b1 == ap_CS_fsm_state73) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state74;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state73;
-            end
+            ap_NS_fsm = ap_ST_fsm_state74;
         end
         ap_ST_fsm_state74 : begin
-            if (((1'b1 == ap_CS_fsm_state74) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state75;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state74;
-            end
+            ap_NS_fsm = ap_ST_fsm_state75;
         end
         ap_ST_fsm_state75 : begin
-            if (((1'b1 == ap_CS_fsm_state75) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state76;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state75;
-            end
+            ap_NS_fsm = ap_ST_fsm_state76;
         end
         ap_ST_fsm_state76 : begin
-            if (((1'b1 == ap_CS_fsm_state76) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state77;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state76;
-            end
+            ap_NS_fsm = ap_ST_fsm_state77;
         end
         ap_ST_fsm_state77 : begin
-            if (((1'b1 == ap_CS_fsm_state77) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state78;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state77;
-            end
+            ap_NS_fsm = ap_ST_fsm_state78;
         end
         ap_ST_fsm_state78 : begin
-            if (((1'b1 == ap_CS_fsm_state78) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state79;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state78;
-            end
+            ap_NS_fsm = ap_ST_fsm_state79;
         end
         ap_ST_fsm_state79 : begin
-            if (((1'b1 == ap_CS_fsm_state79) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state80;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state79;
-            end
+            ap_NS_fsm = ap_ST_fsm_state80;
         end
         ap_ST_fsm_state80 : begin
-            if (((1'b1 == ap_CS_fsm_state80) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state81;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state80;
-            end
+            ap_NS_fsm = ap_ST_fsm_state81;
         end
         ap_ST_fsm_state81 : begin
-            if (((1'b1 == ap_CS_fsm_state81) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state82;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state81;
-            end
+            ap_NS_fsm = ap_ST_fsm_state82;
         end
         ap_ST_fsm_state82 : begin
-            if (((1'b1 == ap_CS_fsm_state82) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state83;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state82;
-            end
+            ap_NS_fsm = ap_ST_fsm_state83;
         end
         ap_ST_fsm_state83 : begin
-            if (((1'b1 == ap_CS_fsm_state83) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state84;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state83;
-            end
+            ap_NS_fsm = ap_ST_fsm_state84;
         end
         ap_ST_fsm_state84 : begin
-            if (((1'b1 == ap_CS_fsm_state84) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state85;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state84;
-            end
+            ap_NS_fsm = ap_ST_fsm_state85;
         end
         ap_ST_fsm_state85 : begin
-            if (((1'b1 == ap_CS_fsm_state85) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state86;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state85;
-            end
+            ap_NS_fsm = ap_ST_fsm_state86;
         end
         ap_ST_fsm_state86 : begin
-            if (((1'b1 == ap_CS_fsm_state86) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state87;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state86;
-            end
+            ap_NS_fsm = ap_ST_fsm_state87;
         end
         ap_ST_fsm_state87 : begin
-            if (((1'b1 == ap_CS_fsm_state87) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state88;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state87;
-            end
+            ap_NS_fsm = ap_ST_fsm_state88;
         end
         ap_ST_fsm_state88 : begin
-            if (((1'b1 == ap_CS_fsm_state88) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state89;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state88;
-            end
+            ap_NS_fsm = ap_ST_fsm_state89;
         end
         ap_ST_fsm_state89 : begin
-            if (((1'b1 == ap_CS_fsm_state89) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state90;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state89;
-            end
+            ap_NS_fsm = ap_ST_fsm_state90;
         end
         ap_ST_fsm_state90 : begin
-            if (((1'b1 == ap_CS_fsm_state90) & (1'b1 == ap_ce))) begin
-                ap_NS_fsm = ap_ST_fsm_state1;
-            end else begin
-                ap_NS_fsm = ap_ST_fsm_state90;
-            end
+            ap_NS_fsm = ap_ST_fsm_state1;
         end
         default : begin
             ap_NS_fsm = 'bx;
@@ -1035,181 +584,15 @@ end
 
 assign ap_CS_fsm_state1 = ap_CS_fsm[32'd0];
 
-assign ap_CS_fsm_state10 = ap_CS_fsm[32'd9];
-
-assign ap_CS_fsm_state11 = ap_CS_fsm[32'd10];
-
-assign ap_CS_fsm_state12 = ap_CS_fsm[32'd11];
-
-assign ap_CS_fsm_state13 = ap_CS_fsm[32'd12];
-
-assign ap_CS_fsm_state14 = ap_CS_fsm[32'd13];
-
-assign ap_CS_fsm_state15 = ap_CS_fsm[32'd14];
-
-assign ap_CS_fsm_state16 = ap_CS_fsm[32'd15];
-
-assign ap_CS_fsm_state17 = ap_CS_fsm[32'd16];
-
-assign ap_CS_fsm_state18 = ap_CS_fsm[32'd17];
-
-assign ap_CS_fsm_state19 = ap_CS_fsm[32'd18];
-
 assign ap_CS_fsm_state2 = ap_CS_fsm[32'd1];
-
-assign ap_CS_fsm_state20 = ap_CS_fsm[32'd19];
-
-assign ap_CS_fsm_state21 = ap_CS_fsm[32'd20];
-
-assign ap_CS_fsm_state22 = ap_CS_fsm[32'd21];
-
-assign ap_CS_fsm_state23 = ap_CS_fsm[32'd22];
-
-assign ap_CS_fsm_state24 = ap_CS_fsm[32'd23];
-
-assign ap_CS_fsm_state25 = ap_CS_fsm[32'd24];
-
-assign ap_CS_fsm_state26 = ap_CS_fsm[32'd25];
-
-assign ap_CS_fsm_state27 = ap_CS_fsm[32'd26];
-
-assign ap_CS_fsm_state28 = ap_CS_fsm[32'd27];
-
-assign ap_CS_fsm_state29 = ap_CS_fsm[32'd28];
 
 assign ap_CS_fsm_state3 = ap_CS_fsm[32'd2];
 
-assign ap_CS_fsm_state30 = ap_CS_fsm[32'd29];
-
-assign ap_CS_fsm_state31 = ap_CS_fsm[32'd30];
-
-assign ap_CS_fsm_state32 = ap_CS_fsm[32'd31];
-
-assign ap_CS_fsm_state33 = ap_CS_fsm[32'd32];
-
-assign ap_CS_fsm_state34 = ap_CS_fsm[32'd33];
-
-assign ap_CS_fsm_state35 = ap_CS_fsm[32'd34];
-
-assign ap_CS_fsm_state36 = ap_CS_fsm[32'd35];
-
-assign ap_CS_fsm_state37 = ap_CS_fsm[32'd36];
-
-assign ap_CS_fsm_state38 = ap_CS_fsm[32'd37];
-
-assign ap_CS_fsm_state39 = ap_CS_fsm[32'd38];
-
 assign ap_CS_fsm_state4 = ap_CS_fsm[32'd3];
-
-assign ap_CS_fsm_state40 = ap_CS_fsm[32'd39];
-
-assign ap_CS_fsm_state41 = ap_CS_fsm[32'd40];
-
-assign ap_CS_fsm_state42 = ap_CS_fsm[32'd41];
-
-assign ap_CS_fsm_state43 = ap_CS_fsm[32'd42];
-
-assign ap_CS_fsm_state44 = ap_CS_fsm[32'd43];
-
-assign ap_CS_fsm_state45 = ap_CS_fsm[32'd44];
-
-assign ap_CS_fsm_state46 = ap_CS_fsm[32'd45];
-
-assign ap_CS_fsm_state47 = ap_CS_fsm[32'd46];
-
-assign ap_CS_fsm_state48 = ap_CS_fsm[32'd47];
-
-assign ap_CS_fsm_state49 = ap_CS_fsm[32'd48];
 
 assign ap_CS_fsm_state5 = ap_CS_fsm[32'd4];
 
-assign ap_CS_fsm_state50 = ap_CS_fsm[32'd49];
-
-assign ap_CS_fsm_state51 = ap_CS_fsm[32'd50];
-
-assign ap_CS_fsm_state52 = ap_CS_fsm[32'd51];
-
-assign ap_CS_fsm_state53 = ap_CS_fsm[32'd52];
-
-assign ap_CS_fsm_state54 = ap_CS_fsm[32'd53];
-
-assign ap_CS_fsm_state55 = ap_CS_fsm[32'd54];
-
-assign ap_CS_fsm_state56 = ap_CS_fsm[32'd55];
-
-assign ap_CS_fsm_state57 = ap_CS_fsm[32'd56];
-
-assign ap_CS_fsm_state58 = ap_CS_fsm[32'd57];
-
-assign ap_CS_fsm_state59 = ap_CS_fsm[32'd58];
-
 assign ap_CS_fsm_state6 = ap_CS_fsm[32'd5];
-
-assign ap_CS_fsm_state60 = ap_CS_fsm[32'd59];
-
-assign ap_CS_fsm_state61 = ap_CS_fsm[32'd60];
-
-assign ap_CS_fsm_state62 = ap_CS_fsm[32'd61];
-
-assign ap_CS_fsm_state63 = ap_CS_fsm[32'd62];
-
-assign ap_CS_fsm_state64 = ap_CS_fsm[32'd63];
-
-assign ap_CS_fsm_state65 = ap_CS_fsm[32'd64];
-
-assign ap_CS_fsm_state66 = ap_CS_fsm[32'd65];
-
-assign ap_CS_fsm_state67 = ap_CS_fsm[32'd66];
-
-assign ap_CS_fsm_state68 = ap_CS_fsm[32'd67];
-
-assign ap_CS_fsm_state69 = ap_CS_fsm[32'd68];
-
-assign ap_CS_fsm_state7 = ap_CS_fsm[32'd6];
-
-assign ap_CS_fsm_state70 = ap_CS_fsm[32'd69];
-
-assign ap_CS_fsm_state71 = ap_CS_fsm[32'd70];
-
-assign ap_CS_fsm_state72 = ap_CS_fsm[32'd71];
-
-assign ap_CS_fsm_state73 = ap_CS_fsm[32'd72];
-
-assign ap_CS_fsm_state74 = ap_CS_fsm[32'd73];
-
-assign ap_CS_fsm_state75 = ap_CS_fsm[32'd74];
-
-assign ap_CS_fsm_state76 = ap_CS_fsm[32'd75];
-
-assign ap_CS_fsm_state77 = ap_CS_fsm[32'd76];
-
-assign ap_CS_fsm_state78 = ap_CS_fsm[32'd77];
-
-assign ap_CS_fsm_state79 = ap_CS_fsm[32'd78];
-
-assign ap_CS_fsm_state8 = ap_CS_fsm[32'd7];
-
-assign ap_CS_fsm_state80 = ap_CS_fsm[32'd79];
-
-assign ap_CS_fsm_state81 = ap_CS_fsm[32'd80];
-
-assign ap_CS_fsm_state82 = ap_CS_fsm[32'd81];
-
-assign ap_CS_fsm_state83 = ap_CS_fsm[32'd82];
-
-assign ap_CS_fsm_state84 = ap_CS_fsm[32'd83];
-
-assign ap_CS_fsm_state85 = ap_CS_fsm[32'd84];
-
-assign ap_CS_fsm_state86 = ap_CS_fsm[32'd85];
-
-assign ap_CS_fsm_state87 = ap_CS_fsm[32'd86];
-
-assign ap_CS_fsm_state88 = ap_CS_fsm[32'd87];
-
-assign ap_CS_fsm_state89 = ap_CS_fsm[32'd88];
-
-assign ap_CS_fsm_state9 = ap_CS_fsm[32'd8];
 
 assign ap_CS_fsm_state90 = ap_CS_fsm[32'd89];
 

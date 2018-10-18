@@ -174,57 +174,104 @@ void decoder(
 //    decoder(dec_data_in, dec_data_out);
 //}
 
+
+
+
 void encoder_decoder(
-  hls::stream<axis_input_t> &enc_data_in,
+  hls::stream<axis_input_t> &axis_enc_data_in,
   //result_t enc_data_out[n_channel],
   //input_t dec_data_in[n_channel],
-  hls::stream<axis_result_t> &dec_data_out)
+  hls::stream<axis_result_t> &axis_dec_data_out)
+//  int bypass)
 {
-//#pragma HLS INTERFACE axis port=enc_data_in
-//#pragma HLS INTERFACE axis port=dec_data_out
-#pragma HLS INTERFACE axis register both latency=2 port=enc_data_in
-#pragma HLS INTERFACE axis register both latency=2 port=dec_data_out
-
+//#pragma HLS INTERFACE s_axilite port=bypass
+#pragma HLS INTERFACE axis port=axis_enc_data_in
+#pragma HLS INTERFACE axis port=axis_dec_data_out
 #pragma HLS INTERFACE ap_ctrl_none port=return
-//#pragma HLS ARRAY_RESHAPE variable=enc_data_in complete dim=0
-//#pragma HLS ARRAY_RESHAPE variable=enc_data_out complete dim=0
-//#pragma HLS ARRAY_RESHAPE variable=dec_data_in complete dim=0
-//#pragma HLS ARRAY_RESHAPE variable=dec_data_out complete dim=0
 
-#pragma HLS PIPELINE II=100
+//#pragma HLS PIPELINE II=1
 
-#pragma HLS RESOURCE variable=enc_data_out core=FIFO latency=2
-#pragma HLS RESOURCE variable=dec_data_in core=FIFO latency=2
-	axis_input_t enc_data_in_tmp[M_in];
-	axis_result_t dec_data_out_tmp;
-	input_t enc_data_in_reg[M_in];
-	result_t dec_data_out_reg[M_in];
-
-	for(int i = 0; i < M_in; i++){
-		enc_data_in_tmp[i] = enc_data_in.read();
-		enc_data_in_reg[i] = enc_data_in_tmp[i].data;
-	}
-
+	axis_input_t axis_enc_data_in_item[M_in];
+	axis_result_t axis_dec_data_out_item;
+	input_t enc_data_in[M_in];
 	result_t enc_data_out[n_channel];
 	input_t dec_data_in[n_channel];
+	result_t dec_data_out[M_in];
+	//#pragma HLS RESOURCE variable=enc_data_out latency=2
+	//#pragma HLS RESOURCE variable=dec_data_in latency=2
 
-    encoder(enc_data_in_reg, enc_data_out);
+	for(int i = 0; i < M_in; i++){
+		axis_enc_data_in_item[i] = axis_enc_data_in.read();
+		enc_data_in[i] = axis_enc_data_in_item[i].data;
+	}
 
-    for (int i = 0; i < n_channel; i++) {
-    	dec_data_in[i] = enc_data_out[i];
-    }
+	if (0) {
+		for(int i = 0; i < M_in; i++) {
+			dec_data_out[i] = enc_data_in[i];
+		}
+	} else {
+		encoder(enc_data_in, enc_data_out);
 
-    decoder(dec_data_in, dec_data_out_reg);
+		for (int i = 0; i < n_channel; i++) {
+			dec_data_in[i] = enc_data_out[i];
+		}
 
-    for(int i = 0; i < M_in; i++) {
-    	dec_data_out_tmp.data = dec_data_out_reg[i];
-    	dec_data_out_tmp.keep = enc_data_in_tmp[i].keep;
-		dec_data_out_tmp.strb = enc_data_in_tmp[i].strb;
-		dec_data_out_tmp.user = enc_data_in_tmp[i].user;
-		dec_data_out_tmp.last = enc_data_in_tmp[i].last;
-		dec_data_out_tmp.id   = enc_data_in_tmp[i].id;
-		dec_data_out_tmp.dest = enc_data_in_tmp[i].dest;
-    	dec_data_out.write(dec_data_out_tmp);
+		decoder(dec_data_in, dec_data_out);
+	}
+
+	for(int i = 0; i < M_in; i++){
+		axis_dec_data_out_item.data = dec_data_out[i];
+		axis_dec_data_out_item.keep = axis_enc_data_in_item[i].keep;
+		axis_dec_data_out_item.last = axis_enc_data_in_item[i].last;
+		axis_dec_data_out.write(axis_dec_data_out_item);
+		if (axis_dec_data_out_item.last) {
+			break;
+		}
     }
 
 }
+
+
+/////////////////////////////////////////////////////////////////////////////////
+// only mult
+/////////////////////////////////////////////////////////////////////////////////
+
+//void encoder_decoder(
+//  hls::stream<axis_input_t> &enc_data_in,
+//  //result_t enc_data_out[n_channel],
+//  //input_t dec_data_in[n_channel],
+//  hls::stream<axis_result_t> &dec_data_out)
+//{
+//#pragma HLS INTERFACE axis port=enc_data_in
+//#pragma HLS INTERFACE axis port=dec_data_out
+////#pragma HLS INTERFACE axis register both latency=2 port=enc_data_in
+////#pragma HLS INTERFACE axis register both latency=2 port=dec_data_out
+//
+//#pragma HLS INTERFACE ap_ctrl_none port=return
+////#pragma HLS ARRAY_RESHAPE variable=enc_data_in complete dim=0
+////#pragma HLS ARRAY_RESHAPE variable=enc_data_out complete dim=0
+////#pragma HLS ARRAY_RESHAPE variable=dec_data_in complete dim=0
+////#pragma HLS ARRAY_RESHAPE variable=dec_data_out complete dim=0
+//
+//#pragma HLS PIPELINE II=100
+//
+//	axis_input_t enc_data_in_tmp;
+//	axis_result_t dec_data_out_tmp;
+//
+////	for(int i = 0; i < M_in; i++){
+//	while(!enc_data_in.empty()) {
+//		enc_data_in_tmp = enc_data_in.read();
+//		result_t res;
+//#pragma HLS RESOURCE variable=res core=MulnS
+//		res = enc_data_in_tmp.data * enc_data_in_tmp.data;
+//		dec_data_out_tmp.data = res;
+//		dec_data_out_tmp.keep = enc_data_in_tmp.keep;
+//		dec_data_out_tmp.last = enc_data_in_tmp.last;
+//		dec_data_out.write(dec_data_out_tmp);
+//		if (dec_data_out_tmp.last) {
+//			break;
+//		}
+//    }
+//
+//}
+
