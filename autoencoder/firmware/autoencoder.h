@@ -27,6 +27,10 @@
 #include "parameters.h"
 
 
+typedef hls::awgn<32>::t_input_scale t_snr;
+const int LFSR_WIDTH = hls::awgn<32>::LFSR_WIDTH;
+const ap_uint<LFSR_WIDTH> SEED = ap_uint<LFSR_WIDTH>("0123456789ABCDEF123456789ABCDEF0",16);
+
 // Prototype of top level function for C-synthesis
 void encoder(
     input_t data[M_in],
@@ -56,8 +60,8 @@ void decoder(
 
 void encoder_decoder(
 		hls::stream<axis_input_t> &axis_enc_data_in,
-		hls::stream<axis_result_t> &axis_dec_data_out);//,
-//		int bypass);
+		hls::stream<axis_result_t> &axis_dec_data_out,
+		t_snr SNR);
 
 //void encoder_decoder(
 //  axis_input_t enc_data_in[M_in],

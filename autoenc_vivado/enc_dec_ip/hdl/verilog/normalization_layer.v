@@ -146,7 +146,7 @@ wire    ap_block_state66_pp0_stage5_iter6;
 wire    ap_block_state76_pp0_stage5_iter7;
 wire    ap_block_pp0_stage5_11001;
 wire   [31:0] grp_fu_107_p2;
-reg   [31:0] tmp_90_reg_186;
+reg   [31:0] tmp_96_reg_186;
 reg    ap_enable_reg_pp0_iter0_reg;
 wire    ap_block_pp0_stage9_subdone;
 wire    ap_block_pp0_stage4_subdone;
@@ -428,7 +428,7 @@ end
 always @ (posedge ap_clk) begin
     if (((1'b1 == ap_CS_fsm_pp0_stage3) & (1'b0 == ap_block_pp0_stage3_11001))) begin
         sqrt_res_V_reg_165 <= grp_sqrt_fixed_32_8_s_fu_48_ap_return;
-        tmp_90_reg_186 <= grp_fu_107_p2;
+        tmp_96_reg_186 <= grp_fu_107_p2;
     end
 end
 
@@ -898,7 +898,7 @@ assign ap_enable_pp0 = (ap_idle_pp0 ^ 1'b1);
 
 assign ap_return = {{div_res_1_V_fu_128_p1}, {div_res_0_V_fu_125_p1}};
 
-assign div_res_0_V_fu_125_p1 = tmp_90_reg_186[31:0];
+assign div_res_0_V_fu_125_p1 = tmp_96_reg_186[31:0];
 
 assign div_res_1_V_fu_128_p1 = grp_fu_120_p2[31:0];
 

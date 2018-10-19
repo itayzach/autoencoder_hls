@@ -181,13 +181,17 @@ void encoder_decoder(
   hls::stream<axis_input_t> &axis_enc_data_in,
   //result_t enc_data_out[n_channel],
   //input_t dec_data_in[n_channel],
-  hls::stream<axis_result_t> &axis_dec_data_out)
-//  int bypass)
+  hls::stream<axis_result_t> &axis_dec_data_out,
+  t_SNR_REG SNR_REG,
+  int AWGN_EN_REG)
 {
 //#pragma HLS INTERFACE s_axilite port=bypass
+#pragma HLS INTERFACE s_axilite port=AWGN_EN_REG bundle=ctrl
+#pragma HLS INTERFACE s_axilite port=SNR_REG bundle=ctrl
 #pragma HLS INTERFACE axis port=axis_enc_data_in
 #pragma HLS INTERFACE axis port=axis_dec_data_out
-#pragma HLS INTERFACE ap_ctrl_none port=return
+//#pragma HLS INTERFACE ap_ctrl_none port=return
+#pragma HLS INTERFACE s_axilite port=return bundle=ctrl
 
 //#pragma HLS PIPELINE II=1
 
@@ -197,27 +201,35 @@ void encoder_decoder(
 	result_t enc_data_out[n_channel];
 	input_t dec_data_in[n_channel];
 	result_t dec_data_out[M_in];
-	//#pragma HLS RESOURCE variable=enc_data_out latency=2
-	//#pragma HLS RESOURCE variable=dec_data_in latency=2
+
+	static hls::awgn<32> my_awgn(SEED);
+
 
 	for(int i = 0; i < M_in; i++){
 		axis_enc_data_in_item[i] = axis_enc_data_in.read();
 		enc_data_in[i] = axis_enc_data_in_item[i].data;
 	}
 
-	if (0) {
-		for(int i = 0; i < M_in; i++) {
-			dec_data_out[i] = enc_data_in[i];
-		}
-	} else {
-		encoder(enc_data_in, enc_data_out);
+	encoder(enc_data_in, enc_data_out);
 
-		for (int i = 0; i < n_channel; i++) {
+	for (int i = 0; i < n_channel; i++) {
+		// AWGN
+		ap_int<32> noise;
+		ap_fixed<32,2> noise_fixed_point;
+		my_awgn(SNR_REG, noise);
+		noise_fixed_point.V = noise;
+		if (AWGN_EN_REG) {
+			dec_data_in[i] = enc_data_out[i] + noise_fixed_point;
+			std::cout << "sig: " << enc_data_out[i] << std::endl;
+			std::cout << "noise: " << noise << " " << noise_fixed_point << std::endl;
+			std::cout << "sig + noise: " << dec_data_in[i] << std::endl;
+			std::cout << "-----------------------------------" << std::endl;
+		} else {
 			dec_data_in[i] = enc_data_out[i];
 		}
-
-		decoder(dec_data_in, dec_data_out);
 	}
+
+	decoder(dec_data_in, dec_data_out);
 
 	for(int i = 0; i < M_in; i++){
 		axis_dec_data_out_item.data = dec_data_out[i];

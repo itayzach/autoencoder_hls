@@ -35,7 +35,6 @@
 #define SEED 5
 #define NUM_SIMULATIONS 1
 #define NUM_SIGNALS 4
-#define LOOPBACK_MODE 1
 
 const char separator = ' ';
 const int fieldWidth = 15;
@@ -121,10 +120,50 @@ int txrx_data_print_and_check_results(
     return err_cnt;
 }
 
+//int elaborated_print_and_check_results(
+//		int simIdx, float EbNo_dB, float noise_std,
+//		result_t* enc_data_out_rec, result_t* enc_expected, const float enc_allowed_precent_diff,
+//		result_t* dec_data_in_rec,  result_t* noise,        const float noise_allowed_precent_diff,
+//		result_t* dec_data_out_rec, result_t* dec_expected, const float dec_allowed_precent_diff) {
+//    int err_cnt = 0;
+//
+//    std::cout << "**************************************************************************" << std::endl;
+//    std::cout << "* Simulation #"        << simIdx << std::endl;
+//    std::cout << "* Eb/No            : " << EbNo_dB << "[dB]" << std::endl;
+//    std::cout << "* noise std        : " << noise_std << std::endl;
+//    std::cout << "* allowed enc diff : " << enc_allowed_precent_diff << " %" << std::endl;
+//    std::cout << "* allowed dec diff : " << dec_allowed_precent_diff << " %" << std::endl;
+//    std::cout << "**************************************************************************" << std::endl;
+//    std::cout << std::setw(fieldWidth) << "result";
+//    std::cout << std::setw(fieldWidth) << "expected";
+//    std::cout << std::setw(fieldWidth) << "diff";
+//    std::cout << std::endl;
+//    std::cout << "--------------------------------------------------------------------------" << std::endl;
+//
+//    for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
+//    	std::cout << "Signal:" << std::endl;
+//		err_cnt += single_print_and_check_results(&dec_expected[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, 0.0);
+//		std::cout << "--------------------------------------------------------------------------" << std::endl;
+//		std::cout << "TX (encoder):" << std::endl;
+//		err_cnt += single_print_and_check_results(&enc_data_out_rec[sigIdx*n_channel], &enc_expected[sigIdx*n_channel], n_channel, enc_allowed_precent_diff);
+//		std::cout << "--------------------------------------------------------------------------" << std::endl;
+//		std::cout << "AWGN:" << std::endl;
+//		err_cnt += single_print_and_check_results(&dec_data_in_rec[sigIdx*n_channel], &noise[sigIdx*n_channel], n_channel, noise_allowed_precent_diff);
+//		std::cout << "--------------------------------------------------------------------------" << std::endl;
+//		std::cout << "RX (decoder):" << std::endl;
+//		err_cnt += single_print_and_check_results(&dec_data_out_rec[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, dec_allowed_precent_diff);
+//		std::cout << "==========================================================================" << std::endl;
+//    }
+////    std::cout << "--------------------------------------------------------------------------" << std::endl;
+////    std::cout << "total of " << err_cnt << " errors" << std::endl;
+////    std::cout << "--------------------------------------------------------------------------" << std::endl;
+//    std::cout << std::endl << std::endl;
+//
+//    return err_cnt;
+//}
+
 int elaborated_print_and_check_results(
 		int simIdx, float EbNo_dB, float noise_std,
-		result_t* enc_data_out_rec, result_t* enc_expected, const float enc_allowed_precent_diff,
-		result_t* dec_data_in_rec,  result_t* noise,        const float noise_allowed_precent_diff,
 		result_t* dec_data_out_rec, result_t* dec_expected, const float dec_allowed_precent_diff) {
     int err_cnt = 0;
 
@@ -132,7 +171,6 @@ int elaborated_print_and_check_results(
     std::cout << "* Simulation #"        << simIdx << std::endl;
     std::cout << "* Eb/No            : " << EbNo_dB << "[dB]" << std::endl;
     std::cout << "* noise std        : " << noise_std << std::endl;
-    std::cout << "* allowed enc diff : " << enc_allowed_precent_diff << " %" << std::endl;
     std::cout << "* allowed dec diff : " << dec_allowed_precent_diff << " %" << std::endl;
     std::cout << "**************************************************************************" << std::endl;
     std::cout << std::setw(fieldWidth) << "result";
@@ -144,12 +182,6 @@ int elaborated_print_and_check_results(
     for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
     	std::cout << "Signal:" << std::endl;
 		err_cnt += single_print_and_check_results(&dec_expected[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, 0.0);
-		std::cout << "--------------------------------------------------------------------------" << std::endl;
-		std::cout << "TX (encoder):" << std::endl;
-		err_cnt += single_print_and_check_results(&enc_data_out_rec[sigIdx*n_channel], &enc_expected[sigIdx*n_channel], n_channel, enc_allowed_precent_diff);
-		std::cout << "--------------------------------------------------------------------------" << std::endl;
-		std::cout << "AWGN:" << std::endl;
-		err_cnt += single_print_and_check_results(&dec_data_in_rec[sigIdx*n_channel], &noise[sigIdx*n_channel], n_channel, noise_allowed_precent_diff);
 		std::cout << "--------------------------------------------------------------------------" << std::endl;
 		std::cout << "RX (decoder):" << std::endl;
 		err_cnt += single_print_and_check_results(&dec_data_out_rec[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, dec_allowed_precent_diff);
@@ -265,62 +297,55 @@ int main(int argc, char **argv) {
 				enc_data_in << enc_data_in_tmp;
 			}
 
-			if (LOOPBACK_MODE == 0) {
-				// TX
-				//encoder(enc_data_in, enc_data_out);
+//			// TX
+//			//encoder(enc_data_in, enc_data_out);
+//
+//			// AWGN
+//			for (int i = 0; i < n_channel; i++) {
+//				input_t noise = noise_std * norm_dist(gen);
+//				dec_data_in[i] = enc_data_out[i] + noise;
+//			}
+//			// RX
+//			//decoder(dec_data_in, dec_data_out);
+//
+//			// Add to record arrays
+//			tx_data_rec[sigIdx] = tx_data;
+//
+////				for (int i = 0; i < n_channel; i ++) {
+////					enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
+////					dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
+////					enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
+////				}
+////				for (int i = 0; i < M_in; i++) {
+////					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out.read();
+////					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
+////					rx_data_rec[sigIdx] += (unsigned int)dec_data_out_rec[sigIdx*M_in + i] * i;
+////				}
+			t_snr snr = 0.0;
+			encoder_decoder(enc_data_in,
+							dec_data_out, snr);
 
-				// AWGN
-				for (int i = 0; i < n_channel; i++) {
-					input_t noise = noise_std * norm_dist(gen);
-					dec_data_in[i] = enc_data_out[i] + noise;
-				}
-				// RX
-				//decoder(dec_data_in, dec_data_out);
+			// Add to record arrays
+			tx_data_rec[sigIdx] = tx_data;
 
-				// Add to record arrays
-				tx_data_rec[sigIdx] = tx_data;
-
-//				for (int i = 0; i < n_channel; i ++) {
-//					enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
-//					dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
-//					enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
-//				}
-//				for (int i = 0; i < M_in; i++) {
-//					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out.read();
-//					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
-//					rx_data_rec[sigIdx] += (unsigned int)dec_data_out_rec[sigIdx*M_in + i] * i;
-//				}
-
-			} else {
-				int bypass = 0;
-				encoder_decoder(enc_data_in,
-								dec_data_out);
-
-				// Add to record arrays
-				tx_data_rec[sigIdx] = tx_data;
-
-				for (int i = 0; i < n_channel; i ++) {
-					enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
-					dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
-					enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
-				}
-				for (int i = 0; i < M_in; i++) {
-					axis_result_t dec_data_out_tmp;
-					dec_data_out_tmp = dec_data_out.read();
-					dec_data_out_rec[sigIdx*M_in + i] = dec_data_out_tmp.data;
-					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
-					rx_data_rec[sigIdx] += (unsigned int)dec_data_out_rec[sigIdx*M_in + i] * i;
-				}
+			for (int i = 0; i < n_channel; i ++) {
+				enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
+				dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
+				enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
 			}
-
+			for (int i = 0; i < M_in; i++) {
+				axis_result_t dec_data_out_tmp;
+				dec_data_out_tmp = dec_data_out.read();
+				dec_data_out_rec[sigIdx*M_in + i] = dec_data_out_tmp.data;
+				dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
+				rx_data_rec[sigIdx] += (unsigned int)dec_data_out_rec[sigIdx*M_in + i] * i;
+			}
 		}
 		// Print and check results
 		err_cnt_array[simIdx] = txrx_data_print_and_check_results(simIdx, EbNo_dB, noise_std, tx_data_rec, rx_data_rec);
 		std::cout << "Sim #" << simIdx << ": Eb/No = " << EbNo_dB_array[simIdx] << "\t" << (float)err_cnt_array[simIdx]/(float)NUM_SIGNALS << std::endl;
 		sim_err_cnt = elaborated_print_and_check_results(
 			simIdx, EbNo_dB, noise_std,
-			enc_data_out_rec, enc_expected_rec, enc_allowed_precent_diff,
-			dec_data_in_rec,  enc_data_out_rec, noise_allowed_precent_diff,
 			dec_data_out_rec, dec_expected_rec, dec_allowed_precent_diff);
 	}
 

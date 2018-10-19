@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xd:acceleratorMap xmlns:xd="http://www.xilinx.com/xidane" xd:functionName="encoder_decoder" xd:componentRef="encoder_decoder" xd:initiationInterval="133" xd:clockPeriod="10.000" xd:sequential="true" xd:hostMachine="64" xd:reset="control">
+<xd:acceleratorMap xmlns:xd="http://www.xilinx.com/xidane" xd:functionName="encoder_decoder" xd:componentRef="encoder_decoder" xd:initiationInterval="249" xd:clockPeriod="10.000" xd:sequential="true" xd:hostMachine="64" xd:reset="control">
+  <xd:controlReg xd:name="control" xd:interfaceRef="s_axi_ctrl" xd:busTypeRef="axilite" xd:type="generic_axi_lite" xd:offset="0x0"/>
   <xd:arg xd:name="axis_enc_data_in.data" xd:originalName="axis_enc_data_in" xd:direction="in" xd:interfaceRef="axis_enc_data_in" xd:busTypeRef="axis" xd:dataWidth="32"/>
   <xd:arg xd:name="axis_enc_data_in.keep" xd:originalName="axis_enc_data_in" xd:direction="in" xd:interfaceRef="axis_enc_data_in" xd:busTypeRef="axis" xd:dataWidth="4"/>
   <xd:arg xd:name="axis_enc_data_in.last" xd:originalName="axis_enc_data_in" xd:direction="in" xd:interfaceRef="axis_enc_data_in" xd:busTypeRef="axis" xd:dataWidth="1"/>
   <xd:arg xd:name="axis_dec_data_out.data" xd:originalName="axis_dec_data_out" xd:direction="out" xd:interfaceRef="axis_dec_data_out" xd:busTypeRef="axis" xd:dataWidth="32"/>
   <xd:arg xd:name="axis_dec_data_out.keep" xd:originalName="axis_dec_data_out" xd:direction="out" xd:interfaceRef="axis_dec_data_out" xd:busTypeRef="axis" xd:dataWidth="4"/>
   <xd:arg xd:name="axis_dec_data_out.last" xd:originalName="axis_dec_data_out" xd:direction="out" xd:interfaceRef="axis_dec_data_out" xd:busTypeRef="axis" xd:dataWidth="1"/>
-  <xd:latencyEstimates xd:best-case="120" xd:worst-case="132" xd:average-case="125"/>
-  <xd:resourceEstimates xd:LUT="28233" xd:FF="19380" xd:BRAM="8" xd:DSP="150"/>
+  <xd:arg xd:name="SNR" xd:originalName="SNR" xd:direction="in" xd:interfaceRef="s_axi_ctrl" xd:busTypeRef="axilite" xd:offset="0x10" xd:handshakeRef="ap_none" xd:dataWidth="8"/>
+  <xd:latencyEstimates xd:best-case="236" xd:worst-case="248" xd:average-case="241"/>
+  <xd:resourceEstimates xd:LUT="30627" xd:FF="20307" xd:BRAM="11" xd:DSP="154"/>
 </xd:acceleratorMap>

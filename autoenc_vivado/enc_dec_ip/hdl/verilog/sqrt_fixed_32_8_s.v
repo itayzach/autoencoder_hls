@@ -817,7 +817,7 @@ wire   [0:0] sel_tmp98_fu_4489_p2;
 reg   [24:0] tmp_103_fu_4462_p4;
 wire   [24:0] sel_tmp99_fu_4494_p3;
 wire   [25:0] tmp_63_fu_4501_p1;
-wire   [25:0] p_Val2_s_41_fu_4505_p2;
+wire   [25:0] p_Val2_s_47_fu_4505_p2;
 wire   [0:0] tmp_104_fu_4517_p3;
 wire   [3:0] res_I_V_fu_4525_p2;
 wire   [24:0] res_FH_V_fu_4511_p2;
@@ -1490,7 +1490,7 @@ assign p_Val2_7_fu_695_p3 = ((icmp_reg_4596[0:0] === 1'b1) ? p_Val2_5_fu_689_p2 
 
 assign p_Val2_8_fu_702_p2 = (p_Val2_7_fu_695_p3 - tmp_37_cast1_fu_664_p1);
 
-assign p_Val2_s_41_fu_4505_p2 = (tmp_63_fu_4501_p1 + 26'd1);
+assign p_Val2_s_47_fu_4505_p2 = (tmp_63_fu_4501_p1 + 26'd1);
 
 assign p_Val2_s_fu_652_p3 = {{5'd0}, {res_I_1_3_fu_636_p3}};
 
@@ -1800,7 +1800,7 @@ always @ (*) begin
     tmp_103_fu_4462_p4[32'd0] = |(1'd1);
 end
 
-assign tmp_104_fu_4517_p3 = p_Val2_s_41_fu_4505_p2[32'd25];
+assign tmp_104_fu_4517_p3 = p_Val2_s_47_fu_4505_p2[32'd25];
 
 assign tmp_11_fu_957_p2 = ((x_l_FH_1_1_fu_892_p3 < p_Val2_14_2_fu_930_p4) ? 1'b1 : 1'b0);
 

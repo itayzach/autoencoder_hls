@@ -163,7 +163,7 @@ architecture behav of normalization_layer is
     signal ap_block_state76_pp0_stage5_iter7 : BOOLEAN;
     signal ap_block_pp0_stage5_11001 : BOOLEAN;
     signal grp_fu_107_p2 : STD_LOGIC_VECTOR (31 downto 0);
-    signal tmp_90_reg_186 : STD_LOGIC_VECTOR (31 downto 0);
+    signal tmp_96_reg_186 : STD_LOGIC_VECTOR (31 downto 0);
     signal ap_enable_reg_pp0_iter0_reg : STD_LOGIC := '0';
     signal ap_block_pp0_stage9_subdone : BOOLEAN;
     signal ap_block_pp0_stage4_subdone : BOOLEAN;
@@ -516,7 +516,7 @@ begin
         if (ap_clk'event and ap_clk = '1') then
             if (((ap_const_logic_1 = ap_CS_fsm_pp0_stage3) and (ap_const_boolean_0 = ap_block_pp0_stage3_11001))) then
                 sqrt_res_V_reg_165 <= grp_sqrt_fixed_32_8_s_fu_48_ap_return;
-                tmp_90_reg_186 <= grp_fu_107_p2;
+                tmp_96_reg_186 <= grp_fu_107_p2;
             end if;
         end if;
     end process;
@@ -847,7 +847,7 @@ begin
     end process;
 
     ap_return <= (div_res_1_V_fu_128_p1 & div_res_0_V_fu_125_p1);
-    div_res_0_V_fu_125_p1 <= tmp_90_reg_186(32 - 1 downto 0);
+    div_res_0_V_fu_125_p1 <= tmp_96_reg_186(32 - 1 downto 0);
     div_res_1_V_fu_128_p1 <= grp_fu_120_p2(32 - 1 downto 0);
     grp_fu_107_p0 <= (data_0_V_read_4_reg_140_pp0_iter2_reg & ap_const_lv24_0);
     grp_fu_107_p1 <= grp_fu_107_p10(29 - 1 downto 0);
