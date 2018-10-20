@@ -63,4 +63,6 @@
 **/*.ip_user_files/
 **/*.runs/
 **/*.srcs/
+**/*.hw/
 **/solution1/
+**/autoencoder_prj/.*

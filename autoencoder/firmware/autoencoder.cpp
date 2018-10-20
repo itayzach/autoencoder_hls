@@ -181,8 +181,11 @@ void encoder_decoder(
   hls::stream<axis_input_t> &axis_enc_data_in,
   //result_t enc_data_out[n_channel],
   //input_t dec_data_in[n_channel],
+#ifndef __SYNTHESIS__
+  ap_fixed<32,2> noise_rec[n_channel],
+#endif
   hls::stream<axis_result_t> &axis_dec_data_out,
-  t_SNR_REG SNR_REG,
+  t_snr SNR_REG,
   int AWGN_EN_REG)
 {
 //#pragma HLS INTERFACE s_axilite port=bypass
@@ -202,8 +205,7 @@ void encoder_decoder(
 	input_t dec_data_in[n_channel];
 	result_t dec_data_out[M_in];
 
-	static hls::awgn<32> my_awgn(SEED);
-
+	static hls::awgn<AWGN_WIDTH> my_awgn(SEED);
 
 	for(int i = 0; i < M_in; i++){
 		axis_enc_data_in_item[i] = axis_enc_data_in.read();
@@ -214,10 +216,13 @@ void encoder_decoder(
 
 	for (int i = 0; i < n_channel; i++) {
 		// AWGN
-		ap_int<32> noise;
-		ap_fixed<32,2> noise_fixed_point;
+		ap_int<AWGN_WIDTH> noise;
+		ap_fixed<AWGN_WIDTH,2> noise_fixed_point;
 		my_awgn(SNR_REG, noise);
 		noise_fixed_point.V = noise;
+#ifndef __SYNTHESIS__
+		noise_rec[i] = noise_fixed_point;
+#endif
 		if (AWGN_EN_REG) {
 			dec_data_in[i] = enc_data_out[i] + noise_fixed_point;
 			std::cout << "sig: " << enc_data_out[i] << std::endl;

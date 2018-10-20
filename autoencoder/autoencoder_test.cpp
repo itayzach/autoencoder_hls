@@ -77,7 +77,7 @@ int single_print_and_check_results(result_t* result, result_t* expected, int siz
 	int err_cnt = 0;
 	for (int i = 0; i < size; i++) {
 	        float diff = 0.0;
-	        if (expected[i] == 0.0) { // diving by 0 is bad
+	        if (expected[i] == 0.0) { // dividing by 0 is bad
 	            diff = (float) result[i];
 	        } else {
 	            diff = 100.0 * ((float) result[i] - (float) expected[i]) / (float) expected[i];
@@ -95,7 +95,7 @@ int single_print_and_check_results(result_t* result, result_t* expected, int siz
 }
 
 int txrx_data_print_and_check_results(
-		int simIdx, float EbNo_dB, float noise_std,
+		int simIdx,
 		unsigned int* tx_data_rec, unsigned int* rx_data_rec) {
     int err_cnt = 0;
 //	std::cout << "**************************************************************************" << std::endl;
@@ -163,14 +163,12 @@ int txrx_data_print_and_check_results(
 //}
 
 int elaborated_print_and_check_results(
-		int simIdx, float EbNo_dB, float noise_std,
+		int simIdx, ap_fixed<32,2>* noise_rec,
 		result_t* dec_data_out_rec, result_t* dec_expected, const float dec_allowed_precent_diff) {
     int err_cnt = 0;
 
     std::cout << "**************************************************************************" << std::endl;
     std::cout << "* Simulation #"        << simIdx << std::endl;
-    std::cout << "* Eb/No            : " << EbNo_dB << "[dB]" << std::endl;
-    std::cout << "* noise std        : " << noise_std << std::endl;
     std::cout << "* allowed dec diff : " << dec_allowed_precent_diff << " %" << std::endl;
     std::cout << "**************************************************************************" << std::endl;
     std::cout << std::setw(fieldWidth) << "result";
@@ -182,6 +180,11 @@ int elaborated_print_and_check_results(
     for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
     	std::cout << "Signal:" << std::endl;
 		err_cnt += single_print_and_check_results(&dec_expected[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, 0.0);
+		std::cout << "--------------------------------------------------------------------------" << std::endl;
+		std::cout << "Noise:" << std::endl;
+		for (int i = 0; i < n_channel; i++) {
+			std::cout << std::setw(fieldWidth) << noise_rec[sigIdx*n_channel + i] << std::endl;;
+		}
 		std::cout << "--------------------------------------------------------------------------" << std::endl;
 		std::cout << "RX (decoder):" << std::endl;
 		err_cnt += single_print_and_check_results(&dec_data_out_rec[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, dec_allowed_precent_diff);
@@ -238,6 +241,7 @@ int main(int argc, char **argv) {
 
 	input_t dec_data_in[n_channel];
 	hls::stream<axis_result_t> dec_data_out;
+	ap_fixed<32,2> noise[n_channel];
 //    for (int i = 0; i < M_in; i++) {
 //        dec_data_out[i].data = 0;
 //    }
@@ -262,10 +266,10 @@ int main(int argc, char **argv) {
 	for (int simIdx = 0; simIdx < NUM_SIMULATIONS; simIdx++) {
 		int sim_err_cnt = 0;
 		// Generate random noise
-		float EbNo_dB = 7.0 + 1.5*simIdx; // [dB]
-		EbNo_dB_array[simIdx] = EbNo_dB;
-		float EbNo = pow(10.0, EbNo_dB/10.0);
-		float noise_std = sqrt(1/(2*R*EbNo));
+//		float EbNo_dB = 7.0 + 1.5*simIdx; // [dB]
+//		EbNo_dB_array[simIdx] = EbNo_dB;
+//		float EbNo = pow(10.0, EbNo_dB/10.0);
+//		float noise_std = sqrt(1/(2*R*EbNo));
 
 		// Record arrays
 		unsigned int tx_data_rec[NUM_SIGNALS];
@@ -274,6 +278,7 @@ int main(int argc, char **argv) {
 		result_t dec_data_in_rec[n_channel*NUM_SIGNALS];
 		result_t dec_data_out_rec[M_in*NUM_SIGNALS];
 		result_t dec_expected_rec[M_in*NUM_SIGNALS];
+		ap_fixed<32,2> noise_rec[n_channel*NUM_SIGNALS];
 		unsigned int rx_data_rec[NUM_SIGNALS] = {0};
 		unsigned int tx_data;
 
@@ -322,8 +327,12 @@ int main(int argc, char **argv) {
 ////					rx_data_rec[sigIdx] += (unsigned int)dec_data_out_rec[sigIdx*M_in + i] * i;
 ////				}
 			t_snr snr = 0.0;
+			int awgn_en = 1;
 			encoder_decoder(enc_data_in,
-							dec_data_out, snr);
+							noise,
+							dec_data_out,
+							snr,
+							awgn_en);
 
 			// Add to record arrays
 			tx_data_rec[sigIdx] = tx_data;
@@ -332,6 +341,7 @@ int main(int argc, char **argv) {
 				enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
 				dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
 				enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
+				noise_rec[sigIdx*n_channel + i] = noise[i];
 			}
 			for (int i = 0; i < M_in; i++) {
 				axis_result_t dec_data_out_tmp;
@@ -342,10 +352,10 @@ int main(int argc, char **argv) {
 			}
 		}
 		// Print and check results
-		err_cnt_array[simIdx] = txrx_data_print_and_check_results(simIdx, EbNo_dB, noise_std, tx_data_rec, rx_data_rec);
-		std::cout << "Sim #" << simIdx << ": Eb/No = " << EbNo_dB_array[simIdx] << "\t" << (float)err_cnt_array[simIdx]/(float)NUM_SIGNALS << std::endl;
+		err_cnt_array[simIdx] = txrx_data_print_and_check_results(simIdx, tx_data_rec, rx_data_rec);
+		std::cout << "Sim #" << simIdx << ": SNR = " << snr << "\t" << (float)err_cnt_array[simIdx]/(float)NUM_SIGNALS << std::endl;
 		sim_err_cnt = elaborated_print_and_check_results(
-			simIdx, EbNo_dB, noise_std,
+			simIdx, noise_rec,
 			dec_data_out_rec, dec_expected_rec, dec_allowed_precent_diff);
 	}
 

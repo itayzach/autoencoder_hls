@@ -178,10 +178,10 @@ ue {}} bitwidth {attribs {resolve_type immediate dependency {} format long minim
 imum {} maximum {}} value 0}}} RVALID {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 1} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0}}} RREADY {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type 
 immediate dependency {} format long minimum {} maximum {}} value 1} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0}}} RRESP {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 2} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} integer {sig
 ned {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value false}}}} AWADDR {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 5} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} integer {signed {attribs {resolve_type immediate dependency {} format bool minim
-um {} maximum {}} value false}}}} WDATA {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 8} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} real {fixed {fractwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 4} signed {attribs {resolve_type imme
-diate dependency {} format bool minimum {} maximum {}} value false}}}}} WSTRB {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 4} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} integer {signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value false}}
-}} ARADDR {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 5} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} integer {signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value false}}}} RDATA {datatype {name {attribs {resolve_type immediate dependency
- {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 8} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} real {fixed {fractwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 4} signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value false}}}}}}</spirit:value>
+um {} maximum {}} value false}}}} WDATA {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 32} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} integer {signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value true}}}} WSTRB {datatype {name {attribs {res
+olve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 4} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} integer {signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value false}}}} ARADDR {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {
+}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 5} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} integer {signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value false}}}} RDATA {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} 
+format long minimum {} maximum {}} value 32} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} integer {signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value true}}}}}</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -656,9 +656,9 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>SNR_V</spirit:name>
-          <spirit:displayName>SNR_V</spirit:displayName>
-          <spirit:description>Data signal of SNR_V</spirit:description>
+          <spirit:name>SNR_REG_V</spirit:name>
+          <spirit:displayName>SNR_REG_V</spirit:displayName>
+          <spirit:description>Data signal of SNR_REG_V</spirit:description>
           <spirit:addressOffset>16</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
@@ -666,8 +666,8 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
             <spirit:value spirit:format="long">0</spirit:value>
           </spirit:reset>
           <spirit:field>
-            <spirit:name>SNR_V</spirit:name>
-            <spirit:description>Bit 7 to 0 Data signal of SNR_V</spirit:description>
+            <spirit:name>SNR_REG_V</spirit:name>
+            <spirit:description>Bit 7 to 0 Data signal of SNR_REG_V</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
             <spirit:bitWidth spirit:format="long">8</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
@@ -691,6 +691,29 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
             <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
           </spirit:field>
         </spirit:register>
+        <spirit:register>
+          <spirit:name>AWGN_EN_REG</spirit:name>
+          <spirit:displayName>AWGN_EN_REG</spirit:displayName>
+          <spirit:description>Data signal of AWGN_EN_REG</spirit:description>
+          <spirit:addressOffset>24</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>AWGN_EN_REG</spirit:name>
+            <spirit:description>Bit 31 to 0 Data signal of AWGN_EN_REG</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
       </spirit:addressBlock>
     </spirit:memoryMap>
   </spirit:memoryMaps>
@@ -708,7 +731,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b2c97ccf</spirit:value>
+            <spirit:value>0a1b610a</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -724,7 +747,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>75c732b1</spirit:value>
+            <spirit:value>928a75bc</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -740,7 +763,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>a7da3f08</spirit:value>
+            <spirit:value>008bb96a</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -756,7 +779,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>9e556906</spirit:value>
+            <spirit:value>f20ff04e</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -770,7 +793,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ce810f9e</spirit:value>
+            <spirit:value>3554fae5</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1683,7 +1706,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
       <spirit:file>
         <spirit:name>hdl/vhdl/encoder_decoder.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_ab8fc255</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_d6ec6880</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1908,7 +1931,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>latency</spirit:name>
-      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="5">236</spirit:value>
+      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="5">234</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>II</spirit:name>
@@ -1925,17 +1948,17 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
       </xilinx:taxonomies>
       <xilinx:displayName>Encoder_decoder</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>1810182009</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2018-10-18T17:10:06Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>1810191856</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2018-10-19T15:56:50Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2018.2.1</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="a34e0483"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="462dccb0"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="2adda0c1"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="1c447eb8"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="f42655d5"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="0457ee84"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="75f230f8"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="e76f1e5a"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="3cf40759"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="76bd485b"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

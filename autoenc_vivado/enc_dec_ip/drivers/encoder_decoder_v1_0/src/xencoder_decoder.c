@@ -76,20 +76,37 @@ void XEncoder_decoder_DisableAutoRestart(XEncoder_decoder *InstancePtr) {
     XEncoder_decoder_WriteReg(InstancePtr->Ctrl_BaseAddress, XENCODER_DECODER_CTRL_ADDR_AP_CTRL, 0);
 }
 
-void XEncoder_decoder_Set_SNR_V(XEncoder_decoder *InstancePtr, u32 Data) {
+void XEncoder_decoder_Set_SNR_REG_V(XEncoder_decoder *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XEncoder_decoder_WriteReg(InstancePtr->Ctrl_BaseAddress, XENCODER_DECODER_CTRL_ADDR_SNR_V_DATA, Data);
+    XEncoder_decoder_WriteReg(InstancePtr->Ctrl_BaseAddress, XENCODER_DECODER_CTRL_ADDR_SNR_REG_V_DATA, Data);
 }
 
-u32 XEncoder_decoder_Get_SNR_V(XEncoder_decoder *InstancePtr) {
+u32 XEncoder_decoder_Get_SNR_REG_V(XEncoder_decoder *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XEncoder_decoder_ReadReg(InstancePtr->Ctrl_BaseAddress, XENCODER_DECODER_CTRL_ADDR_SNR_V_DATA);
+    Data = XEncoder_decoder_ReadReg(InstancePtr->Ctrl_BaseAddress, XENCODER_DECODER_CTRL_ADDR_SNR_REG_V_DATA);
+    return Data;
+}
+
+void XEncoder_decoder_Set_AWGN_EN_REG(XEncoder_decoder *InstancePtr, u32 Data) {
+    Xil_AssertVoid(InstancePtr != NULL);
+    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    XEncoder_decoder_WriteReg(InstancePtr->Ctrl_BaseAddress, XENCODER_DECODER_CTRL_ADDR_AWGN_EN_REG_DATA, Data);
+}
+
+u32 XEncoder_decoder_Get_AWGN_EN_REG(XEncoder_decoder *InstancePtr) {
+    u32 Data;
+
+    Xil_AssertNonvoid(InstancePtr != NULL);
+    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    Data = XEncoder_decoder_ReadReg(InstancePtr->Ctrl_BaseAddress, XENCODER_DECODER_CTRL_ADDR_AWGN_EN_REG_DATA);
     return Data;
 }
 

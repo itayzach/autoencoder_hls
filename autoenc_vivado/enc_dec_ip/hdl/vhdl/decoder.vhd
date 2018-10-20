@@ -121,15 +121,15 @@ architecture behav of decoder is
     signal tmp_fu_193_p2 : STD_LOGIC_VECTOR (0 downto 0);
     signal p_s_fu_186_p3 : STD_LOGIC_VECTOR (25 downto 0);
     signal p_cast_cast_fu_179_p3 : STD_LOGIC_VECTOR (25 downto 0);
-    signal p_s_62_fu_197_p3 : STD_LOGIC_VECTOR (25 downto 0);
-    signal tmp_102_fu_205_p2 : STD_LOGIC_VECTOR (0 downto 0);
+    signal p_s_61_fu_197_p3 : STD_LOGIC_VECTOR (25 downto 0);
+    signal tmp_103_fu_205_p2 : STD_LOGIC_VECTOR (0 downto 0);
     signal tmp_276_1_fu_219_p2 : STD_LOGIC_VECTOR (0 downto 0);
     signal tmp_276_2_fu_233_p2 : STD_LOGIC_VECTOR (0 downto 0);
-    signal tmp_103_fu_247_p3 : STD_LOGIC_VECTOR (24 downto 0);
-    signal tmp_122_cast_fu_239_p3 : STD_LOGIC_VECTOR (31 downto 0);
-    signal tmp_121_cast_fu_225_p3 : STD_LOGIC_VECTOR (31 downto 0);
-    signal tmp_120_cast_fu_211_p3 : STD_LOGIC_VECTOR (31 downto 0);
-    signal tmp_302_fu_254_p5 : STD_LOGIC_VECTOR (120 downto 0);
+    signal tmp_104_fu_247_p3 : STD_LOGIC_VECTOR (24 downto 0);
+    signal tmp_124_cast_fu_239_p3 : STD_LOGIC_VECTOR (31 downto 0);
+    signal tmp_123_cast_fu_225_p3 : STD_LOGIC_VECTOR (31 downto 0);
+    signal tmp_122_cast_fu_211_p3 : STD_LOGIC_VECTOR (31 downto 0);
+    signal tmp_303_fu_254_p5 : STD_LOGIC_VECTOR (120 downto 0);
 
     component softmax IS
     port (
@@ -397,7 +397,7 @@ begin
         end if; 
     end process;
 
-    ap_return <= std_logic_vector(IEEE.numeric_std.resize(unsigned(tmp_302_fu_254_p5),128));
+    ap_return <= std_logic_vector(IEEE.numeric_std.resize(unsigned(tmp_303_fu_254_p5),128));
 
     grp_compute_layer_0_0_0_1_fu_60_ap_ce_assign_proc : process(ap_CS_fsm_state4, ap_CS_fsm_state3)
     begin
@@ -428,30 +428,30 @@ begin
     p_cast_cast_fu_179_p3 <= 
         ap_const_lv26_1000000 when (tmp_s_reg_321(0) = '1') else 
         ap_const_lv26_0;
-    p_s_62_fu_197_p3 <= 
+    p_s_61_fu_197_p3 <= 
         p_s_fu_186_p3 when (tmp_fu_193_p2(0) = '1') else 
         p_cast_cast_fu_179_p3;
     p_s_fu_186_p3 <= 
         ap_const_lv26_3000000 when (tmp_273_2_reg_337(0) = '1') else 
         ap_const_lv26_2000000;
-    tmp_102_fu_205_p2 <= "1" when (p_s_62_fu_197_p3 = ap_const_lv26_0) else "0";
-    tmp_103_fu_247_p3 <= 
+    tmp_103_fu_205_p2 <= "1" when (p_s_61_fu_197_p3 = ap_const_lv26_0) else "0";
+    tmp_104_fu_247_p3 <= 
         ap_const_lv25_1000000 when (tmp_273_2_reg_337(0) = '1') else 
         ap_const_lv25_0;
-    tmp_120_cast_fu_211_p3 <= 
-        ap_const_lv32_1000000 when (tmp_102_fu_205_p2(0) = '1') else 
+    tmp_122_cast_fu_211_p3 <= 
+        ap_const_lv32_1000000 when (tmp_103_fu_205_p2(0) = '1') else 
         ap_const_lv32_0;
-    tmp_121_cast_fu_225_p3 <= 
+    tmp_123_cast_fu_225_p3 <= 
         ap_const_lv32_1000000 when (tmp_276_1_fu_219_p2(0) = '1') else 
         ap_const_lv32_0;
-    tmp_122_cast_fu_239_p3 <= 
+    tmp_124_cast_fu_239_p3 <= 
         ap_const_lv32_1000000 when (tmp_276_2_fu_233_p2(0) = '1') else 
         ap_const_lv32_0;
     tmp_273_1_fu_163_p2 <= "1" when (signed(logits3_2_V_reg_315) > signed(logits3_V_1_0_logits_reg_326)) else "0";
     tmp_273_2_fu_173_p2 <= "1" when (signed(call_ret5_reg_310_3) > signed(logits3_V_2_0_logits_fu_167_p3)) else "0";
-    tmp_276_1_fu_219_p2 <= "1" when (p_s_62_fu_197_p3 = ap_const_lv26_1000000) else "0";
-    tmp_276_2_fu_233_p2 <= "1" when (p_s_62_fu_197_p3 = ap_const_lv26_2000000) else "0";
-    tmp_302_fu_254_p5 <= (((tmp_103_fu_247_p3 & tmp_122_cast_fu_239_p3) & tmp_121_cast_fu_225_p3) & tmp_120_cast_fu_211_p3);
+    tmp_276_1_fu_219_p2 <= "1" when (p_s_61_fu_197_p3 = ap_const_lv26_1000000) else "0";
+    tmp_276_2_fu_233_p2 <= "1" when (p_s_61_fu_197_p3 = ap_const_lv26_2000000) else "0";
+    tmp_303_fu_254_p5 <= (((tmp_104_fu_247_p3 & tmp_124_cast_fu_239_p3) & tmp_123_cast_fu_225_p3) & tmp_122_cast_fu_211_p3);
     tmp_fu_193_p2 <= (tmp_273_2_reg_337 or tmp_273_1_reg_332);
     tmp_s_fu_146_p2 <= "1" when (signed(grp_softmax_fu_48_ap_return_1) > signed(grp_softmax_fu_48_ap_return_0)) else "0";
 end behav;

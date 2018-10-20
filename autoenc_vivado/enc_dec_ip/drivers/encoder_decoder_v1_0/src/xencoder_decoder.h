@@ -87,8 +87,10 @@ u32 XEncoder_decoder_IsReady(XEncoder_decoder *InstancePtr);
 void XEncoder_decoder_EnableAutoRestart(XEncoder_decoder *InstancePtr);
 void XEncoder_decoder_DisableAutoRestart(XEncoder_decoder *InstancePtr);
 
-void XEncoder_decoder_Set_SNR_V(XEncoder_decoder *InstancePtr, u32 Data);
-u32 XEncoder_decoder_Get_SNR_V(XEncoder_decoder *InstancePtr);
+void XEncoder_decoder_Set_SNR_REG_V(XEncoder_decoder *InstancePtr, u32 Data);
+u32 XEncoder_decoder_Get_SNR_REG_V(XEncoder_decoder *InstancePtr);
+void XEncoder_decoder_Set_AWGN_EN_REG(XEncoder_decoder *InstancePtr, u32 Data);
+u32 XEncoder_decoder_Get_AWGN_EN_REG(XEncoder_decoder *InstancePtr);
 
 void XEncoder_decoder_InterruptGlobalEnable(XEncoder_decoder *InstancePtr);
 void XEncoder_decoder_InterruptGlobalDisable(XEncoder_decoder *InstancePtr);

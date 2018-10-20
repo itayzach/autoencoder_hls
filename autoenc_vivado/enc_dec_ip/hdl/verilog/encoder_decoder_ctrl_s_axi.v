@@ -38,7 +38,8 @@ module encoder_decoder_ctrl_s_axi
     input  wire                          ap_done,
     input  wire                          ap_ready,
     input  wire                          ap_idle,
-    output wire [7:0]                    SNR_V
+    output wire [7:0]                    SNR_REG_V,
+    output wire [31:0]                   AWGN_EN_REG
 );
 //------------------------Address Info-------------------
 // 0x00 : Control signals
@@ -59,27 +60,32 @@ module encoder_decoder_ctrl_s_axi
 //        bit 0  - Channel 0 (ap_done)
 //        bit 1  - Channel 1 (ap_ready)
 //        others - reserved
-// 0x10 : Data signal of SNR_V
-//        bit 7~0 - SNR_V[7:0] (Read/Write)
+// 0x10 : Data signal of SNR_REG_V
+//        bit 7~0 - SNR_REG_V[7:0] (Read/Write)
 //        others  - reserved
 // 0x14 : reserved
+// 0x18 : Data signal of AWGN_EN_REG
+//        bit 31~0 - AWGN_EN_REG[31:0] (Read/Write)
+// 0x1c : reserved
 // (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
 //------------------------Parameter----------------------
 localparam
-    ADDR_AP_CTRL      = 5'h00,
-    ADDR_GIE          = 5'h04,
-    ADDR_IER          = 5'h08,
-    ADDR_ISR          = 5'h0c,
-    ADDR_SNR_V_DATA_0 = 5'h10,
-    ADDR_SNR_V_CTRL   = 5'h14,
-    WRIDLE            = 2'd0,
-    WRDATA            = 2'd1,
-    WRRESP            = 2'd2,
-    WRRESET           = 2'd3,
-    RDIDLE            = 2'd0,
-    RDDATA            = 2'd1,
-    RDRESET           = 2'd2,
+    ADDR_AP_CTRL            = 5'h00,
+    ADDR_GIE                = 5'h04,
+    ADDR_IER                = 5'h08,
+    ADDR_ISR                = 5'h0c,
+    ADDR_SNR_REG_V_DATA_0   = 5'h10,
+    ADDR_SNR_REG_V_CTRL     = 5'h14,
+    ADDR_AWGN_EN_REG_DATA_0 = 5'h18,
+    ADDR_AWGN_EN_REG_CTRL   = 5'h1c,
+    WRIDLE                  = 2'd0,
+    WRDATA                  = 2'd1,
+    WRRESP                  = 2'd2,
+    WRRESET                 = 2'd3,
+    RDIDLE                  = 2'd0,
+    RDDATA                  = 2'd1,
+    RDRESET                 = 2'd2,
     ADDR_BITS         = 5;
 
 //------------------------Local signal-------------------
@@ -103,7 +109,8 @@ localparam
     reg                           int_gie = 1'b0;
     reg  [1:0]                    int_ier = 2'b0;
     reg  [1:0]                    int_isr = 2'b0;
-    reg  [7:0]                    int_SNR_V = 'b0;
+    reg  [7:0]                    int_SNR_REG_V = 'b0;
+    reg  [31:0]                   int_AWGN_EN_REG = 'b0;
 
 //------------------------Instantiation------------------
 
@@ -211,8 +218,11 @@ always @(posedge ACLK) begin
                 ADDR_ISR: begin
                     rdata <= int_isr;
                 end
-                ADDR_SNR_V_DATA_0: begin
-                    rdata <= int_SNR_V[7:0];
+                ADDR_SNR_REG_V_DATA_0: begin
+                    rdata <= int_SNR_REG_V[7:0];
+                end
+                ADDR_AWGN_EN_REG_DATA_0: begin
+                    rdata <= int_AWGN_EN_REG[31:0];
                 end
             endcase
         end
@@ -221,9 +231,10 @@ end
 
 
 //------------------------Register logic-----------------
-assign interrupt = int_gie & (|int_isr);
-assign ap_start  = int_ap_start;
-assign SNR_V     = int_SNR_V;
+assign interrupt   = int_gie & (|int_isr);
+assign ap_start    = int_ap_start;
+assign SNR_REG_V   = int_SNR_REG_V;
+assign AWGN_EN_REG = int_AWGN_EN_REG;
 // int_ap_start
 always @(posedge ACLK) begin
     if (ARESET)
@@ -320,13 +331,23 @@ always @(posedge ACLK) begin
     end
 end
 
-// int_SNR_V[7:0]
+// int_SNR_REG_V[7:0]
 always @(posedge ACLK) begin
     if (ARESET)
-        int_SNR_V[7:0] <= 0;
+        int_SNR_REG_V[7:0] <= 0;
     else if (ACLK_EN) begin
-        if (w_hs && waddr == ADDR_SNR_V_DATA_0)
-            int_SNR_V[7:0] <= (WDATA[31:0] & wmask) | (int_SNR_V[7:0] & ~wmask);
+        if (w_hs && waddr == ADDR_SNR_REG_V_DATA_0)
+            int_SNR_REG_V[7:0] <= (WDATA[31:0] & wmask) | (int_SNR_REG_V[7:0] & ~wmask);
+    end
+end
+
+// int_AWGN_EN_REG[31:0]
+always @(posedge ACLK) begin
+    if (ARESET)
+        int_AWGN_EN_REG[31:0] <= 0;
+    else if (ACLK_EN) begin
+        if (w_hs && waddr == ADDR_AWGN_EN_REG_DATA_0)
+            int_AWGN_EN_REG[31:0] <= (WDATA[31:0] & wmask) | (int_AWGN_EN_REG[31:0] & ~wmask);
     end
 end
 
