@@ -26,7 +26,7 @@
 
 #include "parameters.h"
 
-#define AWGN_WIDTH 26
+#define AWGN_WIDTH 32
 typedef hls::awgn<AWGN_WIDTH>::t_input_scale t_snr;
 const int LFSR_WIDTH = hls::awgn<AWGN_WIDTH>::LFSR_WIDTH;
 const ap_uint<LFSR_WIDTH> SEED = ap_uint<LFSR_WIDTH>("0123456789ABCDEF123456789ABCDEF0",16);
@@ -62,9 +62,7 @@ void encoder_decoder(
   hls::stream<axis_input_t> &axis_enc_data_in,
   //result_t enc_data_out[n_channel],
   //input_t dec_data_in[n_channel],
-#ifndef  __SYNTHESIS__
-  ap_fixed<32,2> noise_rec[n_channel],
-#endif
+  double *total_noise,
   hls::stream<axis_result_t> &axis_dec_data_out,
   t_snr SNR_REG,
   int AWGN_EN_REG);

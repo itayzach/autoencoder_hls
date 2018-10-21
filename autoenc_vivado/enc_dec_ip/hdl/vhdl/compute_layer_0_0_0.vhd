@@ -42,7 +42,7 @@ architecture behav of compute_layer_0_0_0 is
     constant ap_const_lv32_FFECF215 : STD_LOGIC_VECTOR (31 downto 0) := "11111111111011001111001000010101";
     constant ap_const_logic_0 : STD_LOGIC := '0';
 
-    signal tmp_113_reg_571 : STD_LOGIC_VECTOR (31 downto 0);
+    signal tmp_115_reg_571 : STD_LOGIC_VECTOR (31 downto 0);
     signal ap_block_state1_pp0_stage0_iter0 : BOOLEAN;
     signal ap_block_state2_pp0_stage0_iter1 : BOOLEAN;
     signal ap_block_pp0_stage0_11001 : BOOLEAN;
@@ -95,7 +95,7 @@ begin
         if (ap_clk'event and ap_clk = '1') then
             if (((ap_const_boolean_0 = ap_block_pp0_stage0_11001) and (ap_const_logic_1 = ap_ce))) then
                 tmp_101_reg_596 <= p_Val2_2_1_fu_88_p2(50 downto 24);
-                tmp_113_reg_571 <= p_Val2_s_fu_93_p2(55 downto 24);
+                tmp_115_reg_571 <= p_Val2_s_fu_93_p2(55 downto 24);
                 tmp_123_0_1_reg_576 <= p_Val2_0_1_fu_90_p2(55 downto 24);
                 tmp_123_1_1_reg_586 <= p_Val2_1_1_fu_86_p2(55 downto 24);
                 tmp_123_1_reg_581 <= p_Val2_1_fu_92_p2(55 downto 24);
@@ -137,7 +137,7 @@ begin
     p_Val2_s_fu_93_p2 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(std_logic_vector(signed(p_Val2_s_fu_93_p0) * signed('0' &ap_const_lv56_156C271))), 56));
     res_0_V_write_assig_fu_532_p2 <= std_logic_vector(unsigned(tmp2_fu_527_p2) + unsigned(tmp1_fu_518_p2));
     res_1_V_write_assig_fu_553_p2 <= std_logic_vector(unsigned(tmp5_fu_547_p2) + unsigned(tmp4_fu_538_p2));
-    tmp1_fu_518_p2 <= std_logic_vector(unsigned(tmp_113_reg_571) + unsigned(tmp_123_1_reg_581));
+    tmp1_fu_518_p2 <= std_logic_vector(unsigned(tmp_115_reg_571) + unsigned(tmp_123_1_reg_581));
     tmp2_fu_527_p2 <= std_logic_vector(unsigned(tmp3_fu_522_p2) + unsigned(tmp_123_2_reg_591));
     tmp3_fu_522_p2 <= std_logic_vector(unsigned(tmp_123_3_reg_601) + unsigned(ap_const_lv32_EFAA0));
     tmp4_fu_538_p2 <= std_logic_vector(unsigned(tmp_123_0_1_reg_576) + unsigned(tmp_123_1_1_reg_586));

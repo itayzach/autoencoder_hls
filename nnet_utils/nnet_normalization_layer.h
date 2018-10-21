@@ -97,6 +97,7 @@ void normalization_layer(
 		#pragma HLS RESOURCE variable=div_scaled latency=2
 		div_res[ii] = (data[ii] / sqrt_res);
 		div_scaled[ii] = sqrt2 * div_res[ii];
+//		div_scaled[ii] = div_res[ii];
 	}
 
     // Cast to "res_t" type
@@ -104,7 +105,7 @@ void normalization_layer(
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL
         }
-        res[ires] = (res_T) (div_res[ires]);
+        res[ires] = (res_T) (div_scaled[ires]);
     }    
 }
 

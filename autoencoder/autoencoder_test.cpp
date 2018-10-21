@@ -33,8 +33,8 @@
 #include "firmware/weights/expected.h"
 
 #define SEED 5
-#define NUM_SIMULATIONS 1
-#define NUM_SIGNALS 4
+#define NUM_SIMULATIONS 8
+#define NUM_SIGNALS 1000
 
 const char separator = ' ';
 const int fieldWidth = 15;
@@ -163,7 +163,7 @@ int txrx_data_print_and_check_results(
 //}
 
 int elaborated_print_and_check_results(
-		int simIdx, ap_fixed<32,2>* noise_rec,
+		int simIdx,
 		result_t* dec_data_out_rec, result_t* dec_expected, const float dec_allowed_precent_diff) {
     int err_cnt = 0;
 
@@ -180,11 +180,11 @@ int elaborated_print_and_check_results(
     for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
     	std::cout << "Signal:" << std::endl;
 		err_cnt += single_print_and_check_results(&dec_expected[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, 0.0);
-		std::cout << "--------------------------------------------------------------------------" << std::endl;
-		std::cout << "Noise:" << std::endl;
-		for (int i = 0; i < n_channel; i++) {
-			std::cout << std::setw(fieldWidth) << noise_rec[sigIdx*n_channel + i] << std::endl;;
-		}
+//		std::cout << "--------------------------------------------------------------------------" << std::endl;
+//		std::cout << "Noise:" << std::endl;
+//		for (int i = 0; i < n_channel; i++) {
+//			std::cout << std::setw(fieldWidth) << noise_rec[sigIdx*n_channel + i] << std::endl;;
+//		}
 		std::cout << "--------------------------------------------------------------------------" << std::endl;
 		std::cout << "RX (decoder):" << std::endl;
 		err_cnt += single_print_and_check_results(&dec_data_out_rec[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, dec_allowed_precent_diff);
@@ -223,7 +223,6 @@ int main(int argc, char **argv) {
     ap_uint<8> lfsr_seed = SEED;
 	static hls::awgn<8> my_awgn(lfsr_seed);
 	//ap_int<8> noise[100];
-	ap_ufixed<32,8> snr = 7.0;
 	for (int i = 0; i < 100; i++) {
 		//my_awgn(snr, noise[i]);
 		//std::cout << "noise[" << i << "] = " << noise[i] << std::endl;
@@ -241,7 +240,6 @@ int main(int argc, char **argv) {
 
 	input_t dec_data_in[n_channel];
 	hls::stream<axis_result_t> dec_data_out;
-	ap_fixed<32,2> noise[n_channel];
 //    for (int i = 0; i < M_in; i++) {
 //        dec_data_out[i].data = 0;
 //    }
@@ -263,8 +261,11 @@ int main(int argc, char **argv) {
 	std::random_device rd{};
 	std::mt19937 gen{rd()};
 	std::normal_distribution<> norm_dist{0.0, 1.0};
-	for (int simIdx = 0; simIdx < NUM_SIMULATIONS; simIdx++) {
+	t_snr snr = 0.0;
+	for (int simIdx = 0; simIdx < NUM_SIMULATIONS; simIdx++, snr+=1) {
+		std::cout << "snr = " << snr << std::endl;
 		int sim_err_cnt = 0;
+		double total_noise = 0.0;
 		// Generate random noise
 //		float EbNo_dB = 7.0 + 1.5*simIdx; // [dB]
 //		EbNo_dB_array[simIdx] = EbNo_dB;
@@ -278,7 +279,6 @@ int main(int argc, char **argv) {
 		result_t dec_data_in_rec[n_channel*NUM_SIGNALS];
 		result_t dec_data_out_rec[M_in*NUM_SIGNALS];
 		result_t dec_expected_rec[M_in*NUM_SIGNALS];
-		ap_fixed<32,2> noise_rec[n_channel*NUM_SIGNALS];
 		unsigned int rx_data_rec[NUM_SIGNALS] = {0};
 		unsigned int tx_data;
 
@@ -326,10 +326,9 @@ int main(int argc, char **argv) {
 ////					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
 ////					rx_data_rec[sigIdx] += (unsigned int)dec_data_out_rec[sigIdx*M_in + i] * i;
 ////				}
-			t_snr snr = 0.0;
-			int awgn_en = 1;
+			int awgn_en = 2;
 			encoder_decoder(enc_data_in,
-							noise,
+					&total_noise,
 							dec_data_out,
 							snr,
 							awgn_en);
@@ -341,7 +340,6 @@ int main(int argc, char **argv) {
 				enc_data_out_rec[sigIdx*n_channel + i] = enc_data_out[i];
 				dec_data_in_rec[sigIdx*n_channel + i] = dec_data_in[i];
 				enc_expected_rec[sigIdx*n_channel + i] = enc_expected[tx_data*n_channel + i];
-				noise_rec[sigIdx*n_channel + i] = noise[i];
 			}
 			for (int i = 0; i < M_in; i++) {
 				axis_result_t dec_data_out_tmp;
@@ -352,11 +350,13 @@ int main(int argc, char **argv) {
 			}
 		}
 		// Print and check results
-		err_cnt_array[simIdx] = txrx_data_print_and_check_results(simIdx, tx_data_rec, rx_data_rec);
-		std::cout << "Sim #" << simIdx << ": SNR = " << snr << "\t" << (float)err_cnt_array[simIdx]/(float)NUM_SIGNALS << std::endl;
-		sim_err_cnt = elaborated_print_and_check_results(
-			simIdx, noise_rec,
-			dec_data_out_rec, dec_expected_rec, dec_allowed_precent_diff);
+//		err_cnt_array[simIdx] = txrx_data_print_and_check_results(simIdx, tx_data_rec, rx_data_rec);
+//		std::cout << "Sim #" << simIdx << ": SNR = " << snr << "\t" << (float)err_cnt_array[simIdx]/(float)NUM_SIGNALS << std::endl;
+//		sim_err_cnt = elaborated_print_and_check_results(
+//			simIdx,
+//			dec_data_out_rec, dec_expected_rec, dec_allowed_precent_diff);
+		std::cout << "noise mean = " << total_noise/(2*NUM_SIGNALS) << std::endl;
+		std::cout << "====================================================" << std::endl;
 	}
 
     return 0;

@@ -181,9 +181,7 @@ void encoder_decoder(
   hls::stream<axis_input_t> &axis_enc_data_in,
   //result_t enc_data_out[n_channel],
   //input_t dec_data_in[n_channel],
-#ifndef __SYNTHESIS__
-  ap_fixed<32,2> noise_rec[n_channel],
-#endif
+  double *total_noise,
   hls::stream<axis_result_t> &axis_dec_data_out,
   t_snr SNR_REG,
   int AWGN_EN_REG)
@@ -204,7 +202,6 @@ void encoder_decoder(
 	result_t enc_data_out[n_channel];
 	input_t dec_data_in[n_channel];
 	result_t dec_data_out[M_in];
-
 	static hls::awgn<AWGN_WIDTH> my_awgn(SEED);
 
 	for(int i = 0; i < M_in; i++){
@@ -218,17 +215,24 @@ void encoder_decoder(
 		// AWGN
 		ap_int<AWGN_WIDTH> noise;
 		ap_fixed<AWGN_WIDTH,2> noise_fixed_point;
+		const ap_fixed<AWGN_WIDTH,2> sqrt2 = 1.41421;
 		my_awgn(SNR_REG, noise);
 		noise_fixed_point.V = noise;
-#ifndef __SYNTHESIS__
-		noise_rec[i] = noise_fixed_point;
-#endif
-		if (AWGN_EN_REG) {
-			dec_data_in[i] = enc_data_out[i] + noise_fixed_point;
-			std::cout << "sig: " << enc_data_out[i] << std::endl;
-			std::cout << "noise: " << noise << " " << noise_fixed_point << std::endl;
-			std::cout << "sig + noise: " << dec_data_in[i] << std::endl;
+		if (AWGN_EN_REG == 0) {
+			dec_data_in[i] = enc_data_out[i];
+		} else if (AWGN_EN_REG == 1) {
+			dec_data_in[i] = enc_data_out[i] + (noise_fixed_point / sqrt2);
+//			std::cout << "sig: " << enc_data_out[i] << std::endl;
+			std::cout << std::hex<< "noise: " << noise << " " << std::dec << noise_fixed_point << std::endl;
+//			std::cout << "sig + noise: " << dec_data_in[i] << std::endl;
 			std::cout << "-----------------------------------" << std::endl;
+		} else if (AWGN_EN_REG == 2) {
+			dec_data_in[i] = enc_data_out[i] + noise_fixed_point;
+//			std::cout << "sig: " << enc_data_out[i] << std::endl;
+//			std::cout << std::hex << "noise: " << noise << " " << std::dec << noise_fixed_point << std::endl;
+//			std::cout << "sig + noise: " << dec_data_in[i] << std::endl;
+//			std::cout << "-----------------------------------" << std::endl;
+			*total_noise += double(noise);
 		} else {
 			dec_data_in[i] = enc_data_out[i];
 		}

@@ -5,50 +5,82 @@
 -- 
 -- ==============================================================
 
-
 library IEEE;
 use IEEE.std_logic_1164.all;
-use IEEE.NUMERIC_STD.all;
+use IEEE.numeric_std.all;
 
-entity encoder_decoder_mibs is
-generic (
-    ID            :integer := 0;
-    NUM_STAGE     :integer := 1;
-    din0_WIDTH       :integer := 32;
-    din1_WIDTH       :integer := 32;
-    din2_WIDTH       :integer := 32;
-    din3_WIDTH       :integer := 32;
-    din4_WIDTH       :integer := 32;
-    dout_WIDTH        :integer := 32);
+entity encoder_decoder_mibs_MulnS_0 is
 port (
-    din0   :in  std_logic_vector(3 downto 0);
-    din1   :in  std_logic_vector(3 downto 0);
-    din2   :in  std_logic_vector(3 downto 0);
-    din3   :in  std_logic_vector(3 downto 0);
-    din4   :in  std_logic_vector(1 downto 0);
-    dout     :out std_logic_vector(3 downto 0));
+    clk: in std_logic;
+    ce: in std_logic;
+    a: in std_logic_vector(50 - 1 downto 0);
+    b: in std_logic_vector(53 - 1 downto 0);
+    p: out std_logic_vector(102 - 1 downto 0));
 end entity;
 
-architecture rtl of encoder_decoder_mibs is
-    -- puts internal signals
-    signal sel    : std_logic_vector(1 downto 0);
-    -- level 1 signals
-    signal mux_1_0    : std_logic_vector(3 downto 0);
-    signal mux_1_1    : std_logic_vector(3 downto 0);
-    -- level 2 signals
-    signal mux_2_0    : std_logic_vector(3 downto 0);
+architecture behav of encoder_decoder_mibs_MulnS_0 is
+    signal tmp_product : std_logic_vector(102 - 1 downto 0);
+    signal a_i : std_logic_vector(50 - 1 downto 0);
+    signal b_i : std_logic_vector(53 - 1 downto 0);
+    signal p_tmp : std_logic_vector(102 - 1 downto 0);
+
 begin
+    a_i <= a;
+    b_i <= b;
+    p <= p_tmp;
 
-sel <= din4;
+    tmp_product <= std_logic_vector(resize(unsigned(std_logic_vector(signed(a_i) * signed('0' & b_i))), 102));
 
--- Generate level 1 logic
-mux_1_0 <= din0 when sel(0) = '0' else din1;
-mux_1_1 <= din2 when sel(0) = '0' else din3;
+    process(clk)
+    begin
+        if (clk'event and clk = '1') then
+            if (ce = '1') then
+                p_tmp <= tmp_product;
+            end if;
+        end if;
+    end process;
+end architecture;
 
--- Generate level 2 logic
-mux_2_0 <= mux_1_0 when sel(1) = '0' else mux_1_1;
+Library IEEE;
+use IEEE.std_logic_1164.all;
 
--- output logic
-dout <= mux_2_0;
+entity encoder_decoder_mibs is
+    generic (
+        ID : INTEGER;
+        NUM_STAGE : INTEGER;
+        din0_WIDTH : INTEGER;
+        din1_WIDTH : INTEGER;
+        dout_WIDTH : INTEGER);
+    port (
+        clk : IN STD_LOGIC;
+        reset : IN STD_LOGIC;
+        ce : IN STD_LOGIC;
+        din0 : IN STD_LOGIC_VECTOR(din0_WIDTH - 1 DOWNTO 0);
+        din1 : IN STD_LOGIC_VECTOR(din1_WIDTH - 1 DOWNTO 0);
+        dout : OUT STD_LOGIC_VECTOR(dout_WIDTH - 1 DOWNTO 0));
+end entity;
+
+architecture arch of encoder_decoder_mibs is
+    component encoder_decoder_mibs_MulnS_0 is
+        port (
+            clk : IN STD_LOGIC;
+            ce : IN STD_LOGIC;
+            a : IN STD_LOGIC_VECTOR;
+            b : IN STD_LOGIC_VECTOR;
+            p : OUT STD_LOGIC_VECTOR);
+    end component;
+
+
+
+begin
+    encoder_decoder_mibs_MulnS_0_U :  component encoder_decoder_mibs_MulnS_0
+    port map (
+        clk => clk,
+        ce => ce,
+        a => din0,
+        b => din1,
+        p => dout);
 
 end architecture;
+
+

@@ -30,7 +30,7 @@ output  [31:0] ap_return_0;
 output  [31:0] ap_return_1;
 input   ap_ce;
 
-reg   [31:0] tmp_113_reg_571;
+reg   [31:0] tmp_115_reg_571;
 wire    ap_block_state1_pp0_stage0_iter0;
 wire    ap_block_state2_pp0_stage0_iter1;
 wire    ap_block_pp0_stage0_11001;
@@ -76,7 +76,7 @@ wire   [31:0] res_1_V_write_assig_fu_553_p2;
 always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_ce))) begin
         tmp_101_reg_596 <= {{p_Val2_2_1_fu_88_p2[50:24]}};
-        tmp_113_reg_571 <= {{p_Val2_s_fu_93_p2[55:24]}};
+        tmp_115_reg_571 <= {{p_Val2_s_fu_93_p2[55:24]}};
         tmp_123_0_1_reg_576 <= {{p_Val2_0_1_fu_90_p2[55:24]}};
         tmp_123_1_1_reg_586 <= {{p_Val2_1_1_fu_86_p2[55:24]}};
         tmp_123_1_reg_581 <= {{p_Val2_1_fu_92_p2[55:24]}};
@@ -144,7 +144,7 @@ assign res_0_V_write_assig_fu_532_p2 = (tmp2_fu_527_p2 + tmp1_fu_518_p2);
 
 assign res_1_V_write_assig_fu_553_p2 = (tmp5_fu_547_p2 + tmp4_fu_538_p2);
 
-assign tmp1_fu_518_p2 = (tmp_113_reg_571 + tmp_123_1_reg_581);
+assign tmp1_fu_518_p2 = (tmp_115_reg_571 + tmp_123_1_reg_581);
 
 assign tmp2_fu_527_p2 = (tmp3_fu_522_p2 + tmp_123_2_reg_591);
 
