@@ -33,8 +33,8 @@
 #include "firmware/weights/expected.h"
 
 #define SEED 5
-#define NUM_SIMULATIONS 8
-#define NUM_SIGNALS 1000
+#define NUM_SIMULATIONS 1
+#define NUM_SIGNALS 4
 
 const char separator = ' ';
 const int fieldWidth = 15;
@@ -326,9 +326,9 @@ int main(int argc, char **argv) {
 ////					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
 ////					rx_data_rec[sigIdx] += (unsigned int)dec_data_out_rec[sigIdx*M_in + i] * i;
 ////				}
-			int awgn_en = 2;
+			int awgn_en = 1;
 			encoder_decoder(enc_data_in,
-					&total_noise,
+//					&total_noise,
 							dec_data_out,
 							snr,
 							awgn_en);
@@ -350,13 +350,13 @@ int main(int argc, char **argv) {
 			}
 		}
 		// Print and check results
-//		err_cnt_array[simIdx] = txrx_data_print_and_check_results(simIdx, tx_data_rec, rx_data_rec);
-//		std::cout << "Sim #" << simIdx << ": SNR = " << snr << "\t" << (float)err_cnt_array[simIdx]/(float)NUM_SIGNALS << std::endl;
-//		sim_err_cnt = elaborated_print_and_check_results(
-//			simIdx,
-//			dec_data_out_rec, dec_expected_rec, dec_allowed_precent_diff);
-		std::cout << "noise mean = " << total_noise/(2*NUM_SIGNALS) << std::endl;
-		std::cout << "====================================================" << std::endl;
+		err_cnt_array[simIdx] = txrx_data_print_and_check_results(simIdx, tx_data_rec, rx_data_rec);
+		std::cout << "Sim #" << simIdx << ": SNR = " << snr << "\t" << (float)err_cnt_array[simIdx]/(float)NUM_SIGNALS << std::endl;
+		sim_err_cnt = elaborated_print_and_check_results(
+			simIdx,
+			dec_data_out_rec, dec_expected_rec, dec_allowed_precent_diff);
+//		std::cout << "noise mean = " << total_noise/(2*NUM_SIGNALS) << std::endl;
+//		std::cout << "====================================================" << std::endl;
 	}
 
     return 0;

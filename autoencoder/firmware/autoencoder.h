@@ -62,7 +62,7 @@ void encoder_decoder(
   hls::stream<axis_input_t> &axis_enc_data_in,
   //result_t enc_data_out[n_channel],
   //input_t dec_data_in[n_channel],
-  double *total_noise,
+//  double *total_noise,
   hls::stream<axis_result_t> &axis_dec_data_out,
   t_snr SNR_REG,
   int AWGN_EN_REG);

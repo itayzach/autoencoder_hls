@@ -731,7 +731,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b4ec5e1f</spirit:value>
+            <spirit:value>62d14167</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -747,7 +747,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>aa129d86</spirit:value>
+            <spirit:value>7762332f</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -763,7 +763,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>d2254629</spirit:value>
+            <spirit:value>b3534e74</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -779,7 +779,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>8f377e30</spirit:value>
+            <spirit:value>3bcff9d9</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1376,10 +1376,6 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/encoder_decoder_mkbM.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/verilog/encoder_decoder_sbkb.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
@@ -1510,11 +1506,6 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/verilog/encoder_decoder_mjbC.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/encoder_decoder_mkbM.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1661,10 +1652,6 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/encoder_decoder_mkbM.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/encoder_decoder_sbkb.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1719,7 +1706,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
       <spirit:file>
         <spirit:name>hdl/vhdl/encoder_decoder.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_c8392898</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_2fad5e2c</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1776,11 +1763,6 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/encoder_decoder_mjbC.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/encoder_decoder_mkbM.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1949,7 +1931,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>latency</spirit:name>
-      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="5">237</spirit:value>
+      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="5">105</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>II</spirit:name>
@@ -1966,17 +1948,17 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
       </xilinx:taxonomies>
       <xilinx:displayName>Encoder_decoder</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>1810201725</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2018-10-20T14:26:07Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>1810211745</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2018-10-21T14:45:44Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2018.2.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="1c447eb8"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="f42655d5"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="cb5d97f2"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="4266fe57"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="75f230f8"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="e76f1e5a"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="19d0a0d8"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="99389e07"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

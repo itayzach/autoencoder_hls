@@ -181,7 +181,7 @@ void encoder_decoder(
   hls::stream<axis_input_t> &axis_enc_data_in,
   //result_t enc_data_out[n_channel],
   //input_t dec_data_in[n_channel],
-  double *total_noise,
+//  double *total_noise_var,
   hls::stream<axis_result_t> &axis_dec_data_out,
   t_snr SNR_REG,
   int AWGN_EN_REG)
@@ -211,34 +211,68 @@ void encoder_decoder(
 
 	encoder(enc_data_in, enc_data_out);
 
-	for (int i = 0; i < n_channel; i++) {
-		// AWGN
-		ap_int<AWGN_WIDTH> noise;
-		ap_fixed<AWGN_WIDTH,2> noise_fixed_point;
-		const ap_fixed<AWGN_WIDTH,2> sqrt2 = 1.41421;
-		my_awgn(SNR_REG, noise);
-		noise_fixed_point.V = noise;
-		if (AWGN_EN_REG == 0) {
+	if (AWGN_EN_REG == 0) {
+		for (int i = 0; i < n_channel; i++) {
 			dec_data_in[i] = enc_data_out[i];
-		} else if (AWGN_EN_REG == 1) {
-			dec_data_in[i] = enc_data_out[i] + (noise_fixed_point / sqrt2);
-//			std::cout << "sig: " << enc_data_out[i] << std::endl;
-			std::cout << std::hex<< "noise: " << noise << " " << std::dec << noise_fixed_point << std::endl;
-//			std::cout << "sig + noise: " << dec_data_in[i] << std::endl;
-			std::cout << "-----------------------------------" << std::endl;
-		} else if (AWGN_EN_REG == 2) {
+		}
+
+		decoder(dec_data_in, dec_data_out);
+
+	} else if (AWGN_EN_REG == 1) {
+		for (int i = 0; i < n_channel; i++) {
+			// AWGN
+			ap_int<AWGN_WIDTH> noise;
+			ap_fixed<AWGN_WIDTH,8> noise_fixed_point;
+			my_awgn(SNR_REG, noise);
+			noise_fixed_point.V = noise;
 			dec_data_in[i] = enc_data_out[i] + noise_fixed_point;
-//			std::cout << "sig: " << enc_data_out[i] << std::endl;
-//			std::cout << std::hex << "noise: " << noise << " " << std::dec << noise_fixed_point << std::endl;
-//			std::cout << "sig + noise: " << dec_data_in[i] << std::endl;
-//			std::cout << "-----------------------------------" << std::endl;
-			*total_noise += double(noise);
-		} else {
-			dec_data_in[i] = enc_data_out[i];
+		}
+
+		decoder(dec_data_in, dec_data_out);
+
+	} else if (AWGN_EN_REG == 2) {
+		for (int i = 0; i < M_in; i++) {
+			// AWGN
+			ap_int<AWGN_WIDTH> noise;
+			ap_fixed<AWGN_WIDTH,8> noise_fixed_point;
+			my_awgn(SNR_REG, noise);
+			noise_fixed_point.V = noise;
+			dec_data_out[i] = noise_fixed_point;
+		}
+	} else if (AWGN_EN_REG == 3) {
+		for (int i = 0; i < M_in; i++) {
+			// AWGN
+			ap_int<AWGN_WIDTH> noise;
+			my_awgn(SNR_REG, noise);
+			dec_data_out[i] = noise;
 		}
 	}
 
-	decoder(dec_data_in, dec_data_out);
+
+
+//	for (int i = 0; i < n_channel; i++) {
+//
+//		if (AWGN_EN_REG == 0) {
+//			dec_data_in[i] = enc_data_out[i];
+//		} else if (AWGN_EN_REG == 1) {
+//			dec_data_in[i] = noise_fixed_point;
+////			std::cout << "sig: " << enc_data_out[i] << std::endl;
+////			std::cout << std::hex<< "noise: " << noise << " " << std::dec << noise_fixed_point << std::endl;
+////			std::cout << "sig + noise: " << dec_data_in[i] << std::endl;
+////			std::cout << "-----------------------------------" << std::endl;
+//		} else if (AWGN_EN_REG == 2) {
+//			dec_data_in[i] = enc_data_out[i] + noise_fixed_point;
+////			std::cout << "sig: " << enc_data_out[i] << std::endl;
+////			std::cout << std::hex << "noise: " << noise << " " << std::dec << noise_fixed_point << std::endl;
+////			std::cout << "sig + noise: " << dec_data_in[i] << std::endl;
+////			std::cout << "-----------------------------------" << std::endl;
+//			*total_noise_var += double(noise)*double(noise);
+//		} else {
+//			dec_data_in[i] = enc_data_out[i];
+//		}
+//	}
+//
+//	decoder(dec_data_in, dec_data_out);
 
 	for(int i = 0; i < M_in; i++){
 		axis_dec_data_out_item.data = dec_data_out[i];

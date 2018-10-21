@@ -277,7 +277,7 @@ architecture behav of operator_s is
     signal p_7_cast_fu_1113_p1 : STD_LOGIC_VECTOR (29 downto 0);
     signal tmp_fu_1129_p2 : STD_LOGIC_VECTOR (29 downto 0);
     signal tmp_cast_fu_1121_p1 : STD_LOGIC_VECTOR (29 downto 0);
-    signal tmp_cast_58_fu_1125_p1 : STD_LOGIC_VECTOR (29 downto 0);
+    signal tmp_cast_56_fu_1125_p1 : STD_LOGIC_VECTOR (29 downto 0);
     signal tmp84_fu_1139_p2 : STD_LOGIC_VECTOR (29 downto 0);
     signal tmp184_cast_fu_1145_p1 : STD_LOGIC_VECTOR (30 downto 0);
     signal tmp183_cast_fu_1135_p1 : STD_LOGIC_VECTOR (30 downto 0);
@@ -1002,7 +1002,7 @@ begin
 
         tmp184_cast_fu_1145_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(tmp84_fu_1139_p2),31));
 
-    tmp84_fu_1139_p2 <= std_logic_vector(signed(tmp_cast_fu_1121_p1) + signed(tmp_cast_58_fu_1125_p1));
+    tmp84_fu_1139_p2 <= std_logic_vector(signed(tmp_cast_fu_1121_p1) + signed(tmp_cast_56_fu_1125_p1));
     tmp88_fu_892_p2 <= (sel_tmp38_fu_882_p2 and sel_tmp36_fu_877_p2);
     tmp89_fu_898_p2 <= (tmp_218_reg_1317 and sel_tmp40_fu_887_p2);
     tmp_214_fu_584_p1 <= p_Val2_s_reg_1279(6 - 1 downto 0);
@@ -1035,7 +1035,7 @@ begin
     tmp_91_fu_856_p2 <= std_logic_vector(unsigned(tmp_86_reg_1296) + unsigned(tmp_71_cast_fu_853_p1));
     tmp_92_cast_fu_828_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(tmp_92_fu_823_p2),64));
     tmp_92_fu_823_p2 <= std_logic_vector(unsigned(tmp_86_reg_1296) + unsigned(tmp_77_cast_fu_820_p1));
-        tmp_cast_58_fu_1125_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(noiseGen_V_3_reg_239),30));
+        tmp_cast_56_fu_1125_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(noiseGen_V_3_reg_239),30));
 
         tmp_cast_fu_1121_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(noiseGen_V_2_reg_251),30));
 

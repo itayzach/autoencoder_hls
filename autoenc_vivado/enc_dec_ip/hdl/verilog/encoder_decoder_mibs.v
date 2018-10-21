@@ -6,54 +6,44 @@
 // ==============================================================
 
 
-`timescale 1 ns / 1 ps
+`timescale 1ns/1ps
 
-module encoder_decoder_mibs_MulnS_0(clk, ce, a, b, p);
-input clk;
-input ce;
-input signed [50 - 1 : 0] a;
-input [53 - 1 : 0] b;
-output[102 - 1 : 0] p;
-reg signed [102 - 1 : 0] p;
-wire signed [102 - 1 : 0] tmp_product;
+module encoder_decoder_mibs #(
+parameter
+    ID                = 0,
+    NUM_STAGE         = 1,
+    din0_WIDTH       = 32,
+    din1_WIDTH       = 32,
+    din2_WIDTH       = 32,
+    din3_WIDTH       = 32,
+    din4_WIDTH         = 32,
+    dout_WIDTH            = 32
+)(
+    input  [3 : 0]     din0,
+    input  [3 : 0]     din1,
+    input  [3 : 0]     din2,
+    input  [3 : 0]     din3,
+    input  [1 : 0]    din4,
+    output [3 : 0]   dout);
 
-assign tmp_product = $signed(a) * $signed({1'b0, b});
-always @ (posedge clk) begin
-    if (ce) begin
-        p <= tmp_product;
-    end
-end
-endmodule
+// puts internal signals
+wire [1 : 0]     sel;
+// level 1 signals
+wire [3 : 0]         mux_1_0;
+wire [3 : 0]         mux_1_1;
+// level 2 signals
+wire [3 : 0]         mux_2_0;
 
-`timescale 1 ns / 1 ps
-module encoder_decoder_mibs(
-    clk,
-    reset,
-    ce,
-    din0,
-    din1,
-    dout);
+assign sel = din4;
 
-parameter ID = 32'd1;
-parameter NUM_STAGE = 32'd1;
-parameter din0_WIDTH = 32'd1;
-parameter din1_WIDTH = 32'd1;
-parameter dout_WIDTH = 32'd1;
-input clk;
-input reset;
-input ce;
-input[din0_WIDTH - 1:0] din0;
-input[din1_WIDTH - 1:0] din1;
-output[dout_WIDTH - 1:0] dout;
+// Generate level 1 logic
+assign mux_1_0 = (sel[0] == 0)? din0 : din1;
+assign mux_1_1 = (sel[0] == 0)? din2 : din3;
 
+// Generate level 2 logic
+assign mux_2_0 = (sel[1] == 0)? mux_1_0 : mux_1_1;
 
-
-encoder_decoder_mibs_MulnS_0 encoder_decoder_mibs_MulnS_0_U(
-    .clk( clk ),
-    .ce( ce ),
-    .a( din0 ),
-    .b( din1 ),
-    .p( dout ));
+// output logic
+assign dout = mux_2_0;
 
 endmodule
-

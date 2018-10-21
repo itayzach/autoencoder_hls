@@ -223,7 +223,7 @@ wire  signed [29:0] p_8_cast_fu_1117_p1;
 wire  signed [29:0] p_7_cast_fu_1113_p1;
 wire   [29:0] tmp_fu_1129_p2;
 wire  signed [29:0] tmp_cast_fu_1121_p1;
-wire  signed [29:0] tmp_cast_58_fu_1125_p1;
+wire  signed [29:0] tmp_cast_56_fu_1125_p1;
 wire   [29:0] tmp84_fu_1139_p2;
 wire  signed [30:0] tmp184_cast_fu_1145_p1;
 wire  signed [30:0] tmp183_cast_fu_1135_p1;
@@ -850,7 +850,7 @@ assign tmp183_cast_fu_1135_p1 = $signed(tmp_fu_1129_p2);
 
 assign tmp184_cast_fu_1145_p1 = $signed(tmp84_fu_1139_p2);
 
-assign tmp84_fu_1139_p2 = ($signed(tmp_cast_fu_1121_p1) + $signed(tmp_cast_58_fu_1125_p1));
+assign tmp84_fu_1139_p2 = ($signed(tmp_cast_fu_1121_p1) + $signed(tmp_cast_56_fu_1125_p1));
 
 assign tmp88_fu_892_p2 = (sel_tmp38_fu_882_p2 & sel_tmp36_fu_877_p2);
 
@@ -914,7 +914,7 @@ assign tmp_92_cast_fu_828_p1 = tmp_92_fu_823_p2;
 
 assign tmp_92_fu_823_p2 = (tmp_86_reg_1296 + tmp_77_cast_fu_820_p1);
 
-assign tmp_cast_58_fu_1125_p1 = noiseGen_V_3_reg_239;
+assign tmp_cast_56_fu_1125_p1 = noiseGen_V_3_reg_239;
 
 assign tmp_cast_fu_1121_p1 = noiseGen_V_2_reg_251;
 
