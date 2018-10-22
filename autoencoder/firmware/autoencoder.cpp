@@ -35,111 +35,106 @@
 #include "weights/enc_weights.h"
 #include "weights/dec_weights.h"
 
-
 // ========================================================================
 // encoder
 // ========================================================================
-void encoder(
-    input_t data[M_in],
-    result_t res[n_channel])
-{
+void encoder(input_t data[M_in], result_t res[n_channel]) {
 
-    //hls-fpga-machine-learning insert IO
-    #pragma HLS ARRAY_RESHAPE variable=data complete dim=0
-    #pragma HLS ARRAY_RESHAPE variable=res complete dim=0
-    //#pragma HLS INTERFACE axis port=data,res
+	//hls-fpga-machine-learning insert IO
+#pragma HLS ARRAY_RESHAPE variable=data complete dim=0
+#pragma HLS ARRAY_RESHAPE variable=res complete dim=0
+	//#pragma HLS INTERFACE axis port=data,res
 
-    #pragma HLS PIPELINE II=100
+#pragma HLS PIPELINE II=100
 
-	unsigned short const const_size_in   = M_in;
-	unsigned short const const_size_out  = n_channel;
+	unsigned short const const_size_in = M_in;
+	unsigned short const const_size_out = n_channel;
 
-    // ****************************************
-    // NETWORK INSTANTIATION
-    // ****************************************
-    // Dense
-    result_t logits1[M_in];
-    #pragma HLS ARRAY_PARTITION variable=logits1 complete dim=0
-    nnet::compute_layer<input_t, result_t, enc_config1>(data, logits1, enc_w1, enc_b1);
+	// ****************************************
+	// NETWORK INSTANTIATION
+	// ****************************************
+	// Dense
+	result_t logits1[M_in];
+#pragma HLS ARRAY_PARTITION variable=logits1 complete dim=0
+	nnet::compute_layer<input_t, result_t, enc_config1>(data, logits1, enc_w1,
+			enc_b1);
 
-     // ReLU
-     input_t layer1_relu_out[M_in];
-     #pragma HLS ARRAY_PARTITION variable=layer1_relu_out complete dim=0
-     nnet::relu<input_t, input_t, enc_relu_config1>(logits1, layer1_relu_out);
+	// ReLU
+	input_t layer1_relu_out[M_in];
+#pragma HLS ARRAY_PARTITION variable=layer1_relu_out complete dim=0
+	nnet::relu<input_t, input_t, enc_relu_config1>(logits1, layer1_relu_out);
 
-    // Dense
-    result_t logits2[n_channel];
-    #pragma HLS ARRAY_PARTITION variable=logits2 complete dim=0
-    nnet::compute_layer<input_t, result_t, enc_config2>(layer1_relu_out, logits2, enc_w2, enc_b2);
+	// Dense
+	result_t logits2[n_channel];
+#pragma HLS ARRAY_PARTITION variable=logits2 complete dim=0
+	nnet::compute_layer<input_t, result_t, enc_config2>(layer1_relu_out,
+			logits2, enc_w2, enc_b2);
 
-    // Normalize
-    nnet::normalization_layer<result_t, result_t, enc_norm_config3>(logits2, res);
+	// Normalize
+	nnet::normalization_layer<result_t, result_t, enc_norm_config3>(logits2,
+			res);
 
 }
 
 // ========================================================================
 // decoder
 // ========================================================================
-void decoder(
-    input_t data[n_channel],
-    result_t res[M_in])
-{
+void decoder(input_t data[n_channel], result_t res[M_in]) {
 
-    //hls-fpga-machine-learning insert IO
-    #pragma HLS ARRAY_RESHAPE variable=data complete dim=0
-    #pragma HLS ARRAY_RESHAPE variable=res complete dim=0
-    //#pragma HLS INTERFACE axis port=data,res
+	//hls-fpga-machine-learning insert IO
+#pragma HLS ARRAY_RESHAPE variable=data complete dim=0
+#pragma HLS ARRAY_RESHAPE variable=res complete dim=0
+	//#pragma HLS INTERFACE axis port=data,res
 
-    #pragma HLS PIPELINE II=100
+#pragma HLS PIPELINE II=100
 
-    unsigned short const const_size_in   = n_channel;
-    unsigned short const const_size_out  = M_in;
+	unsigned short const const_size_in = n_channel;
+	unsigned short const const_size_out = M_in;
 
-    // ****************************************
-    // NETWORK INSTANTIATION
-    // ****************************************
-    // Dense
-    result_t logits1[M_in];
-    #pragma HLS ARRAY_PARTITION variable=logits1 complete dim=0
-    nnet::compute_layer<input_t, result_t, dec_config1>(data, logits1, dec_w1, dec_b1);
+	// ****************************************
+	// NETWORK INSTANTIATION
+	// ****************************************
+	// Dense
+	result_t logits1[M_in];
+#pragma HLS ARRAY_PARTITION variable=logits1 complete dim=0
+	nnet::compute_layer<input_t, result_t, dec_config1>(data, logits1, dec_w1,
+			dec_b1);
 
-    // ReLU
-    input_t layer1_relu_out[M_in];
-    #pragma HLS ARRAY_PARTITION variable=layer1_relu_out complete dim=0
-    nnet::relu<input_t, input_t, dec_relu_config1>(logits1, layer1_relu_out);
+	// ReLU
+	input_t layer1_relu_out[M_in];
+#pragma HLS ARRAY_PARTITION variable=layer1_relu_out complete dim=0
+	nnet::relu<input_t, input_t, dec_relu_config1>(logits1, layer1_relu_out);
 
-    // Dense
-    result_t logits2[M_in];
-    #pragma HLS ARRAY_PARTITION variable=logits2 complete dim=0
-    nnet::compute_layer<input_t, result_t, dec_config2>(layer1_relu_out, logits2, dec_w2, dec_b2);
+	// Dense
+	result_t logits2[M_in];
+#pragma HLS ARRAY_PARTITION variable=logits2 complete dim=0
+	nnet::compute_layer<input_t, result_t, dec_config2>(layer1_relu_out,
+			logits2, dec_w2, dec_b2);
 
-    // Softmax
-    result_t logits3[M_in];
-    nnet::softmax<result_t, result_t, dec_softmax_config2>(logits2, logits3);
+	// Softmax
+	result_t logits3[M_in];
+	nnet::softmax<result_t, result_t, dec_softmax_config2>(logits2, logits3);
 
-    // Argmax
-    result_t max_val = logits3[0];
-    result_t max_idx = 0;
-    argmax: for(int ii = 1; ii < const_size_out; ii++) {
-        if (logits3[ii] > max_val) {
-            max_idx = ii;
-            max_val = logits3[ii];
-        }
-    }
+	// Argmax
+	result_t max_val = logits3[0];
+	result_t max_idx = 0;
+	argmax: for (int ii = 1; ii < const_size_out; ii++) {
+		if (logits3[ii] > max_val) {
+			max_idx = ii;
+			max_val = logits3[ii];
+		}
+	}
 
-    reset_res: for(int ii = 0; ii < const_size_out; ii++) {
-    	if (ii == max_idx) {
-    		res[max_idx] = 1.0;
-    	} else {
-    		res[ii] = 0.0;
-    	}
+	reset_res: for (int ii = 0; ii < const_size_out; ii++) {
+		if (ii == max_idx) {
+			res[max_idx] = 1.0;
+		} else {
+			res[ii] = 0.0;
+		}
 
-    }
-
-
+	}
 
 }
-
 
 // ========================================================================
 // encoder_decoder
@@ -174,18 +169,25 @@ void decoder(
 //    decoder(dec_data_in, dec_data_out);
 //}
 
+void awgn_top(hls::stream<t_snr> &snr,
+		hls::stream<ap_int<AWGN_WIDTH> > &noise) {
 
+	static hls::awgn<AWGN_WIDTH> uut(SEED);
+	t_snr snrSample;
+	ap_int<AWGN_WIDTH> noiseSample;
 
+	snr.read(snrSample);
+	uut(snrSample, noiseSample); //call 'operator' function i.e. execute the circuit
+	noise.write(noiseSample);
 
-void encoder_decoder(
-  hls::stream<axis_input_t> &axis_enc_data_in,
-  //result_t enc_data_out[n_channel],
-  //input_t dec_data_in[n_channel],
+} // end of function awgn_top
+
+void encoder_decoder(hls::stream<axis_input_t> &axis_enc_data_in,
+		//result_t enc_data_out[n_channel],
+		//input_t dec_data_in[n_channel],
 //  double *total_noise_var,
-  hls::stream<axis_result_t> &axis_dec_data_out,
-  t_snr SNR_REG,
-  int AWGN_EN_REG)
-{
+		hls::stream<axis_result_t> &axis_dec_data_out, t_snr SNR_REG,
+		int AWGN_EN_REG) {
 //#pragma HLS INTERFACE s_axilite port=bypass
 #pragma HLS INTERFACE s_axilite port=AWGN_EN_REG bundle=ctrl
 #pragma HLS INTERFACE s_axilite port=SNR_REG bundle=ctrl
@@ -202,53 +204,103 @@ void encoder_decoder(
 	result_t enc_data_out[n_channel];
 	input_t dec_data_in[n_channel];
 	result_t dec_data_out[M_in];
-	static hls::awgn<AWGN_WIDTH> my_awgn(SEED);
+	t_snr snr_buf;
 
-	for(int i = 0; i < M_in; i++){
+//	hls::stream<t_snr> snr_awgn_in_stream("SNR input value");
+//#pragma HLS STREAM variable=snr_awgn_in_stream dim=1 depth=4
+//	hls::stream<ap_int<AWGN_WIDTH> > noise_awgn_out_stream("AWGN output data");
+//#pragma HLS STREAM variable=noise_awgn_out_stream dim=1 depth=4
+
+	ap_fixed<AWGN_WIDTH, 2> noise_fixed_point[M_in];
+//	ap_int<AWGN_WIDTH> noise;
+
+//	snr_buf = SNR_REG;
+//	if (!snr_awgn_in_stream.full()) {
+//		snr_awgn_in_stream.write((t_snr) SNR_REG);
+//	}
+//	for (int i = 0; i < M_in; i++) {
+//		awgn_top(snr_awgn_in_stream, noise_awgn_out_stream);
+//		if (!snr_awgn_in_stream.empty()) {
+//			noise = noise_awgn_out_stream.read();
+//		}
+//		noise_fixed_point[i].V = noise;
+//	}
+
+
+	static hls::awgn<AWGN_WIDTH> uut(SEED);
+	t_snr snrSample;
+	ap_int<AWGN_WIDTH> noiseSample;
+
+	snrSample = SNR_REG;
+	for (int i = 0; i < M_in; i++) {
+		uut(snrSample, noiseSample); //call 'operator' function i.e. execute the circuit
+		noise_fixed_point[i].V = noiseSample;
+	}
+
+
+	for (int i = 0; i < M_in; i++) {
 		axis_enc_data_in_item[i] = axis_enc_data_in.read();
 		enc_data_in[i] = axis_enc_data_in_item[i].data;
 	}
 
 	encoder(enc_data_in, enc_data_out);
 
+//	for (int i = 0; i < n_channel; i++) {
+//		if (AWGN_EN_REG == 0) {
+//			dec_data_in[i] = enc_data_out[i] + noise_fixed_point[i];
+//		} else if (AWGN_EN_REG == 1) {
+//			dec_data_in[i] = enc_data_out[i];
+//		} else {
+//			dec_data_in[i] = enc_data_out[i] + noise_fixed_point[i];
+//		}
+//	}
+
 	if (AWGN_EN_REG == 0) {
-		for (int i = 0; i < n_channel; i++) {
-			dec_data_in[i] = enc_data_out[i];
-		}
-
-		decoder(dec_data_in, dec_data_out);
-
+		dec_data_in[0] = enc_data_out[0] + noise_fixed_point[0];
+		dec_data_in[1] = enc_data_out[1] + noise_fixed_point[1];
+//		std::cout << dec_data_in[0] << " = " << enc_data_out[0] << " + " << noise_fixed_point[0] << std::endl;
+//		std::cout << dec_data_in[1] << " = " << enc_data_out[1] << " + " << noise_fixed_point[1] << std::endl;
 	} else if (AWGN_EN_REG == 1) {
-		for (int i = 0; i < n_channel; i++) {
-			// AWGN
-			ap_int<AWGN_WIDTH> noise;
-			ap_fixed<AWGN_WIDTH,8> noise_fixed_point;
-			my_awgn(SNR_REG, noise);
-			noise_fixed_point.V = noise;
-			dec_data_in[i] = enc_data_out[i] + noise_fixed_point;
-		}
-
-		decoder(dec_data_in, dec_data_out);
-
-	} else if (AWGN_EN_REG == 2) {
-		for (int i = 0; i < M_in; i++) {
-			// AWGN
-			ap_int<AWGN_WIDTH> noise;
-			ap_fixed<AWGN_WIDTH,8> noise_fixed_point;
-			my_awgn(SNR_REG, noise);
-			noise_fixed_point.V = noise;
-			dec_data_out[i] = noise_fixed_point;
-		}
-	} else if (AWGN_EN_REG == 3) {
-		for (int i = 0; i < M_in; i++) {
-			// AWGN
-			ap_int<AWGN_WIDTH> noise;
-			my_awgn(SNR_REG, noise);
-			dec_data_out[i] = noise;
-		}
+		dec_data_in[0] = enc_data_out[0];
+		dec_data_in[1] = enc_data_out[1];
+	} else {
+		dec_data_in[0] = enc_data_out[0] + noise_fixed_point[0];
+		dec_data_in[1] = enc_data_out[1] + noise_fixed_point[1];
 	}
 
 
+	decoder(dec_data_in, dec_data_out);
+
+
+//	switch (AWGN_EN_REG) {
+//
+//	// AWGN
+//	case 1:
+//
+//
+//		decoder(dec_data_in, dec_data_out);
+//		break;
+//
+//	// Record noise fixed point
+//	case 2:
+//		for (int i = 0; i < M_in; i++) {
+//			snr_awgn_in_stream.write((t_snr) SNR_REG);
+//			awgn_top(snr_awgn_in_stream, noise_awgn_out_stream);
+//			noise = noise_awgn_out_stream.read();
+//			noise_fixed_point.V = noise;
+//			dec_data_out[i] = noise_fixed_point;
+//		}
+//		break;
+//
+//	// Loopback
+//	case 0:
+//	default:
+//		for (int i = 0; i < n_channel; i++) {
+//			dec_data_in[i] = enc_data_out[i];
+//		}
+//		decoder(dec_data_in, dec_data_out);
+//		break;
+//	}
 
 //	for (int i = 0; i < n_channel; i++) {
 //
@@ -274,18 +326,21 @@ void encoder_decoder(
 //
 //	decoder(dec_data_in, dec_data_out);
 
-	for(int i = 0; i < M_in; i++){
-		axis_dec_data_out_item.data = dec_data_out[i];
+	for (int i = 0; i < M_in; i++) {
+		//if (AWGN_EN_REG == 2) {
+		//	axis_dec_data_out_item.data = noise_fixed_point[i];
+		//} else {
+			axis_dec_data_out_item.data = dec_data_out[i];
+		//}
 		axis_dec_data_out_item.keep = axis_enc_data_in_item[i].keep;
 		axis_dec_data_out_item.last = axis_enc_data_in_item[i].last;
 		axis_dec_data_out.write(axis_dec_data_out_item);
 		if (axis_dec_data_out_item.last) {
 			break;
 		}
-    }
+	}
 
 }
-
 
 /////////////////////////////////////////////////////////////////////////////////
 // only mult

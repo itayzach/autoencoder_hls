@@ -34,7 +34,7 @@
 
 #define SEED 5
 #define NUM_SIMULATIONS 1
-#define NUM_SIGNALS 4
+#define NUM_SIGNALS 100
 
 const char separator = ' ';
 const int fieldWidth = 15;
@@ -73,7 +73,7 @@ float randn(float mu, float sigma) {
 
 }
 
-int single_print_and_check_results(result_t* result, result_t* expected, int size, const float allowed_precent_diff) {
+int single_print_and_check_results(result_t* result, result_t* expected, int size, const float allowed_precent_diff, int do_print) {
 	int err_cnt = 0;
 	for (int i = 0; i < size; i++) {
 	        float diff = 0.0;
@@ -82,14 +82,18 @@ int single_print_and_check_results(result_t* result, result_t* expected, int siz
 	        } else {
 	            diff = 100.0 * ((float) result[i] - (float) expected[i]) / (float) expected[i];
 	        }
-	        std::cout << std::setw(fieldWidth) << result[i];
-	        std::cout << std::setw(fieldWidth) << expected[i];
-	        std::cout << std::setw(fieldWidth) << diff << "%";
+	        if (do_print) {
+				std::cout << std::setw(fieldWidth) << result[i];
+				std::cout << std::setw(fieldWidth) << expected[i];
+				std::cout << std::setw(fieldWidth) << diff << "%";
+	        }
 	        if (abs(diff) > allowed_precent_diff) {
 	            err_cnt++;
-	            std::cout << " << ERROR";
+	            if (do_print)
+	            	std::cout << " << ERROR";
 	        }
-	        std::cout << std::endl;
+	        if (do_print)
+	        	std::cout << std::endl;
 	    }
 	return err_cnt;
 }
@@ -164,7 +168,7 @@ int txrx_data_print_and_check_results(
 
 int elaborated_print_and_check_results(
 		int simIdx,
-		result_t* dec_data_out_rec, result_t* dec_expected, const float dec_allowed_precent_diff) {
+		result_t* dec_data_out_rec, result_t* dec_expected, const float dec_allowed_precent_diff, int do_print) {
     int err_cnt = 0;
 
     std::cout << "**************************************************************************" << std::endl;
@@ -179,7 +183,7 @@ int elaborated_print_and_check_results(
 
     for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
     	std::cout << "Signal:" << std::endl;
-		err_cnt += single_print_and_check_results(&dec_expected[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, 0.0);
+		err_cnt += single_print_and_check_results(&dec_expected[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, 0.0, do_print);
 //		std::cout << "--------------------------------------------------------------------------" << std::endl;
 //		std::cout << "Noise:" << std::endl;
 //		for (int i = 0; i < n_channel; i++) {
@@ -187,7 +191,7 @@ int elaborated_print_and_check_results(
 //		}
 		std::cout << "--------------------------------------------------------------------------" << std::endl;
 		std::cout << "RX (decoder):" << std::endl;
-		err_cnt += single_print_and_check_results(&dec_data_out_rec[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, dec_allowed_precent_diff);
+		err_cnt += single_print_and_check_results(&dec_data_out_rec[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, dec_allowed_precent_diff, do_print);
 		std::cout << "==========================================================================" << std::endl;
     }
 //    std::cout << "--------------------------------------------------------------------------" << std::endl;
@@ -285,8 +289,8 @@ int main(int argc, char **argv) {
 		// Run for each possible signal
 		for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
 			// Generate random data
-			tx_data = sigIdx % M_in;
-//			tx_data = rand () % M_in;
+//			tx_data = sigIdx % M_in;
+			tx_data = rand () % M_in;
 			// Reset enc data in
 			for (int i = 0; i < M_in; i++) {
 				axis_input_t enc_data_in_tmp;
@@ -326,7 +330,7 @@ int main(int argc, char **argv) {
 ////					dec_expected_rec[sigIdx*M_in + i] = dec_expected[tx_data*M_in + i];
 ////					rx_data_rec[sigIdx] += (unsigned int)dec_data_out_rec[sigIdx*M_in + i] * i;
 ////				}
-			int awgn_en = 1;
+			int awgn_en = 0;
 			encoder_decoder(enc_data_in,
 //					&total_noise,
 							dec_data_out,
@@ -351,10 +355,12 @@ int main(int argc, char **argv) {
 		}
 		// Print and check results
 		err_cnt_array[simIdx] = txrx_data_print_and_check_results(simIdx, tx_data_rec, rx_data_rec);
+		int do_print = 0;
 		std::cout << "Sim #" << simIdx << ": SNR = " << snr << "\t" << (float)err_cnt_array[simIdx]/(float)NUM_SIGNALS << std::endl;
 		sim_err_cnt = elaborated_print_and_check_results(
 			simIdx,
-			dec_data_out_rec, dec_expected_rec, dec_allowed_precent_diff);
+			dec_data_out_rec, dec_expected_rec, dec_allowed_precent_diff, do_print);
+		std::cout << "errors count = " << sim_err_cnt << std::endl;
 //		std::cout << "noise mean = " << total_noise/(2*NUM_SIGNALS) << std::endl;
 //		std::cout << "====================================================" << std::endl;
 	}
