@@ -211,7 +211,7 @@ void encoder_decoder(hls::stream<axis_input_t> &axis_enc_data_in,
 //	hls::stream<ap_int<AWGN_WIDTH> > noise_awgn_out_stream("AWGN output data");
 //#pragma HLS STREAM variable=noise_awgn_out_stream dim=1 depth=4
 
-	ap_fixed<AWGN_WIDTH, 2> noise_fixed_point[M_in];
+	ap_fixed<AWGN_WIDTH, 2> noise_fixed_point;
 //	ap_int<AWGN_WIDTH> noise;
 
 //	snr_buf = SNR_REG;
@@ -228,16 +228,20 @@ void encoder_decoder(hls::stream<axis_input_t> &axis_enc_data_in,
 
 
 	static hls::awgn<AWGN_WIDTH> uut(SEED);
-	t_snr snrSample;
+	hls::stream < t_snr > snrSample;
+	hls::stream < ap_int<AWGN_WIDTH> > noise_sample_stream;
 	ap_int<AWGN_WIDTH> noiseSample;
 
-	snrSample = SNR_REG;
-	for (int i = 0; i < M_in; i++) {
-		uut(snrSample, noiseSample); //call 'operator' function i.e. execute the circuit
-		noise_fixed_point[i].V = noiseSample;
-	}
+	hls::stream < result_t > enc_data_out_stream;
+	hls::stream < result_t > dec_data_in_stream;
 
+//#pragma HLS STREAM depth=4 variable=snrSample
+#pragma HLS STREAM depth=4 variable=noise_sample_stream
+#pragma HLS STREAM depth=4 variable=enc_data_out_stream
 
+	//snrSample << SNR_REG;
+
+	result_t enc_data_out_item;
 	for (int i = 0; i < M_in; i++) {
 		axis_enc_data_in_item[i] = axis_enc_data_in.read();
 		enc_data_in[i] = axis_enc_data_in_item[i].data;
@@ -255,17 +259,37 @@ void encoder_decoder(hls::stream<axis_input_t> &axis_enc_data_in,
 //		}
 //	}
 
+
 	if (AWGN_EN_REG == 0) {
-		dec_data_in[0] = enc_data_out[0] + noise_fixed_point[0];
-		dec_data_in[1] = enc_data_out[1] + noise_fixed_point[1];
-//		std::cout << dec_data_in[0] << " = " << enc_data_out[0] << " + " << noise_fixed_point[0] << std::endl;
-//		std::cout << dec_data_in[1] << " = " << enc_data_out[1] << " + " << noise_fixed_point[1] << std::endl;
-	} else if (AWGN_EN_REG == 1) {
+		for (int i = 0; i < n_channel; i++) {
+
+			uut(SNR_REG, noiseSample);
+
+			if (!noise_sample_stream.full() && !enc_data_out_stream.full()) {
+				noise_sample_stream.write(noiseSample);
+				enc_data_out_stream.write(enc_data_out[i]);
+			}
+
+			//awgn_top(snrSample, noiseSample);
+			//_noiseSample = noiseSample.read();
+			if (!enc_data_out_stream.empty() && !noise_sample_stream.empty()) {
+				noise_fixed_point.V = noise_sample_stream.read();
+				enc_data_out_item = enc_data_out_stream.read();
+			}
+
+			dec_data_in[i] = enc_data_out_item + noise_fixed_point;
+
+//			if (!dec_data_in_stream.full()) {
+//				dec_data_in_stream.write(enc_data_out_item + noise_fixed_point);
+//			}
+//
+//			if (!dec_data_in_stream.empty()) {
+//				dec_data_in[i] = dec_data_in_stream.read();
+//			}
+		}
+	} else {
 		dec_data_in[0] = enc_data_out[0];
 		dec_data_in[1] = enc_data_out[1];
-	} else {
-		dec_data_in[0] = enc_data_out[0] + noise_fixed_point[0];
-		dec_data_in[1] = enc_data_out[1] + noise_fixed_point[1];
 	}
 
 

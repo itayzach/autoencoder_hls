@@ -277,7 +277,7 @@ architecture behav of operator_s is
     signal p_7_cast_fu_1113_p1 : STD_LOGIC_VECTOR (29 downto 0);
     signal tmp_fu_1129_p2 : STD_LOGIC_VECTOR (29 downto 0);
     signal tmp_cast_fu_1121_p1 : STD_LOGIC_VECTOR (29 downto 0);
-    signal tmp_cast_58_fu_1125_p1 : STD_LOGIC_VECTOR (29 downto 0);
+    signal tmp_cast_59_fu_1125_p1 : STD_LOGIC_VECTOR (29 downto 0);
     signal tmp84_fu_1139_p2 : STD_LOGIC_VECTOR (29 downto 0);
     signal tmp184_cast_fu_1145_p1 : STD_LOGIC_VECTOR (30 downto 0);
     signal tmp183_cast_fu_1135_p1 : STD_LOGIC_VECTOR (30 downto 0);
@@ -299,7 +299,7 @@ architecture behav of operator_s is
     signal r_V_12_fu_1240_p00 : STD_LOGIC_VECTOR (22 downto 0);
     signal r_V_31_fu_1161_p10 : STD_LOGIC_VECTOR (47 downto 0);
 
-    component encoder_decoder_meOg IS
+    component encoder_decoder_mfYi IS
     generic (
         ID : INTEGER;
         NUM_STAGE : INTEGER;
@@ -319,7 +319,7 @@ architecture behav of operator_s is
     end component;
 
 
-    component encoder_decoder_mfYi IS
+    component encoder_decoder_mg8j IS
     generic (
         ID : INTEGER;
         NUM_STAGE : INTEGER;
@@ -333,7 +333,7 @@ architecture behav of operator_s is
     end component;
 
 
-    component operator_s_coarsebkb IS
+    component operator_s_coarsecud IS
     generic (
         DataWidth : INTEGER;
         AddressRange : INTEGER;
@@ -347,7 +347,7 @@ architecture behav of operator_s is
     end component;
 
 
-    component operator_s_gradiecud IS
+    component operator_s_gradiedEe IS
     generic (
         DataWidth : INTEGER;
         AddressRange : INTEGER;
@@ -361,7 +361,7 @@ architecture behav of operator_s is
     end component;
 
 
-    component operator_s_scaleLdEe IS
+    component operator_s_scaleLeOg IS
     generic (
         DataWidth : INTEGER;
         AddressRange : INTEGER;
@@ -393,7 +393,7 @@ architecture behav of operator_s is
 
 
 begin
-    coarseContents_U : component operator_s_coarsebkb
+    coarseContents_U : component operator_s_coarsecud
     generic map (
         DataWidth => 17,
         AddressRange => 512,
@@ -405,7 +405,7 @@ begin
         ce0 => coarseContents_ce0,
         q0 => coarseContents_q0);
 
-    gradientContents_U : component operator_s_gradiecud
+    gradientContents_U : component operator_s_gradiedEe
     generic map (
         DataWidth => 13,
         AddressRange => 512,
@@ -417,7 +417,7 @@ begin
         ce0 => gradientContents_ce0,
         q0 => gradientContents_q0);
 
-    scaleLookup_U : component operator_s_scaleLdEe
+    scaleLookup_U : component operator_s_scaleLeOg
     generic map (
         DataWidth => 17,
         AddressRange => 256,
@@ -443,7 +443,7 @@ begin
         d0 => norm_V_d0,
         q0 => norm_V_q0);
 
-    encoder_decoder_meOg_U1 : component encoder_decoder_meOg
+    encoder_decoder_mfYi_U17 : component encoder_decoder_mfYi
     generic map (
         ID => 1,
         NUM_STAGE => 1,
@@ -461,7 +461,7 @@ begin
         din4 => tmp_217_reg_1303,
         dout => grp_fu_321_p6);
 
-    encoder_decoder_mfYi_U2 : component encoder_decoder_mfYi
+    encoder_decoder_mg8j_U18 : component encoder_decoder_mg8j
     generic map (
         ID => 1,
         NUM_STAGE => 1,
@@ -1002,7 +1002,7 @@ begin
 
         tmp184_cast_fu_1145_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(tmp84_fu_1139_p2),31));
 
-    tmp84_fu_1139_p2 <= std_logic_vector(signed(tmp_cast_fu_1121_p1) + signed(tmp_cast_58_fu_1125_p1));
+    tmp84_fu_1139_p2 <= std_logic_vector(signed(tmp_cast_fu_1121_p1) + signed(tmp_cast_59_fu_1125_p1));
     tmp88_fu_892_p2 <= (sel_tmp38_fu_882_p2 and sel_tmp36_fu_877_p2);
     tmp89_fu_898_p2 <= (tmp_218_reg_1317 and sel_tmp40_fu_887_p2);
     tmp_214_fu_584_p1 <= p_Val2_s_reg_1279(6 - 1 downto 0);
@@ -1035,7 +1035,7 @@ begin
     tmp_91_fu_856_p2 <= std_logic_vector(unsigned(tmp_86_reg_1296) + unsigned(tmp_71_cast_fu_853_p1));
     tmp_92_cast_fu_828_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(tmp_92_fu_823_p2),64));
     tmp_92_fu_823_p2 <= std_logic_vector(unsigned(tmp_86_reg_1296) + unsigned(tmp_77_cast_fu_820_p1));
-        tmp_cast_58_fu_1125_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(noiseGen_V_3_reg_239),30));
+        tmp_cast_59_fu_1125_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(noiseGen_V_3_reg_239),30));
 
         tmp_cast_fu_1121_p1 <= std_logic_vector(IEEE.numeric_std.resize(signed(noiseGen_V_2_reg_251),30));
 

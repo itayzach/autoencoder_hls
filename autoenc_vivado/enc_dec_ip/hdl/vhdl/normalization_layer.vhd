@@ -227,8 +227,8 @@ architecture behav of normalization_layer is
     signal grp_fu_122_p0 : STD_LOGIC_VECTOR (55 downto 0);
     signal grp_fu_122_p1 : STD_LOGIC_VECTOR (28 downto 0);
     signal div_res_0_V_fu_127_p1 : STD_LOGIC_VECTOR (31 downto 0);
-    signal p_Val2_s_59_fu_134_p1 : STD_LOGIC_VECTOR (31 downto 0);
-    signal p_Val2_s_59_fu_134_p2 : STD_LOGIC_VECTOR (55 downto 0);
+    signal p_Val2_s_60_fu_134_p1 : STD_LOGIC_VECTOR (31 downto 0);
+    signal p_Val2_s_60_fu_134_p2 : STD_LOGIC_VECTOR (55 downto 0);
     signal div_res_1_V_fu_150_p1 : STD_LOGIC_VECTOR (31 downto 0);
     signal p_Val2_69_1_fu_157_p1 : STD_LOGIC_VECTOR (31 downto 0);
     signal p_Val2_69_1_fu_157_p2 : STD_LOGIC_VECTOR (55 downto 0);
@@ -282,7 +282,7 @@ architecture behav of normalization_layer is
     end component;
 
 
-    component encoder_decoder_sg8j IS
+    component encoder_decoder_sbkb IS
     generic (
         ID : INTEGER;
         NUM_STAGE : INTEGER;
@@ -309,7 +309,7 @@ begin
         ap_return => grp_sqrt_fixed_32_8_s_fu_50_ap_return,
         ap_ce => grp_sqrt_fixed_32_8_s_fu_50_ap_ce);
 
-    encoder_decoder_sg8j_U20 : component encoder_decoder_sg8j
+    encoder_decoder_sbkb_U11 : component encoder_decoder_sbkb
     generic map (
         ID => 1,
         NUM_STAGE => 60,
@@ -324,7 +324,7 @@ begin
         ce => ap_const_logic_1,
         dout => grp_fu_109_p2);
 
-    encoder_decoder_sg8j_U21 : component encoder_decoder_sg8j
+    encoder_decoder_sbkb_U12 : component encoder_decoder_sbkb
     generic map (
         ID => 1,
         NUM_STAGE => 60,
@@ -534,7 +534,7 @@ begin
         if (ap_clk'event and ap_clk = '1') then
             if (((ap_const_logic_1 = ap_CS_fsm_pp0_stage4) and (ap_const_boolean_0 = ap_block_pp0_stage4_11001))) then
                 tmp_112_1_reg_236 <= grp_fu_122_p2;
-                tmp_97_reg_231 <= p_Val2_s_59_fu_134_p2(55 downto 24);
+                tmp_97_reg_231 <= p_Val2_s_60_fu_134_p2(55 downto 24);
                     tmp_s_reg_210(27 downto 0) <= tmp_s_fu_99_p1(27 downto 0);
             end if;
         end if;
@@ -882,8 +882,8 @@ begin
     p_Val2_66_1_fu_95_p2 <= std_logic_vector(unsigned(data_square_1_V_reg_195) + unsigned(data_square_0_V_reg_185));
     p_Val2_69_1_fu_157_p1 <= div_res_1_V_fu_150_p1;
     p_Val2_69_1_fu_157_p2 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(std_logic_vector(signed('0' &ap_const_lv56_16A09AA) * signed(p_Val2_69_1_fu_157_p1))), 56));
-    p_Val2_s_59_fu_134_p1 <= div_res_0_V_fu_127_p1;
-    p_Val2_s_59_fu_134_p2 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(std_logic_vector(signed('0' &ap_const_lv56_16A09AA) * signed(p_Val2_s_59_fu_134_p1))), 56));
+    p_Val2_s_60_fu_134_p1 <= div_res_0_V_fu_127_p1;
+    p_Val2_s_60_fu_134_p2 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(std_logic_vector(signed('0' &ap_const_lv56_16A09AA) * signed(p_Val2_s_60_fu_134_p1))), 56));
     p_Val2_s_fu_59_p0 <= OP1_V_3_cast_fu_55_p1(32 - 1 downto 0);
     p_Val2_s_fu_59_p1 <= OP1_V_3_cast_fu_55_p1(32 - 1 downto 0);
     p_Val2_s_fu_59_p2 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(std_logic_vector(signed(p_Val2_s_fu_59_p0) * signed(p_Val2_s_fu_59_p1))), 56));

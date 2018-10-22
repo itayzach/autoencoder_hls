@@ -34,7 +34,7 @@
 
 #define SEED 5
 #define NUM_SIMULATIONS 1
-#define NUM_SIGNALS 100
+#define NUM_SIGNALS 1000
 
 const char separator = ' ';
 const int fieldWidth = 15;
@@ -265,7 +265,7 @@ int main(int argc, char **argv) {
 	std::random_device rd{};
 	std::mt19937 gen{rd()};
 	std::normal_distribution<> norm_dist{0.0, 1.0};
-	t_snr snr = 0.0;
+	t_snr snr = 8.0;
 	for (int simIdx = 0; simIdx < NUM_SIMULATIONS; simIdx++, snr+=1) {
 		std::cout << "snr = " << snr << std::endl;
 		int sim_err_cnt = 0;

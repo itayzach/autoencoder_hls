@@ -223,7 +223,7 @@ wire  signed [29:0] p_8_cast_fu_1117_p1;
 wire  signed [29:0] p_7_cast_fu_1113_p1;
 wire   [29:0] tmp_fu_1129_p2;
 wire  signed [29:0] tmp_cast_fu_1121_p1;
-wire  signed [29:0] tmp_cast_58_fu_1125_p1;
+wire  signed [29:0] tmp_cast_59_fu_1125_p1;
 wire   [29:0] tmp84_fu_1139_p2;
 wire  signed [30:0] tmp184_cast_fu_1145_p1;
 wire  signed [30:0] tmp183_cast_fu_1135_p1;
@@ -250,7 +250,7 @@ initial begin
 #0 uut_lfsr128_V = 128'd1512366075204170930279365292653862640;
 end
 
-operator_s_coarsebkb #(
+operator_s_coarsecud #(
     .DataWidth( 17 ),
     .AddressRange( 512 ),
     .AddressWidth( 9 ))
@@ -262,7 +262,7 @@ coarseContents_U(
     .q0(coarseContents_q0)
 );
 
-operator_s_gradiecud #(
+operator_s_gradiedEe #(
     .DataWidth( 13 ),
     .AddressRange( 512 ),
     .AddressWidth( 9 ))
@@ -274,7 +274,7 @@ gradientContents_U(
     .q0(gradientContents_q0)
 );
 
-operator_s_scaleLdEe #(
+operator_s_scaleLeOg #(
     .DataWidth( 17 ),
     .AddressRange( 256 ),
     .AddressWidth( 8 ))
@@ -300,7 +300,7 @@ norm_V_U(
     .q0(norm_V_q0)
 );
 
-encoder_decoder_meOg #(
+encoder_decoder_mfYi #(
     .ID( 1 ),
     .NUM_STAGE( 1 ),
     .din0_WIDTH( 9 ),
@@ -309,7 +309,7 @@ encoder_decoder_meOg #(
     .din3_WIDTH( 9 ),
     .din4_WIDTH( 2 ),
     .dout_WIDTH( 9 ))
-encoder_decoder_meOg_U1(
+encoder_decoder_mfYi_U17(
     .din0(bramChapter_3_V_1_fu_140),
     .din1(bramChapter_3_V_2_fu_144),
     .din2(bramChapter_3_V_4_fu_148),
@@ -318,13 +318,13 @@ encoder_decoder_meOg_U1(
     .dout(grp_fu_321_p6)
 );
 
-encoder_decoder_mfYi #(
+encoder_decoder_mg8j #(
     .ID( 1 ),
     .NUM_STAGE( 1 ),
     .din0_WIDTH( 13 ),
     .din1_WIDTH( 10 ),
     .dout_WIDTH( 23 ))
-encoder_decoder_mfYi_U2(
+encoder_decoder_mg8j_U18(
     .din0(r_V_12_fu_1240_p0),
     .din1(tmp_219_reg_1388),
     .dout(r_V_12_fu_1240_p2)
@@ -850,7 +850,7 @@ assign tmp183_cast_fu_1135_p1 = $signed(tmp_fu_1129_p2);
 
 assign tmp184_cast_fu_1145_p1 = $signed(tmp84_fu_1139_p2);
 
-assign tmp84_fu_1139_p2 = ($signed(tmp_cast_fu_1121_p1) + $signed(tmp_cast_58_fu_1125_p1));
+assign tmp84_fu_1139_p2 = ($signed(tmp_cast_fu_1121_p1) + $signed(tmp_cast_59_fu_1125_p1));
 
 assign tmp88_fu_892_p2 = (sel_tmp38_fu_882_p2 & sel_tmp36_fu_877_p2);
 
@@ -914,7 +914,7 @@ assign tmp_92_cast_fu_828_p1 = tmp_92_fu_823_p2;
 
 assign tmp_92_fu_823_p2 = (tmp_86_reg_1296 + tmp_77_cast_fu_820_p1);
 
-assign tmp_cast_58_fu_1125_p1 = noiseGen_V_3_reg_239;
+assign tmp_cast_59_fu_1125_p1 = noiseGen_V_3_reg_239;
 
 assign tmp_cast_fu_1121_p1 = noiseGen_V_2_reg_251;
 

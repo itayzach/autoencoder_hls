@@ -206,8 +206,8 @@ wire    ap_block_pp0_stage5;
 wire   [55:0] grp_fu_122_p0;
 wire   [28:0] grp_fu_122_p1;
 wire   [31:0] div_res_0_V_fu_127_p1;
-wire  signed [31:0] p_Val2_s_59_fu_134_p1;
-wire   [55:0] p_Val2_s_59_fu_134_p2;
+wire  signed [31:0] p_Val2_s_60_fu_134_p1;
+wire   [55:0] p_Val2_s_60_fu_134_p2;
 wire   [31:0] div_res_1_V_fu_150_p1;
 wire  signed [31:0] p_Val2_69_1_fu_157_p1;
 wire   [55:0] p_Val2_69_1_fu_157_p2;
@@ -273,13 +273,13 @@ sqrt_fixed_32_8_s grp_sqrt_fixed_32_8_s_fu_50(
     .ap_ce(grp_sqrt_fixed_32_8_s_fu_50_ap_ce)
 );
 
-encoder_decoder_sg8j #(
+encoder_decoder_sbkb #(
     .ID( 1 ),
     .NUM_STAGE( 60 ),
     .din0_WIDTH( 56 ),
     .din1_WIDTH( 29 ),
     .dout_WIDTH( 32 ))
-encoder_decoder_sg8j_U20(
+encoder_decoder_sbkb_U11(
     .clk(ap_clk),
     .reset(ap_rst),
     .din0(grp_fu_109_p0),
@@ -288,13 +288,13 @@ encoder_decoder_sg8j_U20(
     .dout(grp_fu_109_p2)
 );
 
-encoder_decoder_sg8j #(
+encoder_decoder_sbkb #(
     .ID( 1 ),
     .NUM_STAGE( 60 ),
     .din0_WIDTH( 56 ),
     .din1_WIDTH( 29 ),
     .dout_WIDTH( 32 ))
-encoder_decoder_sg8j_U21(
+encoder_decoder_sbkb_U12(
     .clk(ap_clk),
     .reset(ap_rst),
     .din0(grp_fu_122_p0),
@@ -443,7 +443,7 @@ end
 always @ (posedge ap_clk) begin
     if (((1'b1 == ap_CS_fsm_pp0_stage4) & (1'b0 == ap_block_pp0_stage4_11001))) begin
         tmp_112_1_reg_236 <= grp_fu_122_p2;
-        tmp_97_reg_231 <= {{p_Val2_s_59_fu_134_p2[55:24]}};
+        tmp_97_reg_231 <= {{p_Val2_s_60_fu_134_p2[55:24]}};
         tmp_s_reg_210[27 : 0] <= tmp_s_fu_99_p1[27 : 0];
     end
 end
@@ -936,9 +936,9 @@ assign p_Val2_69_1_fu_157_p1 = div_res_1_V_fu_150_p1;
 
 assign p_Val2_69_1_fu_157_p2 = ($signed({{1'b0}, {56'd23726506}}) * $signed(p_Val2_69_1_fu_157_p1));
 
-assign p_Val2_s_59_fu_134_p1 = div_res_0_V_fu_127_p1;
+assign p_Val2_s_60_fu_134_p1 = div_res_0_V_fu_127_p1;
 
-assign p_Val2_s_59_fu_134_p2 = ($signed({{1'b0}, {56'd23726506}}) * $signed(p_Val2_s_59_fu_134_p1));
+assign p_Val2_s_60_fu_134_p2 = ($signed({{1'b0}, {56'd23726506}}) * $signed(p_Val2_s_60_fu_134_p1));
 
 assign p_Val2_s_fu_59_p0 = OP1_V_3_cast_fu_55_p1;
 
