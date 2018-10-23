@@ -136,38 +136,6 @@ void decoder(input_t data[n_channel], result_t res[M_in]) {
 
 }
 
-// ========================================================================
-// encoder_decoder
-// ========================================================================
-//void encoder_decoder(
-//  input_t enc_data_in[M_in],
-//  //result_t enc_data_out[n_channel],
-//  //input_t dec_data_in[n_channel],
-//  result_t dec_data_out[M_in])
-//{
-//#pragma HLS INTERFACE axis register both depth=4 latency=2 port=enc_data_in
-//#pragma HLS INTERFACE axis register both depth=4 latency=2 port=dec_data_out
-//#pragma HLS INTERFACE ap_ctrl_none port=return
-////#pragma HLS ARRAY_RESHAPE variable=enc_data_in complete dim=0
-////#pragma HLS ARRAY_RESHAPE variable=enc_data_out complete dim=0
-////#pragma HLS ARRAY_RESHAPE variable=dec_data_in complete dim=0
-////#pragma HLS ARRAY_RESHAPE variable=dec_data_out complete dim=0
-//
-//#pragma HLS PIPELINE II=100
-//
-//#pragma HLS RESOURCE variable=enc_data_out core=FIFO latency=2
-//#pragma HLS RESOURCE variable=dec_data_in core=FIFO latency=2
-//	result_t enc_data_out[n_channel];
-//	input_t dec_data_in[n_channel];
-//
-//    encoder(enc_data_in, enc_data_out);
-//
-//    for (int i = 0; i < n_channel; i++) {
-//    	dec_data_in[i] = enc_data_out[i];
-//    }
-//
-//    decoder(dec_data_in, dec_data_out);
-//}
 
 void awgn_top0(hls::stream<t_snr> &snr,
 		hls::stream<ap_int<AWGN_WIDTH> > &noise) {
@@ -196,12 +164,9 @@ void awgn_top1(hls::stream<t_snr> &snr,
 } // end of function awgn_top
 
 void encoder_decoder(hls::stream<axis_input_t> &axis_enc_data_in,
-		//result_t enc_data_out[n_channel],
-		//input_t dec_data_in[n_channel],
-//  double *total_noise_var,
 		hls::stream<axis_result_t> &axis_dec_data_out, t_snr SNR_REG,
 		int AWGN_EN_REG) {
-//#pragma HLS INTERFACE s_axilite port=bypass
+
 #pragma HLS INTERFACE s_axilite port=AWGN_EN_REG bundle=ctrl
 #pragma HLS INTERFACE s_axilite port=SNR_REG bundle=ctrl
 #pragma HLS INTERFACE axis port=axis_enc_data_in
@@ -217,25 +182,21 @@ void encoder_decoder(hls::stream<axis_input_t> &axis_enc_data_in,
 	result_t enc_data_out[n_channel];
 	input_t dec_data_in[n_channel];
 	result_t dec_data_out[M_in];
-	t_snr snr_buf;
 
-	hls::stream <ap_fixed<AWGN_WIDTH, 2> > noise_fixed_point_stream0;
-	hls::stream <ap_fixed<AWGN_WIDTH, 2> > noise_fixed_point_stream1;
+	t_snr snrSample;
+	hls::stream < ap_fixed<AWGN_WIDTH, 2> > noise_fixed_point_stream0;
+	hls::stream < ap_fixed<AWGN_WIDTH, 2> > noise_fixed_point_stream1;
+	hls::stream < ap_int<AWGN_WIDTH> > noise_sample_stream0;
+	hls::stream < ap_int<AWGN_WIDTH> > noise_sample_stream1;
+	hls::stream < t_snr > snr_sample_stream;
+	hls::stream < result_t > enc_data_out_stream;
 
 	ap_fixed<AWGN_WIDTH, 2> noise_fixed_point0;
 	ap_fixed<AWGN_WIDTH, 2> noise_fixed_point1;
 
-	static hls::awgn<AWGN_WIDTH> uut0(SEED0);
-	static hls::awgn<AWGN_WIDTH> uut1(SEED1);
-	t_snr snrSample;
-	hls::stream < t_snr > snr_sample_stream;
-	hls::stream < ap_int<AWGN_WIDTH> > noise_sample_stream0;
-	hls::stream < ap_int<AWGN_WIDTH> > noise_sample_stream1;
 	ap_int<AWGN_WIDTH> noiseSample0;
 	ap_int<AWGN_WIDTH> noiseSample1;
 
-	hls::stream < result_t > enc_data_out_stream;
-//	hls::stream < result_t > dec_data_in_stream;
 
 #pragma HLS STREAM depth=100 variable=snr_sample_stream
 #pragma HLS STREAM depth=100 variable=noise_sample_stream0
@@ -256,16 +217,11 @@ void encoder_decoder(hls::stream<axis_input_t> &axis_enc_data_in,
 		enc_data_in[i] = axis_enc_data_in_item[i].data;
 	}
 
+
 	encoder(enc_data_in, enc_data_out);
 
 
 	if (AWGN_EN_REG == 0) {
-//		uut0(SNR_REG, noiseSample0);
-//		noise_fixed_point0.V = noiseSample0;
-//
-//		uut1(SNR_REG, noiseSample1);
-//		noise_fixed_point1.V = noiseSample1;
-
 		dec_data_in[0] = enc_data_out[0] + noise_fixed_point0;
 		dec_data_in[1] = enc_data_out[1] + noise_fixed_point1;
 
@@ -276,7 +232,6 @@ void encoder_decoder(hls::stream<axis_input_t> &axis_enc_data_in,
 
 
 	decoder(dec_data_in, dec_data_out);
-
 
 
 	for (int i = 0; i < M_in; i++) {
