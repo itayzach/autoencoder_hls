@@ -182,17 +182,24 @@ int elaborated_print_and_check_results(
     std::cout << "--------------------------------------------------------------------------" << std::endl;
 
     for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
-    	std::cout << "Signal:" << std::endl;
+    	if (do_print) {
+    		std::cout << "Signal:" << std::endl;
+    	}
 		err_cnt += single_print_and_check_results(&dec_expected[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, 0.0, do_print);
 //		std::cout << "--------------------------------------------------------------------------" << std::endl;
 //		std::cout << "Noise:" << std::endl;
 //		for (int i = 0; i < n_channel; i++) {
 //			std::cout << std::setw(fieldWidth) << noise_rec[sigIdx*n_channel + i] << std::endl;;
 //		}
-		std::cout << "--------------------------------------------------------------------------" << std::endl;
-		std::cout << "RX (decoder):" << std::endl;
+		if (do_print) {
+			std::cout << "--------------------------------------------------------------------------" << std::endl;
+			std::cout << "RX (decoder):" << std::endl;
+		}
 		err_cnt += single_print_and_check_results(&dec_data_out_rec[sigIdx*M_in], &dec_expected[sigIdx*M_in], M_in, dec_allowed_precent_diff, do_print);
-		std::cout << "==========================================================================" << std::endl;
+		if (do_print) {
+			std::cout << "==========================================================================" << std::endl;
+		}
+		std::cout << "idx " << sigIdx << std::endl;
     }
 //    std::cout << "--------------------------------------------------------------------------" << std::endl;
 //    std::cout << "total of " << err_cnt << " errors" << std::endl;
@@ -289,6 +296,7 @@ int main(int argc, char **argv) {
 		// Run for each possible signal
 		for (int sigIdx = 0; sigIdx < NUM_SIGNALS; sigIdx++) {
 			// Generate random data
+//			tx_data = 0;
 //			tx_data = sigIdx % M_in;
 			tx_data = rand () % M_in;
 			// Reset enc data in
@@ -300,8 +308,8 @@ int main(int argc, char **argv) {
 				} else {
 					enc_data_in_tmp.data = 0;
 				}
-				enc_data_in_tmp.keep = 15;
-				enc_data_in_tmp.last = (i == M_in - 1);
+				enc_data_in_tmp.keep = 0xF;
+				enc_data_in_tmp.last = (sigIdx == NUM_SIGNALS - 1) && (i == M_in - 1);
 
 				enc_data_in << enc_data_in_tmp;
 			}
