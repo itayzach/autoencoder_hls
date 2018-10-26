@@ -27,12 +27,14 @@ typedef ap_fixed<32,8> result_t;
 typedef struct {
 	input_t           data;
 	ap_uint<(32+7)/8> keep;
+	ap_uint<32>       user;
 	ap_uint<1>        last;
 } axis_input_t;
 
 typedef struct {
 	result_t          data;
 	ap_uint<(32+7)/8> keep;
+	ap_uint<32>       user;
 	ap_uint<1>        last;
 } axis_result_t;
 
@@ -114,5 +116,6 @@ struct dec_softmax_config2 : nnet::activ_config {
     static const unsigned n_in = M_in;
     static const unsigned table_size = 1024;
     static const unsigned io_type = nnet::io_parallel;
+    typedef ap_fixed<32,12> table_t;
 };
 #endif

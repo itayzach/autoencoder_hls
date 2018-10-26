@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<xd:acceleratorMap xmlns:xd="http://www.xilinx.com/xidane" xd:functionName="encoder_decoder" xd:componentRef="encoder_decoder" xd:initiationInterval="223" xd:clockPeriod="10.000" xd:sequential="true" xd:hostMachine="64" xd:reset="control">
+<xd:acceleratorMap xmlns:xd="http://www.xilinx.com/xidane" xd:functionName="encoder_decoder" xd:componentRef="encoder_decoder" xd:initiationInterval="246" xd:clockPeriod="10.000" xd:sequential="true" xd:hostMachine="64" xd:reset="control">
   <xd:controlReg xd:name="control" xd:interfaceRef="s_axi_ctrl" xd:busTypeRef="axilite" xd:type="generic_axi_lite" xd:offset="0x0"/>
   <xd:arg xd:name="axis_enc_data_in.data" xd:originalName="axis_enc_data_in" xd:direction="in" xd:interfaceRef="axis_enc_data_in" xd:busTypeRef="axis" xd:dataWidth="32"/>
   <xd:arg xd:name="axis_enc_data_in.keep" xd:originalName="axis_enc_data_in" xd:direction="in" xd:interfaceRef="axis_enc_data_in" xd:busTypeRef="axis" xd:dataWidth="4"/>
+  <xd:arg xd:name="axis_enc_data_in.user" xd:originalName="axis_enc_data_in" xd:direction="in" xd:interfaceRef="axis_enc_data_in" xd:busTypeRef="axis" xd:dataWidth="32"/>
   <xd:arg xd:name="axis_enc_data_in.last" xd:originalName="axis_enc_data_in" xd:direction="in" xd:interfaceRef="axis_enc_data_in" xd:busTypeRef="axis" xd:dataWidth="1"/>
   <xd:arg xd:name="axis_dec_data_out.data" xd:originalName="axis_dec_data_out" xd:direction="out" xd:interfaceRef="axis_dec_data_out" xd:busTypeRef="axis" xd:dataWidth="32"/>
   <xd:arg xd:name="axis_dec_data_out.keep" xd:originalName="axis_dec_data_out" xd:direction="out" xd:interfaceRef="axis_dec_data_out" xd:busTypeRef="axis" xd:dataWidth="4"/>
+  <xd:arg xd:name="axis_dec_data_out.user" xd:originalName="axis_dec_data_out" xd:direction="out" xd:interfaceRef="axis_dec_data_out" xd:busTypeRef="axis" xd:dataWidth="32"/>
   <xd:arg xd:name="axis_dec_data_out.last" xd:originalName="axis_dec_data_out" xd:direction="out" xd:interfaceRef="axis_dec_data_out" xd:busTypeRef="axis" xd:dataWidth="1"/>
   <xd:arg xd:name="SNR_REG" xd:originalName="SNR_REG" xd:direction="in" xd:interfaceRef="s_axi_ctrl" xd:busTypeRef="axilite" xd:offset="0x10" xd:handshakeRef="ap_none" xd:dataWidth="8"/>
   <xd:arg xd:name="AWGN_EN_REG" xd:originalName="AWGN_EN_REG" xd:direction="in" xd:interfaceRef="s_axi_ctrl" xd:busTypeRef="axilite" xd:offset="0x18" xd:handshakeRef="ap_none" xd:dataWidth="32"/>
-  <xd:latencyEstimates xd:best-case="210" xd:worst-case="222" xd:average-case="215"/>
-  <xd:resourceEstimates xd:LUT="33670" xd:FF="31318" xd:BRAM="19" xd:DSP="218"/>
+  <xd:latencyEstimates xd:best-case="233" xd:worst-case="245" xd:average-case="238"/>
+  <xd:resourceEstimates xd:LUT="35033" xd:FF="33123" xd:BRAM="27" xd:DSP="218"/>
 </xd:acceleratorMap>

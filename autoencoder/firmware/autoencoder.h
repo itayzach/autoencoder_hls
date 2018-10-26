@@ -26,7 +26,7 @@
 
 #include "parameters.h"
 
-#define AWGN_WIDTH 32
+#define AWGN_WIDTH 28
 typedef hls::awgn<AWGN_WIDTH>::t_input_scale t_snr;
 const int LFSR_WIDTH = hls::awgn<AWGN_WIDTH>::LFSR_WIDTH;
 const ap_uint<LFSR_WIDTH> SEED0 = ap_uint<LFSR_WIDTH>("0123456789ABCDEF123456789ABCDEF0",16);

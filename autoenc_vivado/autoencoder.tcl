@@ -44,7 +44,6 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 set list_projs [get_projects -quiet]
 if { $list_projs eq "" } {
    create_project project_1 myproj -part xc7z020clg400-1
-   set_property BOARD_PART tul.com.tw:pynq-z2:part0:1.0 [current_project]
 }
 
 
@@ -210,7 +209,7 @@ proc create_hier_cell_enc_dec { parentCell nameHier } {
    CONFIG.c_include_sg {0} \
    CONFIG.c_m_axi_mm2s_data_width {128} \
    CONFIG.c_m_axis_mm2s_tdata_width {32} \
-   CONFIG.c_mm2s_burst_size {4} \
+   CONFIG.c_mm2s_burst_size {16} \
    CONFIG.c_sg_include_stscntrl_strm {0} \
    CONFIG.c_sg_length_width {26} \
  ] $enc_dec_dma
@@ -221,26 +220,27 @@ proc create_hier_cell_enc_dec { parentCell nameHier } {
   # Create instance: input_fifo, and set properties
   set input_fifo [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:1.1 input_fifo ]
   set_property -dict [ list \
-   CONFIG.FIFO_DEPTH {32768} \
+   CONFIG.FIFO_DEPTH {8192} \
  ] $input_fifo
 
   # Create instance: output_fifo, and set properties
   set output_fifo [ create_bd_cell -type ip -vlnv xilinx.com:ip:axis_data_fifo:1.1 output_fifo ]
   set_property -dict [ list \
-   CONFIG.FIFO_DEPTH {32768} \
+   CONFIG.FIFO_DEPTH {8192} \
  ] $output_fifo
 
   # Create interface connections
   connect_bd_intf_net -intf_net Conn1 [get_bd_intf_pins s_axi_ctrl] [get_bd_intf_pins encoder_decoder_0/s_axi_ctrl]
   connect_bd_intf_net -intf_net axi_dma_0_M_AXI_MM2S [get_bd_intf_pins M_AXI_MM2S] [get_bd_intf_pins enc_dec_dma/M_AXI_MM2S]
   connect_bd_intf_net -intf_net axi_dma_0_M_AXI_S2MM [get_bd_intf_pins M_AXI_S2MM] [get_bd_intf_pins enc_dec_dma/M_AXI_S2MM]
+  connect_bd_intf_net -intf_net axis_data_fifo_0_M_AXIS [get_bd_intf_pins encoder_decoder_0/axis_enc_data_in] [get_bd_intf_pins input_fifo/M_AXIS]
   connect_bd_intf_net -intf_net enc_dec_dma_M_AXIS_MM2S [get_bd_intf_pins enc_dec_dma/M_AXIS_MM2S] [get_bd_intf_pins input_fifo/S_AXIS]
   connect_bd_intf_net -intf_net encoder_decoder_0_axis_dec_data_out [get_bd_intf_pins encoder_decoder_0/axis_dec_data_out] [get_bd_intf_pins output_fifo/S_AXIS]
-  connect_bd_intf_net -intf_net input_fifo_M_AXIS [get_bd_intf_pins encoder_decoder_0/axis_enc_data_in] [get_bd_intf_pins input_fifo/M_AXIS]
-  connect_bd_intf_net -intf_net output_fifo_M_AXIS [get_bd_intf_pins enc_dec_dma/S_AXIS_S2MM] [get_bd_intf_pins output_fifo/M_AXIS]
+  connect_bd_intf_net -intf_net encoder_decoder_0_dec_data_out_V [get_bd_intf_pins enc_dec_dma/S_AXIS_S2MM] [get_bd_intf_pins output_fifo/M_AXIS]
   connect_bd_intf_net -intf_net ps7_0_axi_periph_M00_AXI [get_bd_intf_pins S_AXI_LITE] [get_bd_intf_pins enc_dec_dma/S_AXI_LITE]
 
   # Create port connections
+  connect_bd_net -net axis_data_count_1 [get_bd_pins output_fifo/axis_data_count]
   connect_bd_net -net processing_system7_0_FCLK_CLK0 [get_bd_pins m_axi_mm2s_aclk] [get_bd_pins enc_dec_dma/m_axi_mm2s_aclk] [get_bd_pins enc_dec_dma/m_axi_s2mm_aclk] [get_bd_pins enc_dec_dma/s_axi_lite_aclk] [get_bd_pins encoder_decoder_0/ap_clk] [get_bd_pins input_fifo/s_axis_aclk] [get_bd_pins output_fifo/s_axis_aclk]
   connect_bd_net -net rst_ps7_0_100M_peripheral_aresetn [get_bd_pins axi_resetn] [get_bd_pins enc_dec_dma/axi_resetn] [get_bd_pins encoder_decoder_0/ap_rst_n]
   connect_bd_net -net s_axis_aresetn_1 [get_bd_pins s_axis_aresetn] [get_bd_pins input_fifo/s_axis_aresetn] [get_bd_pins output_fifo/s_axis_aresetn]

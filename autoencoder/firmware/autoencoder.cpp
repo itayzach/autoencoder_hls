@@ -112,12 +112,27 @@ void decoder(input_t data[n_channel], result_t res[M_in]) {
 			logits2, dec_w2, dec_b2);
 
 	// Softmax
+	//std::cout << "===================================" << std::endl;
+	for (int ii = 0; ii < const_size_out; ii++) {
+		std::cout << logits2[ii] << " ";
+	}
+	std::cout << std::endl;
 	result_t logits3[M_in];
+#pragma HLS ARRAY_PARTITION variable=logits3 complete dim=0
 	nnet::softmax<result_t, result_t, dec_softmax_config2>(logits2, logits3);
 
+	// Ugly fix
+	for (int ii = 0; ii < const_size_out; ii++) {
+		std::cout << logits3[ii] << " ";
+		if (logits3[ii] > 1) {
+			assert(false);
+		}
+	}
+	std::cout << std::endl;
 	// Argmax
 	result_t max_val = logits3[0];
 	result_t max_idx = 0;
+
 	argmax: for (int ii = 1; ii < const_size_out; ii++) {
 		if (logits3[ii] > max_val) {
 			max_idx = ii;
@@ -224,6 +239,9 @@ void encoder_decoder(hls::stream<axis_input_t> &axis_enc_data_in,
 	if (AWGN_EN_REG == 0) {
 		dec_data_in[0] = enc_data_out[0] + noise_fixed_point0;
 		dec_data_in[1] = enc_data_out[1] + noise_fixed_point1;
+		//std::cout << "idx = " << axis_enc_data_in_item[0].user << std::endl;
+		//std::cout << dec_data_in[0] << " = " << enc_data_out[0] << " + " << noise_fixed_point0 << std::endl;
+		//std::cout << dec_data_in[1] << " = " << enc_data_out[1] << " + " << noise_fixed_point1 << std::endl;
 
 	} else {
 		dec_data_in[0] = enc_data_out[0];
@@ -233,12 +251,19 @@ void encoder_decoder(hls::stream<axis_input_t> &axis_enc_data_in,
 
 	decoder(dec_data_in, dec_data_out);
 
-
 	for (int i = 0; i < M_in; i++) {
 		axis_dec_data_out_item.data = dec_data_out[i];
 		axis_dec_data_out_item.keep = axis_enc_data_in_item[i].keep;
 		axis_dec_data_out_item.last = axis_enc_data_in_item[i].last;
+		axis_dec_data_out_item.user = axis_enc_data_in_item[i].user;
 		axis_dec_data_out.write(axis_dec_data_out_item);
+
+//		std::cout << "idx (user) = " << axis_dec_data_out_item.user << std::endl;
+//		std::cout << "data = " << axis_dec_data_out_item.data << std::endl;
+//		std::cout << "last = " << axis_dec_data_out_item.last << std::endl;
+//		std::cout << "===================================" << std::endl;
+
+
 		if (axis_dec_data_out_item.last) {
 			break;
 		}

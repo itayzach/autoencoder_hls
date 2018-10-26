@@ -313,6 +313,14 @@ format long minimum {} maximum {}} value 32} bitoffset {attribs {resolve_type im
             <spirit:name>axis_enc_data_in_TKEEP</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>TUSER</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>axis_enc_data_in_TUSER</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
       </spirit:portMaps>
       <spirit:parameters>
         <spirit:parameter>
@@ -321,12 +329,13 @@ format long minimum {} maximum {}} value 32} bitoffset {attribs {resolve_type im
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>TUSER_WIDTH</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.AXIS_ENC_DATA_IN.TUSER_WIDTH">0</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.AXIS_ENC_DATA_IN.TUSER_WIDTH">32</spirit:value>
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>LAYERED_METADATA</spirit:name>
           <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.AXIS_ENC_DATA_IN.LAYERED_METADATA">xilinx.com:interface:datatypes:1.0 {TDATA {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 32} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} real {fixed {fractwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 24} signed {attribs {resolve_type 
-immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spirit:value>
+immediate dependency {} format bool minimum {} maximum {}} value true}}}}} TUSER {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 32} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} integer {signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value fal
+se}}}}}</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -376,6 +385,14 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
             <spirit:name>axis_dec_data_out_TKEEP</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>TUSER</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>axis_dec_data_out_TUSER</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
       </spirit:portMaps>
       <spirit:parameters>
         <spirit:parameter>
@@ -384,12 +401,13 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>TUSER_WIDTH</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.AXIS_DEC_DATA_OUT.TUSER_WIDTH">0</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.AXIS_DEC_DATA_OUT.TUSER_WIDTH">32</spirit:value>
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>LAYERED_METADATA</spirit:name>
           <spirit:value spirit:resolve="generated" spirit:id="BUSIFPARAM_VALUE.AXIS_DEC_DATA_OUT.LAYERED_METADATA">xilinx.com:interface:datatypes:1.0 {TDATA {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 32} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} real {fixed {fractwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 24} signed {attribs {resolve_type 
-immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spirit:value>
+immediate dependency {} format bool minimum {} maximum {}} value true}}}}} TUSER {datatype {name {attribs {resolve_type immediate dependency {} format string minimum {} maximum {}} value {}} bitwidth {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 32} bitoffset {attribs {resolve_type immediate dependency {} format long minimum {} maximum {}} value 0} integer {signed {attribs {resolve_type immediate dependency {} format bool minimum {} maximum {}} value fal
+se}}}}}</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -731,7 +749,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>06d1d673</spirit:value>
+            <spirit:value>1cd41882</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -747,7 +765,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>04767f4d</spirit:value>
+            <spirit:value>c6292d64</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -763,7 +781,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ecdb7ecc</spirit:value>
+            <spirit:value>54bfe03b</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -779,7 +797,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b7cdf92a</spirit:value>
+            <spirit:value>a6c229dd</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -793,7 +811,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>032b8447</spirit:value>
+            <spirit:value>3554fae5</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -829,7 +847,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b85df833</spirit:value>
+            <spirit:value>2873ff8a</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -843,7 +861,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>d6424aa9</spirit:value>
+            <spirit:value>ab8efdf4</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1235,6 +1253,26 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         </spirit:wire>
       </spirit:port>
       <spirit:port>
+        <spirit:name>axis_enc_data_in_TUSER</spirit:name>
+        <spirit:wire>
+          <spirit:direction>in</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_verilogsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_verilogbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+          <spirit:driver>
+            <spirit:defaultValue spirit:format="long">0</spirit:defaultValue>
+          </spirit:driver>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
         <spirit:name>axis_dec_data_out_TVALID</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
@@ -1311,6 +1349,23 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
           </spirit:wireTypeDefs>
         </spirit:wire>
       </spirit:port>
+      <spirit:port>
+        <spirit:name>axis_dec_data_out_TUSER</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_verilogsynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_verilogbehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
     </spirit:ports>
     <spirit:modelParameters>
       <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="integer">
@@ -1365,6 +1420,10 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/verilog/encoder_decoder_mCeG.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/encoder_decoder_mDeQ.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1460,7 +1519,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/fifo_w32_d100_A.v</spirit:name>
+        <spirit:name>hdl/verilog/fifo_w28_d100_A.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1584,6 +1643,11 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/verilog/encoder_decoder_mDeQ.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/verilog/encoder_decoder_meOg.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
@@ -1699,7 +1763,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/fifo_w32_d100_A.v</spirit:name>
+        <spirit:name>hdl/verilog/fifo_w28_d100_A.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1833,6 +1897,10 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/vhdl/encoder_decoder_mDeQ.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/vhdl/encoder_decoder_meOg.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1925,7 +1993,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/fifo_w32_d100_A.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/fifo_w28_d100_A.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1979,7 +2047,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
       <spirit:file>
         <spirit:name>hdl/vhdl/encoder_decoder.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_df71034b</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_11a810b8</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -2026,6 +2094,11 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/encoder_decoder_mCeG.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/encoder_decoder_mDeQ.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2145,7 +2218,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/fifo_w32_d100_A.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/fifo_w28_d100_A.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2276,7 +2349,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
       <spirit:file>
         <spirit:name>xgui/encoder_decoder_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_d6424aa9</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_ab8efdf4</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -2309,7 +2382,7 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>latency</spirit:name>
-      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="5">210</spirit:value>
+      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="5">233</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>II</spirit:name>
@@ -2326,17 +2399,17 @@ immediate dependency {} format bool minimum {} maximum {}} value true}}}}}}</spi
       </xilinx:taxonomies>
       <xilinx:displayName>Encoder_decoder</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>1810232053</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2018-10-23T17:53:43Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>1810261707</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2018-10-26T14:08:02Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
-      <xilinx:xilinxVersion>2018.2</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="1c447eb8"/>
+      <xilinx:xilinxVersion>2018.2.1</xilinx:xilinxVersion>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="86f960a7"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="f42655d5"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="cc4a5f9c"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="75f230f8"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="7635cd5e"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="957cd3c0"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="e76f1e5a"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="0c6bfe3c"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="8d423edc"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

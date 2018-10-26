@@ -83,6 +83,7 @@ void compute_layer(
     }
 
     // Do the matrix-multiply
+//    std::cout << "-------------mult------------" << std::endl;
     Product1: for(int ii = 0; ii < CONFIG_T::n_in; ii++) {
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS PIPELINE
@@ -94,9 +95,11 @@ void compute_layer(
                 #pragma HLS ALLOCATION instances=mul limit=multiplier_limit operation
             }
             mult[ii][jj] = cache * weights[ii][jj];
+//            std::cout << mult[ii][jj] << " = " << cache << "*" << weights[ii][jj] << std::endl;
+
         }
     }
-
+//    std::cout << "-------------accum------------" << std::endl;
     // Initialize accumulator with input biases
     ResetAccum: for(int iacc = 0; iacc < CONFIG_T::n_out; iacc++) {
         if (CONFIG_T::io_type == io_serial){
@@ -106,22 +109,30 @@ void compute_layer(
     }
 
     // Accumulate multiplication result
+
     Accum1: for(int ii = 0; ii < CONFIG_T::n_in; ii++) {
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS PIPELINE
         }
         Accum2: for(int jj = 0; jj < CONFIG_T::n_out; jj++) {
+//        	std::cout << acc[jj] << "+" << mult[ii][jj];
             acc[jj] += mult[ii][jj];
+//            std::cout << mult[ii][jj] << std::endl;
+//            std::cout << "  = " << acc[jj] << std::endl;
         }
     }
 
     // Cast to "res_t" type
+//    std::cout << "-------------res------------" << std::endl;
     Result: for(int ires = 0; ires < CONFIG_T::n_out; ires++){
         if (CONFIG_T::io_type == io_serial){
             #pragma HLS UNROLL
         }
         res[ires] = (res_T) (acc[ires]);
+//        std::cout << " res = " << res[ires] << std::endl;
     }    
+
+//    std::cout << "===============================" << std::endl;
 }
 
 
