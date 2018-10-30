@@ -749,7 +749,7 @@ se}}}}}</spirit:value>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1cd41882</spirit:value>
+            <spirit:value>d13443a8</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -765,7 +765,7 @@ se}}}}}</spirit:value>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c6292d64</spirit:value>
+            <spirit:value>edd704e0</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -781,7 +781,7 @@ se}}}}}</spirit:value>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>54bfe03b</spirit:value>
+            <spirit:value>2b3c9f28</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -797,7 +797,7 @@ se}}}}}</spirit:value>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>a6c229dd</spirit:value>
+            <spirit:value>2ea86124</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -811,7 +811,7 @@ se}}}}}</spirit:value>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>3554fae5</spirit:value>
+            <spirit:value>032b8447</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -847,7 +847,7 @@ se}}}}}</spirit:value>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>2873ff8a</spirit:value>
+            <spirit:value>b85df833</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -861,7 +861,7 @@ se}}}}}</spirit:value>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ab8efdf4</spirit:value>
+            <spirit:value>d6424aa9</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1519,7 +1519,7 @@ se}}}}}</spirit:value>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/fifo_w28_d100_A.v</spirit:name>
+        <spirit:name>hdl/verilog/fifo_w26_d100_A.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1763,7 +1763,7 @@ se}}}}}</spirit:value>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/fifo_w28_d100_A.v</spirit:name>
+        <spirit:name>hdl/verilog/fifo_w26_d100_A.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1993,7 +1993,7 @@ se}}}}}</spirit:value>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/fifo_w28_d100_A.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/fifo_w26_d100_A.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -2047,7 +2047,7 @@ se}}}}}</spirit:value>
       <spirit:file>
         <spirit:name>hdl/vhdl/encoder_decoder.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_11a810b8</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_8743e39a</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -2218,7 +2218,7 @@ se}}}}}</spirit:value>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/fifo_w28_d100_A.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/fifo_w26_d100_A.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2349,7 +2349,7 @@ se}}}}}</spirit:value>
       <spirit:file>
         <spirit:name>xgui/encoder_decoder_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_ab8efdf4</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_d6424aa9</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -2382,7 +2382,7 @@ se}}}}}</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>latency</spirit:name>
-      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="5">233</spirit:value>
+      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="5">208</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>II</spirit:name>
@@ -2399,17 +2399,17 @@ se}}}}}</spirit:value>
       </xilinx:taxonomies>
       <xilinx:displayName>Encoder_decoder</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>1810261707</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2018-10-26T14:08:02Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>1810282108</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2018-10-28T19:08:49Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
-      <xilinx:xilinxVersion>2018.2.1</xilinx:xilinxVersion>
+      <xilinx:xilinxVersion>2018.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="86f960a7"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="f42655d5"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="7635cd5e"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="2d850485"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="957cd3c0"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="e76f1e5a"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="8d423edc"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="64a55364"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>
