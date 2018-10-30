@@ -58,6 +58,7 @@
 !*.c
 !*.cpp
 !*.h
+!*.ipynb
 
 **/*.cache/
 **/*.ip_user_files/
@@ -69,3 +70,4 @@
 **/encoder_prj/.*
 **/decoder_prj/.*
 **/solution1_pynq/
+**/.ipynb_checkpoints/
